@@ -1,0 +1,340 @@
+{
+  "name": "jellyfin",
+  "version": 1,
+  "description": "Media server for streaming your movies and TV library",
+  "services": {
+    "jellyfin": {
+      "container_name": "${JELLYFIN_CONTAINER_NAME}",
+      "image": "${JELLYFIN_IMAGE}",
+      "environment": {
+        "PUID": "${PUID}",
+        "PGID": "${PGID}",
+        "TZ": "${TZ}",
+        "JELLYFIN_PublishedServerUrl": "${JELLYFIN_PUBLISHED_SERVER_URL}"
+      },
+      "volumes": [
+        "${JELLYFIN_CONFIG_LOCATION}:${JELLYFIN_CONFIG_TARGET}",
+        "${TV_LOCATION}:${JELLYFIN_TV_TARGET}",
+        "${MOVIES_LOCATION}:${JELLYFIN_MOVIES_TARGET}",
+        "${JELLYFIN_EXTRA_MOUNT_1}",
+        "${JELLYFIN_EXTRA_MOUNT_2}",
+        "${JELLYFIN_EXTRA_MOUNT_3}",
+        "${JELLYFIN_EXTRA_MOUNT_4}",
+        "${JELLYFIN_EXTRA_MOUNT_5}"
+      ],
+      "ports": [
+        "${JELLYFIN_HTTP_PORT_MAPPING}",
+        "${JELLYFIN_HTTPS_PORT_MAPPING}",
+        "${JELLYFIN_DISCOVERY_PORT_7359}",
+        "${JELLYFIN_DISCOVERY_PORT_1900}"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${JELLYFIN_NETWORK_MODE_MODE}",
+      "networks": "${JELLYFIN_NETWORK_MODE_SERVICE_NETWORKS}",
+      "devices": [
+        "${JELLYFIN_DRI_DEVICE}"
+      ],
+      "runtime": "${JELLYFIN_RUNTIME}"
+    }
+  },
+  "networks": "${JELLYFIN_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Jellyfin",
+      "service": "jellyfin",
+      "port": "${JELLYFIN_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "JELLYFIN_CONFIG_LOCATION",
+      "label": "Jellyfin Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./jellyfin",
+      "help": "Stores Jellyfin configuration, database, metadata, and application state. This can grow large for bigger libraries."
+    },
+    {
+      "name": "TV_LOCATION",
+      "label": "TV Library Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./tv",
+      "help": "Folder containing your TV library."
+    },
+    {
+      "name": "MOVIES_LOCATION",
+      "label": "Movies Library Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./movies",
+      "help": "Folder containing your movies library."
+    },
+    {
+      "name": "PUID",
+      "label": "PUID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "User ID used by the container for file permissions."
+    },
+    {
+      "name": "PGID",
+      "label": "PGID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Group ID used by the container for file permissions."
+    },
+    {
+      "name": "JELLYFIN_PORT",
+      "label": "HTTP App Port",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "8096",
+      "help": "Host port used to open Jellyfin in your browser."
+    },
+    {
+      "name": "TZ",
+      "label": "Timezone",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Timezone used by Jellyfin logs and scheduled tasks.<br>Example: <code>Asia/Dubai</code>."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "JELLYFIN_NETWORK_MODE",
+      "label": "Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the default Compose network, <code>Host Mode</code> for host networking, or an existing named Docker network."
+    },
+    {
+      "name": "JELLYFIN_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "lscr.io/linuxserver/jellyfin:latest",
+      "docs_url": "https://docs.linuxserver.io/images/docker-jellyfin/",
+      "docs_label": "Official help",
+      "help": "Docker image used for Jellyfin.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "JELLYFIN_PUBLISHED_SERVER_URL",
+      "label": "Published Server URL",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional autodiscovery URL or IP address including <code>http://</code> or <code>https://</code>.<br>Example: <code>http://192.168.0.5</code>."
+    },
+    {
+      "name": "JELLYFIN_HTTP_PORT_MAPPING",
+      "label": "HTTP Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${JELLYFIN_PORT}:${JELLYFIN_INTERNAL_HTTP_PORT}",
+      "editable": false,
+      "hidden_when": {
+        "JELLYFIN_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Primary Jellyfin HTTP port mapping used when not running in host mode."
+    },
+    {
+      "name": "JELLYFIN_HTTPS_PORT_MAPPING",
+      "label": "HTTPS Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional HTTPS port mapping in the format <code>8920:8920</code>.<br>Leave blank unless you have set up Jellyfin HTTPS certificates inside the container."
+    },
+    {
+      "name": "JELLYFIN_DISCOVERY_PORT_7359",
+      "label": "Client Discovery Port",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "7359:7359/udp",
+      "help": "Optional client discovery port for local-network Jellyfin discovery."
+    },
+    {
+      "name": "JELLYFIN_DISCOVERY_PORT_1900",
+      "label": "DLNA Discovery Port",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "1900:1900/udp",
+      "help": "Optional DLNA discovery port. LinuxServer notes that client auto-discovery relies on this fixed port."
+    },
+    {
+      "name": "JELLYFIN_DRI_DEVICE",
+      "label": "Intel/AMD Hardware Acceleration",
+      "section": "advanced",
+      "input_type": "select",
+      "required": false,
+      "default": "",
+      "availability_path": "/dev/dri",
+      "options": [
+        { "label": "Disabled", "value": "" },
+        { "label": "Enabled (/dev/dri)", "value": "/dev/dri:/dev/dri" }
+      ],
+      "help": "Enable this only when <code>/dev/dri</code> is detected on the Docker host and you want Intel, AMD, or compatible ARM hardware acceleration."
+    },
+    {
+      "name": "JELLYFIN_RUNTIME",
+      "label": "Container Runtime",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional runtime override.<br>For Nvidia hardware acceleration, this is typically <code>nvidia</code> when the Nvidia container toolkit is installed on the host."
+    },
+    {
+      "name": "JELLYFIN_EXTRA_MOUNT_1",
+      "label": "Extra Mount 1",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional extra media or bind mount in the format <code>/host/path:/container/path</code> or <code>/host/path:/container/path:ro</code>."
+    },
+    {
+      "name": "JELLYFIN_EXTRA_MOUNT_2",
+      "label": "Extra Mount 2",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional extra media or bind mount in the format <code>/host/path:/container/path</code> or <code>/host/path:/container/path:ro</code>."
+    },
+    {
+      "name": "JELLYFIN_EXTRA_MOUNT_3",
+      "label": "Extra Mount 3",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional extra media or bind mount in the format <code>/host/path:/container/path</code> or <code>/host/path:/container/path:ro</code>."
+    },
+    {
+      "name": "JELLYFIN_EXTRA_MOUNT_4",
+      "label": "Extra Mount 4",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional extra media or bind mount in the format <code>/host/path:/container/path</code> or <code>/host/path:/container/path:ro</code>."
+    },
+    {
+      "name": "JELLYFIN_EXTRA_MOUNT_5",
+      "label": "Extra Mount 5",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional extra media or bind mount in the format <code>/host/path:/container/path</code> or <code>/host/path:/container/path:ro</code>."
+    },
+    {
+      "name": "JELLYFIN_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "JELLYFIN_INTERNAL_HTTP_PORT",
+      "label": "Internal HTTP Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "8096",
+      "editable": false,
+      "help": "Recipe-managed Jellyfin internal HTTP port."
+    },
+    {
+      "name": "JELLYFIN_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal config path."
+    },
+    {
+      "name": "JELLYFIN_TV_TARGET",
+      "label": "TV Library Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data/tvshows",
+      "editable": false,
+      "help": "Recipe-managed internal TV library path."
+    },
+    {
+      "name": "JELLYFIN_MOVIES_TARGET",
+      "label": "Movies Library Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data/movies",
+      "editable": false,
+      "help": "Recipe-managed internal movies library path."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "Jellyfin lets you stream your movies and TV shows from your own media server.",
+    "what_happens": [
+      "A LinuxServer Jellyfin container will be created",
+      "Your config, TV library, and movies library folders will be mounted into the container",
+      "Bridge networking is the default LinuxServer setup, with optional HTTPS and discovery ports available under Advanced",
+      "You can add more media mounts and optionally enable supported hardware acceleration devices"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "name": "transmission",
+  "version": 1,
+  "description": "BitTorrent client with a web UI and persistent config",
+  "services": {
+    "transmission": {
+      "container_name": "${TRANSMISSION_CONTAINER_NAME}",
+      "image": "${TRANSMISSION_IMAGE}",
+      "environment": {
+        "PUID": "${PUID}",
+        "PGID": "${PGID}",
+        "TZ": "${TZ}"
+      },
+      "volumes": [
+        "${TRANSMISSION_CONFIG_LOCATION}:${TRANSMISSION_CONFIG_TARGET}",
+        "${DOWNLOADS_LOCATION}:${TRANSMISSION_DOWNLOADS_TARGET}"
+      ],
+      "ports": [
+        "${TRANSMISSION_WEB_PORT}:${TRANSMISSION_WEB_INTERNAL_PORT}",
+        "${TRANSMISSION_PEER_PORT}:${TRANSMISSION_PEER_INTERNAL_PORT}",
+        "${TRANSMISSION_PEER_PORT}:${TRANSMISSION_PEER_INTERNAL_PORT}/udp"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${TRANSMISSION_NETWORK_MODE_MODE}",
+      "networks": "${TRANSMISSION_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${TRANSMISSION_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Transmission",
+      "service": "transmission",
+      "port": "${TRANSMISSION_WEB_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "TRANSMISSION_WEB_PORT",
+      "label": "Web UI Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "9091",
+      "help": "Port used to open the Transmission web interface in your browser."
+    },
+    {
+      "name": "TRANSMISSION_PEER_PORT",
+      "label": "Peer Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "51413",
+      "help": "Port used for torrent peer connections over both TCP and UDP."
+    },
+    {
+      "name": "TRANSMISSION_CONFIG_LOCATION",
+      "label": "Transmission Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./transmission",
+      "help": "Stores Transmission configuration, session data, and application state."
+    },
+    {
+      "name": "DOWNLOADS_LOCATION",
+      "label": "Downloads Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./downloads",
+      "help": "Folder where Transmission will save completed and in-progress downloads."
+    },
+    {
+      "name": "PUID",
+      "label": "PUID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "User ID used by the container for file permissions."
+    },
+    {
+      "name": "PGID",
+      "label": "PGID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Group ID used by the container for file permissions."
+    },
+    {
+      "name": "TZ",
+      "label": "Timezone",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Timezone used by Transmission logs and scheduled tasks.<br>Example: <code>Asia/Dubai</code>."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "TRANSMISSION_NETWORK_MODE",
+      "label": "Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the default Compose network, <code>Host Mode</code> for host networking, or an existing named Docker network."
+    },
+    {
+      "name": "TRANSMISSION_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "lscr.io/linuxserver/transmission:latest",
+      "docs_url": "https://docs.linuxserver.io/images/docker-transmission/",
+      "docs_label": "Official help",
+      "help": "Docker image used for Transmission.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "TRANSMISSION_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "TRANSMISSION_WEB_INTERNAL_PORT",
+      "label": "Internal Web UI Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "9091",
+      "editable": false,
+      "help": "Recipe-managed Transmission web UI internal port."
+    },
+    {
+      "name": "TRANSMISSION_PEER_INTERNAL_PORT",
+      "label": "Internal Peer Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "51413",
+      "editable": false,
+      "help": "Recipe-managed Transmission torrent peer internal port."
+    },
+    {
+      "name": "TRANSMISSION_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal config path."
+    },
+    {
+      "name": "TRANSMISSION_DOWNLOADS_TARGET",
+      "label": "Downloads Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/downloads",
+      "editable": false,
+      "help": "Recipe-managed internal downloads path."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "Transmission is a lightweight torrent client with a built-in web interface.",
+    "what_happens": [
+      "A Transmission container will be created",
+      "Your config and downloads folders will be mounted into the container",
+      "The web UI and peer ports will be published on the host",
+      "You can keep the default bridge network or attach Transmission to an existing network"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}

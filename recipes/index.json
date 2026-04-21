@@ -1,0 +1,52 @@
+{
+  "recipes": [
+    {
+      "name": "bazarr",
+      "version": 1
+    },
+    {
+      "name": "flaresolverr",
+      "version": 1
+    },
+    {
+      "name": "gluetun",
+      "version": 1
+    },
+    {
+      "name": "tailscale",
+      "version": 1
+    },
+    {
+      "name": "immich",
+      "version": 1
+    },
+    {
+      "name": "jellyfin",
+      "version": 1
+    },
+    {
+      "name": "plex",
+      "version": 1
+    },
+    {
+      "name": "prowlarr",
+      "version": 1
+    },
+    {
+      "name": "radarr",
+      "version": 1
+    },
+    {
+      "name": "sonarr",
+      "version": 1
+    },
+    {
+      "name": "transmission",
+      "version": 1
+    },
+    {
+      "name": "transmission-through-gluetun",
+      "version": 1
+    }
+  ]
+}

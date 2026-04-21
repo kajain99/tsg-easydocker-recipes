@@ -1,0 +1,164 @@
+{
+  "name": "transmission-through-gluetun",
+  "version": 1,
+  "description": "Transmission routed through an existing Gluetun container network stack",
+  "services": {
+    "transmission": {
+      "container_name": "${TRANSMISSION_CONTAINER_NAME}",
+      "image": "${TRANSMISSION_IMAGE}",
+      "environment": {
+        "PUID": "${PUID}",
+        "PGID": "${PGID}",
+        "TZ": "${TZ}"
+      },
+      "volumes": [
+        "${TRANSMISSION_CONFIG_LOCATION}:${TRANSMISSION_CONFIG_TARGET}",
+        "${DOWNLOADS_LOCATION}:${TRANSMISSION_DOWNLOADS_TARGET}"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${TRANSMISSION_GLUETUN_NETWORK_MODE}"
+    }
+  },
+  "fields": [
+    {
+      "name": "TRANSMISSION_CONFIG_LOCATION",
+      "label": "Transmission Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./transmission",
+      "help": "Stores Transmission configuration, session data, and application state."
+    },
+    {
+      "name": "DOWNLOADS_LOCATION",
+      "label": "Downloads Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./downloads",
+      "help": "Folder where Transmission will save completed and in-progress downloads."
+    },
+    {
+      "name": "TRANSMISSION_GLUETUN_CONTAINER",
+      "label": "Existing Gluetun Container Name",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "tsg_gluetun",
+      "help": "Name of the already-running Gluetun container whose network stack Transmission should share.<br>Example: <code>tsg_gluetun</code>."
+    },
+    {
+      "name": "TRANSMISSION_GLUETUN_NETWORK_MODE",
+      "label": "Network Mode",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "container:${TRANSMISSION_GLUETUN_CONTAINER}",
+      "editable": false,
+      "help": "Recipe-managed network mode built from the Gluetun container name you enter above."
+    },
+    {
+      "name": "PUID",
+      "label": "PUID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "User ID used by the container for file permissions."
+    },
+    {
+      "name": "PGID",
+      "label": "PGID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Group ID used by the container for file permissions."
+    },
+    {
+      "name": "TZ",
+      "label": "Timezone",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Timezone used by Transmission logs and scheduled tasks.<br>Example: <code>Asia/Dubai</code>."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "TRANSMISSION_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "lscr.io/linuxserver/transmission:latest",
+      "docs_url": "https://docs.linuxserver.io/images/docker-transmission/",
+      "docs_label": "Official help",
+      "help": "Docker image used for Transmission.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "TRANSMISSION_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "TRANSMISSION_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal config path."
+    },
+    {
+      "name": "TRANSMISSION_DOWNLOADS_TARGET",
+      "label": "Downloads Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/downloads",
+      "editable": false,
+      "help": "Recipe-managed internal downloads path."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "This recipe runs Transmission through the network stack of an existing Gluetun container.",
+    "what_happens": [
+      "A Transmission container will be created",
+      "It will share network access with your existing Gluetun container",
+      "Transmission itself will not publish ports directly in this recipe",
+      "Make sure the matching ports are already published on the Gluetun recipe if you want to access the web UI or peer ports"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "name": "sonarr",
+  "version": 1,
+  "description": "TV series manager for automated downloads and library organization",
+  "services": {
+    "sonarr": {
+      "container_name": "${SONARR_CONTAINER_NAME}",
+      "image": "${SONARR_IMAGE}",
+      "environment": {
+        "PUID": "${PUID}",
+        "PGID": "${PGID}",
+        "TZ": "${TZ}"
+      },
+      "volumes": [
+        "${SONARR_CONFIG_LOCATION}:${SONARR_CONFIG_TARGET}",
+        "${DOWNLOADS_LOCATION}:${SONARR_DOWNLOADS_TARGET}",
+        "${TV_LOCATION}:${SONARR_TV_TARGET}"
+      ],
+      "ports": [
+        "${SONARR_PORT}:${SONARR_INTERNAL_PORT}"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${SONARR_NETWORK_MODE_MODE}",
+      "networks": "${SONARR_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${SONARR_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Sonarr",
+      "service": "sonarr",
+      "port": "${SONARR_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "SONARR_PORT",
+      "label": "App Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "8989",
+      "help": "Port used to open Sonarr in your browser."
+    },
+    {
+      "name": "SONARR_CONFIG_LOCATION",
+      "label": "Sonarr Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./sonarr",
+      "help": "Stores Sonarr configuration, database, and application state."
+    },
+    {
+      "name": "DOWNLOADS_LOCATION",
+      "label": "Downloads Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./downloads",
+      "help": "Folder where your download client saves completed and in-progress TV downloads."
+    },
+    {
+      "name": "TV_LOCATION",
+      "label": "TV Library Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./tv",
+      "help": "Folder where Sonarr will organize and manage your TV library."
+    },
+    {
+      "name": "PUID",
+      "label": "PUID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "User ID used by the container for file permissions."
+    },
+    {
+      "name": "PGID",
+      "label": "PGID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Group ID used by the container for file permissions."
+    },
+    {
+      "name": "TZ",
+      "label": "Timezone",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Timezone used by Sonarr for scheduled tasks and logs.<br>Example: <code>Asia/Dubai</code>."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "SONARR_NETWORK_MODE",
+      "label": "Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the default Compose network, <code>Host Mode</code> for host networking, or an existing named Docker network."
+    },
+    {
+      "name": "SONARR_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "lscr.io/linuxserver/sonarr:latest",
+      "docs_url": "https://docs.linuxserver.io/images/docker-sonarr/",
+      "docs_label": "Official help",
+      "help": "Docker image used for Sonarr.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "SONARR_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "SONARR_INTERNAL_PORT",
+      "label": "Internal App Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "8989",
+      "editable": false,
+      "help": "Recipe-managed Sonarr internal port."
+    },
+    {
+      "name": "SONARR_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal config path."
+    },
+    {
+      "name": "SONARR_DOWNLOADS_TARGET",
+      "label": "Downloads Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/downloads",
+      "editable": false,
+      "help": "Recipe-managed internal downloads path."
+    },
+    {
+      "name": "SONARR_TV_TARGET",
+      "label": "TV Library Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/tv",
+      "editable": false,
+      "help": "Recipe-managed internal TV library path."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "Sonarr helps you track, download, and organize TV series automatically.",
+    "what_happens": [
+      "A Sonarr container will be created",
+      "Your config, downloads, and TV library folders will be mounted into the container",
+      "You can keep the default bridge network or attach Sonarr to an existing network"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}

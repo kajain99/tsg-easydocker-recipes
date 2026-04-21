@@ -1,0 +1,142 @@
+{
+  "name": "flaresolverr",
+  "version": 1,
+  "description": "Proxy companion that helps apps bypass Cloudflare and anti-bot checks",
+  "services": {
+    "flaresolverr": {
+      "container_name": "${FLARESOLVERR_CONTAINER_NAME}",
+      "image": "${FLARESOLVERR_IMAGE}",
+      "environment": {
+        "LOG_LEVEL": "${FLARESOLVERR_LOG_LEVEL}",
+        "TZ": "${TZ}"
+      },
+      "ports": [
+        "${FLARESOLVERR_PORT}:${FLARESOLVERR_INTERNAL_PORT}"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${FLARESOLVERR_NETWORK_MODE_MODE}",
+      "networks": "${FLARESOLVERR_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${FLARESOLVERR_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open FlareSolverr",
+      "service": "flaresolverr",
+      "port": "${FLARESOLVERR_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "FLARESOLVERR_PORT",
+      "label": "App Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "8191",
+      "help": "Port used by apps like Prowlarr to connect to FlareSolverr."
+    },
+    {
+      "name": "TZ",
+      "label": "Timezone",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Timezone used by FlareSolverr logs.<br>Example: <code>Asia/Dubai</code>."
+    },
+    {
+      "name": "FLARESOLVERR_LOG_LEVEL",
+      "label": "Log Level",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "info",
+      "options": [
+        { "label": "Debug", "value": "debug" },
+        { "label": "Info", "value": "info" },
+        { "label": "Warning", "value": "warning" },
+        { "label": "Error", "value": "error" }
+      ],
+      "help": "Controls how much information FlareSolverr writes to its logs."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "FLARESOLVERR_NETWORK_MODE",
+      "label": "Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the default Compose network, <code>Host Mode</code> for host networking, or an existing named Docker network."
+    },
+    {
+      "name": "FLARESOLVERR_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "ghcr.io/flaresolverr/flaresolverr:latest",
+      "docs_url": "https://github.com/FlareSolverr/FlareSolverr",
+      "docs_label": "Official help",
+      "help": "Docker image used for FlareSolverr.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "FLARESOLVERR_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "FLARESOLVERR_INTERNAL_PORT",
+      "label": "Internal App Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "8191",
+      "editable": false,
+      "help": "Recipe-managed FlareSolverr internal port."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "FlareSolverr helps apps like Prowlarr handle Cloudflare and anti-bot checks when talking to indexers.",
+    "what_happens": [
+      "A FlareSolverr container will be created",
+      "Its API port will be published so your other apps can connect to it",
+      "You can keep the default bridge network or attach FlareSolverr to an existing network"
+    ],
+    "data_location": "This recipe does not require a persistent data folder."
+  }
+}

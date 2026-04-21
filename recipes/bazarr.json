@@ -1,0 +1,208 @@
+{
+  "name": "bazarr",
+  "version": 1,
+  "description": "Subtitle manager for movies and TV series",
+  "services": {
+    "bazarr": {
+      "container_name": "${BAZARR_CONTAINER_NAME}",
+      "image": "${BAZARR_IMAGE}",
+      "environment": {
+        "PUID": "${PUID}",
+        "PGID": "${PGID}",
+        "TZ": "${TZ}"
+      },
+      "volumes": [
+        "${BAZARR_CONFIG_LOCATION}:${BAZARR_CONFIG_TARGET}",
+        "${TV_LOCATION}:${BAZARR_TV_TARGET}",
+        "${MOVIES_LOCATION}:${BAZARR_MOVIES_TARGET}"
+      ],
+      "ports": [
+        "${BAZARR_PORT}:${BAZARR_INTERNAL_PORT}"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${BAZARR_NETWORK_MODE_MODE}",
+      "networks": "${BAZARR_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${BAZARR_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Bazarr",
+      "service": "bazarr",
+      "port": "${BAZARR_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "BAZARR_PORT",
+      "label": "App Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "6767",
+      "help": "Port used to open Bazarr in your browser."
+    },
+    {
+      "name": "BAZARR_CONFIG_LOCATION",
+      "label": "Bazarr Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./bazarr",
+      "help": "Stores Bazarr configuration, database, and application state."
+    },
+    {
+      "name": "TV_LOCATION",
+      "label": "TV Library Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./tv",
+      "help": "Folder where your TV library is stored for subtitle matching and downloads."
+    },
+    {
+      "name": "MOVIES_LOCATION",
+      "label": "Movies Library Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./movies",
+      "help": "Folder where your movies library is stored for subtitle matching and downloads."
+    },
+    {
+      "name": "PUID",
+      "label": "PUID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "User ID used by the container for file permissions."
+    },
+    {
+      "name": "PGID",
+      "label": "PGID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Group ID used by the container for file permissions."
+    },
+    {
+      "name": "TZ",
+      "label": "Timezone",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Timezone used by Bazarr for scheduled tasks and logs.<br>Example: <code>Asia/Dubai</code>."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "BAZARR_NETWORK_MODE",
+      "label": "Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the default Compose network, <code>Host Mode</code> for host networking, or an existing named Docker network."
+    },
+    {
+      "name": "BAZARR_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "lscr.io/linuxserver/bazarr:latest",
+      "docs_url": "https://docs.linuxserver.io/images/docker-bazarr/",
+      "docs_label": "Official help",
+      "help": "Docker image used for Bazarr.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "BAZARR_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "BAZARR_INTERNAL_PORT",
+      "label": "Internal App Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "6767",
+      "editable": false,
+      "help": "Recipe-managed Bazarr internal port."
+    },
+    {
+      "name": "BAZARR_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal config path."
+    },
+    {
+      "name": "BAZARR_TV_TARGET",
+      "label": "TV Library Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/tv",
+      "editable": false,
+      "help": "Recipe-managed internal TV library path."
+    },
+    {
+      "name": "BAZARR_MOVIES_TARGET",
+      "label": "Movies Library Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/movies",
+      "editable": false,
+      "help": "Recipe-managed internal movies library path."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "Bazarr helps you download and manage subtitles for both TV series and movies.",
+    "what_happens": [
+      "A Bazarr container will be created",
+      "Your config, TV library, and movies library folders will be mounted into the container",
+      "You can keep the default bridge network or attach Bazarr to an existing network"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}

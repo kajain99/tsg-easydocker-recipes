@@ -1,0 +1,210 @@
+{
+  "name": "exampleapp",
+  "version": 1,
+  "description": "Short app description",
+  "services": {
+    "exampleapp": {
+      "container_name": "${APP_CONTAINER_NAME}",
+      "image": "${APP_IMAGE}",
+      "restart": "${RESTART_POLICY}",
+      "ports": [
+        "${APP_PORT}:${APP_INTERNAL_PORT}"
+      ],
+      "environment": {
+        "APP_ENV": "${APP_ENV}",
+        "APP_TOKEN": "${APP_TOKEN}",
+        "APP_EXTRA_ARGS": "${APP_EXTRA_ARGS}"
+      },
+      "volumes": [
+        "${DATA_LOCATION}:${APP_DATA_TARGET}"
+      ],
+      "command": "${APP_COMMAND}",
+      "entrypoint": "${APP_ENTRYPOINT}",
+      "depends_on": [],
+      "networks": [],
+      "labels": {},
+      "devices": [],
+      "cap_add": []
+    }
+  },
+  "volumes": {},
+  "networks": {},
+  "configs": {},
+  "secrets": {},
+  "app_links": [
+    {
+      "label": "Open ExampleApp",
+      "service": "exampleapp",
+      "port": "${APP_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "APP_PORT",
+      "label": "App Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "8080",
+      "help": "Port used to open the app in your browser."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {
+          "label": "Unless Stopped",
+          "value": "unless-stopped"
+        },
+        {
+          "label": "Always",
+          "value": "always"
+        },
+        {
+          "label": "On Failure",
+          "value": "on-failure"
+        },
+        {
+          "label": "No",
+          "value": "no"
+        }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "APP_ENV",
+      "label": "App Environment",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional application environment value."
+    },
+    {
+      "name": "APP_TOKEN",
+      "label": "App Token",
+      "section": "required",
+      "input_type": "password",
+      "required": false,
+      "default": "",
+      "help": "Optional secret token or API key used by the app."
+    },
+    {
+      "name": "APP_EXTRA_ARGS",
+      "label": "Extra App Arguments",
+      "section": "advanced",
+      "input_type": "textarea",
+      "rows": 2,
+      "required": false,
+      "default": "",
+      "help": "Optional extra arguments exposed through an environment variable."
+    },
+    {
+      "name": "DATA_LOCATION",
+      "label": "Data Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./data",
+      "help": "Host path where app data will be stored."
+    },
+    {
+      "name": "APP_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "Recipe-managed container name shown for transparency."
+    },
+    {
+      "name": "APP_IMAGE",
+      "label": "Image",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "example/app:latest",
+      "editable": false,
+      "help": "Recipe-managed image shown for transparency."
+    },
+    {
+      "name": "APP_INTERNAL_PORT",
+      "label": "Internal App Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "8080",
+      "editable": false,
+      "help": "Recipe-managed container port."
+    },
+    {
+      "name": "APP_DATA_TARGET",
+      "label": "Data Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data",
+      "editable": false,
+      "help": "Recipe-managed internal data path."
+    },
+    {
+      "name": "APP_COMMAND",
+      "label": "Compose Command Override",
+      "section": "advanced",
+      "input_type": "textarea",
+      "rows": 2,
+      "required": false,
+      "default": "",
+      "data_type": "yaml",
+      "help": "Optional command override. Can be a plain string or YAML list."
+    },
+    {
+      "name": "APP_ENTRYPOINT",
+      "label": "Compose Entrypoint Override",
+      "section": "advanced",
+      "input_type": "textarea",
+      "rows": 2,
+      "required": false,
+      "default": "",
+      "data_type": "yaml",
+      "help": "Optional entrypoint override. Can be a plain string or YAML list."
+    }
+  ],
+  "ui": {
+    "sections": [
+      {
+        "name": "required",
+        "label": "Minimum Required"
+      },
+      {
+        "name": "optional",
+        "label": "Optional",
+        "collapsed": true
+      },
+      {
+        "name": "advanced",
+        "label": "Advanced",
+        "collapsed": true
+      },
+      {
+        "name": "readonly",
+        "label": "Read-Only (Recipe Managed)",
+        "collapsed": true
+      }
+    ],
+    "overview": "ExampleApp is a sample self-hosted app used as a recipe template.",
+    "what_happens": [
+      "One or more containers will be created as a compose project",
+      "Your selected data path will be mounted into the container",
+      "Advanced command and entrypoint overrides are available if needed"
+    ],
+    "data_location": "Stored relative to this app's config folder unless you enter an absolute path."
+  }
+}

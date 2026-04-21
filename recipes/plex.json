@@ -1,0 +1,472 @@
+{
+  "name": "plex",
+  "version": 2,
+  "description": "Media server for streaming your movies and TV library with Plex",
+  "services": {
+    "plex": {
+      "container_name": "${PLEX_CONTAINER_NAME}",
+      "image": "${PLEX_IMAGE}",
+      "environment": {
+        "PUID": "${PUID}",
+        "PGID": "${PGID}",
+        "TZ": "${TZ}",
+        "VERSION": "${PLEX_VERSION}",
+        "PLEX_CLAIM": "${PLEX_CLAIM}",
+        "NVIDIA_VISIBLE_DEVICES": "${PLEX_NVIDIA_VISIBLE_DEVICES}"
+      },
+      "volumes": [
+        "${PLEX_CONFIG_LOCATION}:${PLEX_CONFIG_TARGET}",
+        "${TV_LOCATION}:${PLEX_TV_TARGET}",
+        "${MOVIES_LOCATION}:${PLEX_MOVIES_TARGET}",
+        "${PLEX_TRANSCODE_MOUNT}",
+        "${PLEX_EXTRA_MOUNT_1}",
+        "${PLEX_EXTRA_MOUNT_2}",
+        "${PLEX_EXTRA_MOUNT_3}",
+        "${PLEX_EXTRA_MOUNT_4}",
+        "${PLEX_EXTRA_MOUNT_5}"
+      ],
+      "ports": [
+        "${PLEX_PORT_MAPPING}",
+        "${PLEX_BRIDGE_PORT_1900}",
+        "${PLEX_BRIDGE_PORT_5353}",
+        "${PLEX_BRIDGE_PORT_8324}",
+        "${PLEX_BRIDGE_PORT_32410}",
+        "${PLEX_BRIDGE_PORT_32412}",
+        "${PLEX_BRIDGE_PORT_32413}",
+        "${PLEX_BRIDGE_PORT_32414}",
+        "${PLEX_BRIDGE_PORT_32469}"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${PLEX_NETWORK_MODE_MODE}",
+      "networks": "${PLEX_NETWORK_MODE_SERVICE_NETWORKS}",
+      "devices": [
+        "${PLEX_DRI_DEVICE}",
+        "${PLEX_DVB_DEVICE}"
+      ],
+      "runtime": "${PLEX_RUNTIME}"
+    }
+  },
+  "networks": "${PLEX_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Plex",
+      "service": "plex",
+      "port": "${PLEX_PORT}",
+      "path": "/web",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "PLEX_PORT",
+      "label": "App Port",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "32400",
+      "help": "Host port used to open Plex in your browser when not using host networking.<br>With host mode, Plex stays on <code>32400</code>."
+    },
+    {
+      "name": "PLEX_CONFIG_LOCATION",
+      "label": "Plex Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./plex",
+      "help": "Stores Plex configuration, metadata, transcode settings, and application state."
+    },
+    {
+      "name": "TV_LOCATION",
+      "label": "TV Library Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./tv",
+      "help": "Folder containing your TV library."
+    },
+    {
+      "name": "MOVIES_LOCATION",
+      "label": "Movies Library Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./movies",
+      "help": "Folder containing your movies library."
+    },
+    {
+      "name": "PUID",
+      "label": "PUID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "User ID used by the container for file permissions."
+    },
+    {
+      "name": "PGID",
+      "label": "PGID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Group ID used by the container for file permissions."
+    },
+    {
+      "name": "TZ",
+      "label": "Timezone",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Timezone used by Plex logs and scheduled tasks.<br>Example: <code>Asia/Dubai</code>."
+    },
+    {
+      "name": "PLEX_CLAIM",
+      "label": "Plex Claim Token",
+      "section": "optional",
+      "input_type": "password",
+      "required": false,
+      "default": "",
+      "help": "Optional first-run claim token from <a href=\"https://plex.tv/claim\" target=\"_blank\" rel=\"noopener noreferrer\">plex.tv/claim</a>.<br>Claim tokens expire quickly, usually within about 4 minutes."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "PLEX_NETWORK_MODE",
+      "label": "Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__host__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Host Mode</code> for the LinuxServer recommended Plex setup, <code>Create New Bridge</code> for the default Compose network, or an existing named Docker network."
+    },
+    {
+      "name": "PLEX_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "lscr.io/linuxserver/plex:latest",
+      "docs_url": "https://docs.linuxserver.io/images/docker-plex/",
+      "docs_label": "Official help",
+      "help": "Docker image used for Plex.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "PLEX_VERSION",
+      "label": "Plex Version Mode",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "docker",
+      "help": "Plex update channel or exact version.<br>Examples: <code>docker</code>, <code>latest</code>, <code>public</code>, or a specific Plex version string."
+    },
+    {
+      "name": "PLEX_TRANSCODE_MOUNT",
+      "label": "Transcode Mount",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional transcode bind mount in the format <code>/host/path:/transcode</code> or <code>/host/path:/transcode:rw</code>.<br>Useful for read-heavy transcoding workloads or custom temp storage."
+    },
+    {
+      "name": "PLEX_PORT_MAPPING",
+      "label": "Primary Bridge Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${PLEX_PORT}:${PLEX_INTERNAL_PORT}",
+      "editable": false,
+      "hidden_when": {
+        "PLEX_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Primary port mapping used when Plex is not running in host mode."
+    },
+    {
+      "name": "PLEX_BRIDGE_PORT_1900",
+      "label": "Bridge Port 1900 UDP",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "1900:1900/udp",
+      "hidden_when": {
+        "PLEX_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Optional SSDP discovery port for bridge mode."
+    },
+    {
+      "name": "PLEX_BRIDGE_PORT_5353",
+      "label": "Bridge Port 5353 UDP",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "5353:5353/udp",
+      "hidden_when": {
+        "PLEX_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Optional mDNS discovery port for bridge mode."
+    },
+    {
+      "name": "PLEX_BRIDGE_PORT_8324",
+      "label": "Bridge Port 8324",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "8324:8324",
+      "hidden_when": {
+        "PLEX_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Optional companion control port for bridge mode."
+    },
+    {
+      "name": "PLEX_BRIDGE_PORT_32410",
+      "label": "Bridge Port 32410 UDP",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "32410:32410/udp",
+      "hidden_when": {
+        "PLEX_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Optional GDM discovery port for bridge mode."
+    },
+    {
+      "name": "PLEX_BRIDGE_PORT_32412",
+      "label": "Bridge Port 32412 UDP",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "32412:32412/udp",
+      "hidden_when": {
+        "PLEX_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Optional GDM discovery port for bridge mode."
+    },
+    {
+      "name": "PLEX_BRIDGE_PORT_32413",
+      "label": "Bridge Port 32413 UDP",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "32413:32413/udp",
+      "hidden_when": {
+        "PLEX_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Optional GDM discovery port for bridge mode."
+    },
+    {
+      "name": "PLEX_BRIDGE_PORT_32414",
+      "label": "Bridge Port 32414 UDP",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "32414:32414/udp",
+      "hidden_when": {
+        "PLEX_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Optional GDM discovery port for bridge mode."
+    },
+    {
+      "name": "PLEX_BRIDGE_PORT_32469",
+      "label": "Bridge Port 32469",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "32469:32469",
+      "hidden_when": {
+        "PLEX_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Optional DLNA port for bridge mode."
+    },
+    {
+      "name": "PLEX_DRI_DEVICE",
+      "label": "Intel/AMD Hardware Transcoding",
+      "section": "advanced",
+      "input_type": "select",
+      "required": false,
+      "default": "",
+      "availability_path": "/dev/dri",
+      "availability_label": "/dev/dri",
+      "detection_required_message": "Run Detect Hardware to check whether /dev/dri exists on the Docker host before enabling Intel or AMD transcoding.",
+      "options": [
+        { "label": "Disabled", "value": "" },
+        { "label": "Enabled (/dev/dri)", "value": "/dev/dri:/dev/dri" }
+      ],
+      "help": "Run <strong>Detect Hardware</strong> first.<br>Enable this only when <code>/dev/dri</code> is detected on the Docker host and you want Intel, AMD, or compatible ARM hardware transcoding."
+    },
+    {
+      "name": "PLEX_DVB_DEVICE",
+      "label": "DVB Devices",
+      "section": "advanced",
+      "input_type": "select",
+      "required": false,
+      "default": "",
+      "availability_path": "/dev/dvb",
+      "availability_label": "/dev/dvb",
+      "detection_required_message": "Run Detect Hardware to check whether /dev/dvb exists on the Docker host before enabling tuner devices.",
+      "options": [
+        { "label": "Disabled", "value": "" },
+        { "label": "Enabled (/dev/dvb)", "value": "/dev/dvb:/dev/dvb" }
+      ],
+      "help": "Run <strong>Detect Hardware</strong> first.<br>Enable this only when <code>/dev/dvb</code> is detected on the Docker host and Plex needs tuner device access."
+    },
+    {
+      "name": "PLEX_RUNTIME",
+      "label": "Container Runtime",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional runtime override.<br>For Nvidia hardware transcoding, this is typically <code>nvidia</code> when the Nvidia container toolkit is installed on the host."
+    },
+    {
+      "name": "PLEX_NVIDIA_VISIBLE_DEVICES",
+      "label": "Nvidia Visible Devices",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional Nvidia GPU selector such as <code>all</code> or a specific GPU UUID.<br>This requires Nvidia container toolkit support on the host and usually <code>Container Runtime = nvidia</code>."
+    },
+    {
+      "name": "PLEX_EXTRA_MOUNT_1",
+      "label": "Extra Mount 1",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional extra bind mount for Plex in the format <code>/host/path:/container/path</code> or <code>/host/path:/container/path:ro</code>."
+    },
+    {
+      "name": "PLEX_EXTRA_MOUNT_2",
+      "label": "Extra Mount 2",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional extra bind mount for Plex in the format <code>/host/path:/container/path</code> or <code>/host/path:/container/path:ro</code>."
+    },
+    {
+      "name": "PLEX_EXTRA_MOUNT_3",
+      "label": "Extra Mount 3",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional extra bind mount for Plex in the format <code>/host/path:/container/path</code> or <code>/host/path:/container/path:ro</code>."
+    },
+    {
+      "name": "PLEX_EXTRA_MOUNT_4",
+      "label": "Extra Mount 4",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional extra bind mount for Plex in the format <code>/host/path:/container/path</code> or <code>/host/path:/container/path:ro</code>."
+    },
+    {
+      "name": "PLEX_EXTRA_MOUNT_5",
+      "label": "Extra Mount 5",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional extra bind mount for Plex in the format <code>/host/path:/container/path</code> or <code>/host/path:/container/path:ro</code>."
+    },
+    {
+      "name": "PLEX_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "PLEX_INTERNAL_PORT",
+      "label": "Internal App Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "32400",
+      "editable": false,
+      "help": "Recipe-managed Plex internal port."
+    },
+    {
+      "name": "PLEX_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal config path."
+    },
+    {
+      "name": "PLEX_TV_TARGET",
+      "label": "TV Library Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data/tv",
+      "editable": false,
+      "help": "Recipe-managed internal TV library path."
+    },
+    {
+      "name": "PLEX_MOVIES_TARGET",
+      "label": "Movies Library Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data/movies",
+      "editable": false,
+      "help": "Recipe-managed internal movies library path."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "Plex lets you stream your movies and TV shows from your own media server.",
+    "what_happens": [
+      "A Plex container will be created",
+      "Your config, TV library, and movies library folders will be mounted into the container",
+      "Host networking is the default because it is the LinuxServer recommended Plex setup",
+      "If you switch away from host mode, bridge-specific Plex ports can be reviewed and adjusted under Advanced",
+      "You can optionally add a dedicated transcode mount, extra bind mounts, and supported hardware device mappings"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}

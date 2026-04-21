@@ -1,0 +1,168 @@
+{
+  "name": "prowlarr",
+  "version": 1,
+  "description": "Indexer manager for Sonarr, Radarr, and other arr apps",
+  "services": {
+    "prowlarr": {
+      "container_name": "${PROWLARR_CONTAINER_NAME}",
+      "image": "${PROWLARR_IMAGE}",
+      "environment": {
+        "PUID": "${PUID}",
+        "PGID": "${PGID}",
+        "TZ": "${TZ}"
+      },
+      "volumes": [
+        "${PROWLARR_CONFIG_LOCATION}:${PROWLARR_CONFIG_TARGET}"
+      ],
+      "ports": [
+        "${PROWLARR_PORT}:${PROWLARR_INTERNAL_PORT}"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${PROWLARR_NETWORK_MODE_MODE}",
+      "networks": "${PROWLARR_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${PROWLARR_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Prowlarr",
+      "service": "prowlarr",
+      "port": "${PROWLARR_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "PROWLARR_PORT",
+      "label": "App Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "9696",
+      "help": "Port used to open Prowlarr in your browser."
+    },
+    {
+      "name": "PROWLARR_CONFIG_LOCATION",
+      "label": "Prowlarr Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./prowlarr",
+      "help": "Stores Prowlarr configuration, database, and application state."
+    },
+    {
+      "name": "PUID",
+      "label": "PUID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "User ID used by the container for file permissions."
+    },
+    {
+      "name": "PGID",
+      "label": "PGID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Group ID used by the container for file permissions."
+    },
+    {
+      "name": "TZ",
+      "label": "Timezone",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Timezone used by Prowlarr for scheduled tasks and logs.<br>Example: <code>Asia/Dubai</code>."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "PROWLARR_NETWORK_MODE",
+      "label": "Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the default Compose network, <code>Host Mode</code> for host networking, or an existing named Docker network."
+    },
+    {
+      "name": "PROWLARR_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "lscr.io/linuxserver/prowlarr:latest",
+      "docs_url": "https://docs.linuxserver.io/images/docker-prowlarr/",
+      "docs_label": "Official help",
+      "help": "Docker image used for Prowlarr.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "PROWLARR_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "PROWLARR_INTERNAL_PORT",
+      "label": "Internal App Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "9696",
+      "editable": false,
+      "help": "Recipe-managed Prowlarr internal port."
+    },
+    {
+      "name": "PROWLARR_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal config path."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "Prowlarr helps you manage indexers in one place and connect them to Sonarr, Radarr, and other apps.",
+    "what_happens": [
+      "A Prowlarr container will be created",
+      "Your config folder will be mounted into the container",
+      "You can keep the default bridge network or attach Prowlarr to an existing network"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}
