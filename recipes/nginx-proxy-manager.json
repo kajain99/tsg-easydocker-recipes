@@ -1,0 +1,210 @@
+{
+  "name": "nginx-proxy-manager",
+  "version": 1,
+  "description": "Reverse proxy manager with a web UI, SSL certificates, and proxy host management",
+  "services": {
+    "nginx-proxy-manager": {
+      "container_name": "${NPM_CONTAINER_NAME}",
+      "image": "${NPM_IMAGE}",
+      "environment": {
+        "TZ": "${TZ}",
+        "DISABLE_IPV6": "${NPM_DISABLE_IPV6}"
+      },
+      "volumes": [
+        "${NPM_DATA_LOCATION}:${NPM_DATA_TARGET}",
+        "${NPM_LETSENCRYPT_LOCATION}:${NPM_LETSENCRYPT_TARGET}"
+      ],
+      "ports": [
+        "${NPM_HTTP_PORT}:${NPM_HTTP_INTERNAL_PORT}",
+        "${NPM_HTTPS_PORT}:${NPM_HTTPS_INTERNAL_PORT}",
+        "${NPM_ADMIN_PORT}:${NPM_ADMIN_INTERNAL_PORT}"
+      ],
+      "restart": "${RESTART_POLICY}"
+    }
+  },
+  "app_links": [
+    {
+      "label": "Open Nginx Proxy Manager",
+      "service": "nginx-proxy-manager",
+      "port": "${NPM_ADMIN_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "NPM_HTTP_PORT",
+      "label": "Public HTTP Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "80",
+      "help": "Public HTTP port used by Nginx Proxy Manager for proxy traffic and Let's Encrypt HTTP challenges.<br>Usually leave this as <code>80</code>."
+    },
+    {
+      "name": "NPM_HTTPS_PORT",
+      "label": "Public HTTPS Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "443",
+      "help": "Public HTTPS port used by Nginx Proxy Manager for TLS traffic.<br>Usually leave this as <code>443</code>."
+    },
+    {
+      "name": "NPM_ADMIN_PORT",
+      "label": "Admin UI Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "81",
+      "help": "Port used to open the Nginx Proxy Manager admin interface in your browser.<br>After deployment, visit this port to complete the first login."
+    },
+    {
+      "name": "NPM_DATA_LOCATION",
+      "label": "Data Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./data",
+      "help": "Stores Nginx Proxy Manager data, configuration, proxy hosts, access lists, and the internal SQLite database."
+    },
+    {
+      "name": "NPM_LETSENCRYPT_LOCATION",
+      "label": "Let's Encrypt Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./letsencrypt",
+      "help": "Stores issued Let's Encrypt certificates and related SSL material."
+    },
+    {
+      "name": "TZ",
+      "label": "Timezone",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional timezone such as <code>Asia/Dubai</code> or <code>Etc/UTC</code>."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "NPM_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "jc21/nginx-proxy-manager:latest",
+      "docs_url": "https://nginxproxymanager.com/setup/",
+      "docs_label": "Official help",
+      "help": "Docker image used for Nginx Proxy Manager.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "NPM_DISABLE_IPV6",
+      "label": "Disable IPv6",
+      "section": "advanced",
+      "input_type": "select",
+      "required": true,
+      "default": "false",
+      "options": [
+        { "label": "No", "value": "false" },
+        { "label": "Yes", "value": "true" }
+      ],
+      "help": "Set this to <code>Yes</code> only if IPv6 is not enabled on your host and the upstream documentation recommends disabling it."
+    },
+    {
+      "name": "NPM_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "NPM_HTTP_INTERNAL_PORT",
+      "label": "Internal HTTP Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "80",
+      "editable": false,
+      "help": "Recipe-managed internal HTTP port."
+    },
+    {
+      "name": "NPM_HTTPS_INTERNAL_PORT",
+      "label": "Internal HTTPS Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "443",
+      "editable": false,
+      "help": "Recipe-managed internal HTTPS port."
+    },
+    {
+      "name": "NPM_ADMIN_INTERNAL_PORT",
+      "label": "Internal Admin Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "81",
+      "editable": false,
+      "help": "Recipe-managed internal admin interface port."
+    },
+    {
+      "name": "NPM_DATA_TARGET",
+      "label": "Data Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data",
+      "editable": false,
+      "help": "Recipe-managed internal path where Nginx Proxy Manager stores app data."
+    },
+    {
+      "name": "NPM_LETSENCRYPT_TARGET",
+      "label": "Let's Encrypt Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/etc/letsencrypt",
+      "editable": false,
+      "help": "Recipe-managed internal path where certificates are stored."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "Nginx Proxy Manager gives you a web interface to publish local services behind a reverse proxy, manage SSL certificates, and control access without hand-writing Nginx config.",
+    "what_happens": [
+      "An Nginx Proxy Manager container will be created",
+      "Public HTTP, HTTPS, and admin UI ports will be published on the host",
+      "Application data and Let's Encrypt certificates will be stored in the folders you choose",
+      "After deployment, open the admin UI and complete the first login and password change",
+      "The default first login is admin@example.com with password changeme, and Nginx Proxy Manager will ask you to change both"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}

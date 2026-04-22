@@ -25,6 +25,10 @@
       "version": 1
     },
     {
+      "name": "nginx-proxy-manager",
+      "version": 1
+    },
+    {
       "name": "plex",
       "version": 1
     },
