@@ -47,6 +47,10 @@
     {
       "name": "transmission-through-gluetun",
       "version": 1
+    },
+    {
+      "name": "vaultwarden",
+      "version": 1
     }
   ]
 }

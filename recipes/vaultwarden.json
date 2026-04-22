@@ -1,0 +1,159 @@
+{
+  "name": "vaultwarden",
+  "version": 1,
+  "description": "Lightweight self-hosted password manager compatible with Bitwarden clients",
+  "services": {
+    "vaultwarden": {
+      "container_name": "${VAULTWARDEN_CONTAINER_NAME}",
+      "image": "${VAULTWARDEN_IMAGE}",
+      "environment": {
+        "DOMAIN": "${VAULTWARDEN_DOMAIN}",
+        "SIGNUPS_ALLOWED": "${VAULTWARDEN_SIGNUPS_ALLOWED}",
+        "ADMIN_TOKEN": "${VAULTWARDEN_ADMIN_TOKEN}"
+      },
+      "volumes": [
+        "${VAULTWARDEN_DATA_LOCATION}:${VAULTWARDEN_DATA_TARGET}"
+      ],
+      "ports": [
+        "${VAULTWARDEN_PORT}:${VAULTWARDEN_INTERNAL_PORT}"
+      ],
+      "restart": "${RESTART_POLICY}"
+    }
+  },
+  "app_links": [
+    {
+      "label": "Open Vaultwarden",
+      "service": "vaultwarden",
+      "port": "${VAULTWARDEN_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "VAULTWARDEN_PORT",
+      "label": "App Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "8080",
+      "help": "Host port used to open Vaultwarden in your browser."
+    },
+    {
+      "name": "VAULTWARDEN_DATA_LOCATION",
+      "label": "Vaultwarden Data Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./vaultwarden",
+      "help": "Stores your Vaultwarden database, attachments, sends, icons, and configuration data."
+    },
+    {
+      "name": "VAULTWARDEN_DOMAIN",
+      "label": "Public Domain",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional public URL including <code>http://</code> or <code>https://</code>.<br>Example: <code>https://vault.example.com</code>.<br>Recommended when you access Vaultwarden through a reverse proxy or custom domain."
+    },
+    {
+      "name": "VAULTWARDEN_SIGNUPS_ALLOWED",
+      "label": "Allow New Signups",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "false",
+      "options": [
+        { "label": "No", "value": "false" },
+        { "label": "Yes", "value": "true" }
+      ],
+      "help": "Controls whether new users can create accounts from the sign-up page. Most self-hosted Vaultwarden setups leave this disabled after the initial setup."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "VAULTWARDEN_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "vaultwarden/server:latest",
+      "docs_url": "https://github.com/dani-garcia/vaultwarden",
+      "docs_label": "Official help",
+      "help": "Docker image used for Vaultwarden.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "VAULTWARDEN_ADMIN_TOKEN",
+      "label": "Admin Token",
+      "section": "advanced",
+      "input_type": "password",
+      "required": false,
+      "default": "",
+      "help": "Optional admin token for the Vaultwarden admin page.<br>Only set this if you intend to use the admin page, and use a long random secret."
+    },
+    {
+      "name": "VAULTWARDEN_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "VAULTWARDEN_INTERNAL_PORT",
+      "label": "Internal App Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "80",
+      "editable": false,
+      "help": "Recipe-managed Vaultwarden internal port."
+    },
+    {
+      "name": "VAULTWARDEN_DATA_TARGET",
+      "label": "Data Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data",
+      "editable": false,
+      "help": "Recipe-managed internal path where Vaultwarden stores all persistent data."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "Vaultwarden is a lightweight self-hosted password manager compatible with Bitwarden apps and browser extensions.",
+    "what_happens": [
+      "A Vaultwarden container will be created",
+      "Your persistent data will be stored in the folder you choose",
+      "The web interface will be published on the port you choose",
+      "You can optionally allow signups, set a public domain, and enable the admin page token"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}
