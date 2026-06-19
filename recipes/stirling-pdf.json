@@ -1,0 +1,313 @@
+{
+  "name": "stirling-pdf",
+  "version": 1,
+  "description": "Private browser-based PDF tools for converting, editing, signing, OCR, and organizing documents",
+  "services": {
+    "stirling-pdf": {
+      "container_name": "${STIRLING_PDF_CONTAINER_NAME}",
+      "image": "${STIRLING_PDF_IMAGE}",
+      "ports": [
+        "${STIRLING_PDF_PORT}:${STIRLING_PDF_INTERNAL_PORT}"
+      ],
+      "volumes": [
+        "${STIRLING_PDF_TESSDATA_LOCATION}:${STIRLING_PDF_TESSDATA_TARGET}",
+        "${STIRLING_PDF_CONFIG_LOCATION}:${STIRLING_PDF_CONFIG_TARGET}",
+        "${STIRLING_PDF_LOGS_LOCATION}:${STIRLING_PDF_LOGS_TARGET}",
+        "${STIRLING_PDF_CUSTOM_FILES_LOCATION}:${STIRLING_PDF_CUSTOM_FILES_TARGET}",
+        "${STIRLING_PDF_PIPELINE_LOCATION}:${STIRLING_PDF_PIPELINE_TARGET}"
+      ],
+      "environment": {
+        "MODE": "${STIRLING_PDF_MODE}",
+        "DOCKER_ENABLE_SECURITY": "${STIRLING_PDF_ENABLE_SECURITY}",
+        "DISABLE_ADDITIONAL_FEATURES": "${STIRLING_PDF_DISABLE_ADDITIONAL_FEATURES}",
+        "SECURITY_ENABLELOGIN": "${STIRLING_PDF_ENABLE_LOGIN}",
+        "SYSTEM_DEFAULTLOCALE": "${STIRLING_PDF_DEFAULT_LOCALE}",
+        "UI_APPNAME": "${STIRLING_PDF_APP_NAME}",
+        "UI_HOMEDESCRIPTION": "${STIRLING_PDF_HOME_DESCRIPTION}",
+        "SYSTEM_MAXFILESIZE": "${STIRLING_PDF_MAX_FILE_SIZE}",
+        "METRICS_ENABLED": "${STIRLING_PDF_METRICS_ENABLED}"
+      },
+      "restart": "${RESTART_POLICY}"
+    }
+  },
+  "app_links": [
+    {
+      "label": "Open Stirling-PDF",
+      "service": "stirling-pdf",
+      "port": "${STIRLING_PDF_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "STIRLING_PDF_PORT",
+      "label": "App Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "8080",
+      "help": "Host port used to open Stirling-PDF in your browser."
+    },
+    {
+      "name": "STIRLING_PDF_TESSDATA_LOCATION",
+      "label": "OCR Language Data Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./stirling/data",
+      "help": "Stores Tesseract OCR language data used by Stirling-PDF."
+    },
+    {
+      "name": "STIRLING_PDF_CONFIG_LOCATION",
+      "label": "Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./stirling/config",
+      "help": "Stores Stirling-PDF configuration files."
+    },
+    {
+      "name": "STIRLING_PDF_LOGS_LOCATION",
+      "label": "Logs Folder",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "./stirling/logs",
+      "help": "Stores application logs."
+    },
+    {
+      "name": "STIRLING_PDF_CUSTOM_FILES_LOCATION",
+      "label": "Custom Files Folder",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "./stirling/customFiles",
+      "help": "Stores custom files such as logos, templates, and UI customizations."
+    },
+    {
+      "name": "STIRLING_PDF_PIPELINE_LOCATION",
+      "label": "Pipeline Folder",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "./stirling/pipeline",
+      "help": "Stores pipeline configuration and reusable processing workflows."
+    },
+    {
+      "name": "STIRLING_PDF_MODE",
+      "label": "Mode",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "BOTH",
+      "options": [
+        { "label": "Web and API", "value": "BOTH" },
+        { "label": "Web Only", "value": "WEB" },
+        { "label": "API Only", "value": "API" }
+      ],
+      "help": "Controls whether Stirling-PDF exposes the web UI, API, or both."
+    },
+    {
+      "name": "STIRLING_PDF_ENABLE_SECURITY",
+      "label": "Enable Security",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "true",
+      "options": [
+        { "label": "Yes", "value": "true" },
+        { "label": "No", "value": "false" }
+      ],
+      "help": "Enables Stirling-PDF security features. Leave enabled unless you intentionally run it only on a trusted private network."
+    },
+    {
+      "name": "STIRLING_PDF_ENABLE_LOGIN",
+      "label": "Enable Login",
+      "section": "required",
+      "input_type": "select",
+      "required": true,
+      "default": "true",
+      "options": [
+        { "label": "Yes", "value": "true" },
+        { "label": "No", "value": "false" }
+      ],
+      "help": "Controls whether Stirling-PDF requires users to log in. When enabled, Stirling-PDF uses its default initial credentials on first startup."
+    },
+    {
+      "name": "STIRLING_PDF_DEFAULT_LOCALE",
+      "label": "Default Locale",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "en-US",
+      "help": "Default locale for the web interface.<br>Example: <code>en-US</code>."
+    },
+    {
+      "name": "STIRLING_PDF_APP_NAME",
+      "label": "App Name",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "Stirling-PDF",
+      "help": "Name shown in the Stirling-PDF web interface."
+    },
+    {
+      "name": "STIRLING_PDF_HOME_DESCRIPTION",
+      "label": "Home Description",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "Private PDF tools running on your UGREEN NAS",
+      "help": "Short description shown on the Stirling-PDF home page."
+    },
+    {
+      "name": "STIRLING_PDF_MAX_FILE_SIZE",
+      "label": "Maximum File Size",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "100",
+      "help": "Maximum upload size used by Stirling-PDF. The value is usually entered in MB."
+    },
+    {
+      "name": "STIRLING_PDF_METRICS_ENABLED",
+      "label": "Enable Metrics",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "false",
+      "options": [
+        { "label": "No", "value": "false" },
+        { "label": "Yes", "value": "true" }
+      ],
+      "help": "Controls whether Stirling-PDF metrics are enabled."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "STIRLING_PDF_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "stirlingtools/stirling-pdf:latest",
+      "docs_url": "https://github.com/Stirling-Tools/Stirling-PDF",
+      "docs_label": "Official help",
+      "help": "Docker image used for Stirling-PDF.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "STIRLING_PDF_DISABLE_ADDITIONAL_FEATURES",
+      "label": "Disable Additional Features",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "false",
+      "editable": false,
+      "help": "Recipe-managed setting required for Docker login and additional security features."
+    },
+    {
+      "name": "STIRLING_PDF_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "STIRLING_PDF_INTERNAL_PORT",
+      "label": "Internal App Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "8080",
+      "editable": false,
+      "help": "Recipe-managed Stirling-PDF internal port."
+    },
+    {
+      "name": "STIRLING_PDF_TESSDATA_TARGET",
+      "label": "OCR Data Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/usr/share/tessdata",
+      "editable": false,
+      "help": "Recipe-managed internal path for Tesseract OCR language data."
+    },
+    {
+      "name": "STIRLING_PDF_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/configs",
+      "editable": false,
+      "help": "Recipe-managed internal config path."
+    },
+    {
+      "name": "STIRLING_PDF_LOGS_TARGET",
+      "label": "Logs Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/logs",
+      "editable": false,
+      "help": "Recipe-managed internal logs path."
+    },
+    {
+      "name": "STIRLING_PDF_CUSTOM_FILES_TARGET",
+      "label": "Custom Files Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/customFiles",
+      "editable": false,
+      "help": "Recipe-managed internal custom files path."
+    },
+    {
+      "name": "STIRLING_PDF_PIPELINE_TARGET",
+      "label": "Pipeline Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/pipeline",
+      "editable": false,
+      "help": "Recipe-managed internal pipeline path."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "Stirling-PDF is a private web app for common PDF tasks such as merging, splitting, converting, compressing, signing, redacting, and OCR.",
+    "what_happens": [
+      "A Stirling-PDF container will be created",
+      "The web interface will be published on the port you choose",
+      "OCR data, config, logs, custom files, and pipeline folders will be stored under the app project folder by default",
+      "Login security is enabled by default and Stirling-PDF will use its default initial credentials on first startup"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}
