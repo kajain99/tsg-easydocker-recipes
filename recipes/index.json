@@ -13,6 +13,10 @@
       "version": 1
     },
     {
+      "name": "go2rtc",
+      "version": 1
+    },
+    {
       "name": "tailscale",
       "version": 1
     },
