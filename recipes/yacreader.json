@@ -1,0 +1,203 @@
+{
+  "name": "yacreader",
+  "version": 1,
+  "description": "Comic library server for browsing and serving your YACReader collection",
+  "services": {
+    "yacreaderlibraryserver": {
+      "container_name": "${YACREADER_CONTAINER_NAME}",
+      "image": "${YACREADER_IMAGE}",
+      "environment": {
+        "PUID": "${PUID}",
+        "PGID": "${PGID}",
+        "TZ": "${TZ}"
+      },
+      "volumes": [
+        "${YACREADER_CONFIG_LOCATION}:${YACREADER_CONFIG_TARGET}",
+        "${YACREADER_COMICS_LOCATION}:${YACREADER_COMICS_TARGET}"
+      ],
+      "ports": [
+        "${YACREADER_PORT_MAPPING}"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${YACREADER_NETWORK_MODE_MODE}",
+      "networks": "${YACREADER_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${YACREADER_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open YACReader",
+      "service": "yacreaderlibraryserver",
+      "port": "${YACREADER_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "YACREADER_PORT",
+      "label": "App Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "9999",
+      "help": "Host port used to open YACReader Library Server in your browser."
+    },
+    {
+      "name": "YACREADER_CONFIG_LOCATION",
+      "label": "Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./yacreader/config",
+      "help": "Stores YACReader Library Server configuration and application state."
+    },
+    {
+      "name": "YACREADER_COMICS_LOCATION",
+      "label": "Comics Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./yacreader/comics",
+      "help": "Folder containing the comics library to serve through YACReader."
+    },
+    {
+      "name": "PUID",
+      "label": "PUID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "99",
+      "help": "User ID used by the container for file permissions."
+    },
+    {
+      "name": "PGID",
+      "label": "PGID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "100",
+      "help": "Group ID used by the container for file permissions."
+    },
+    {
+      "name": "TZ",
+      "label": "Timezone",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "Europe/Madrid",
+      "help": "Timezone used by YACReader logs and scheduled tasks.<br>Example: <code>Europe/Madrid</code>."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "YACREADER_NETWORK_MODE",
+      "label": "Network",
+      "section": "advanced",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose the default bridge network, host networking, or an existing Docker network."
+    },
+    {
+      "name": "YACREADER_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "yacreader/yacreaderlibraryserver:latest",
+      "docs_url": "https://hub.docker.com/r/yacreader/yacreaderlibraryserver",
+      "docs_label": "Docker image",
+      "help": "Docker image used for YACReader Library Server.<br>Change the tag to <code>develop</code> only if you intentionally want the development build."
+    },
+    {
+      "name": "YACREADER_PORT_MAPPING",
+      "label": "Bridge Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${YACREADER_PORT}:${YACREADER_INTERNAL_PORT}",
+      "editable": false,
+      "hidden_when": {
+        "YACREADER_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Port mapping used when YACReader is not running in host mode."
+    },
+    {
+      "name": "YACREADER_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "YACReaderLibraryServer",
+      "editable": false,
+      "help": "Recipe-managed container name from the source Compose example."
+    },
+    {
+      "name": "YACREADER_INTERNAL_PORT",
+      "label": "Internal App Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "8080",
+      "editable": false,
+      "help": "Recipe-managed YACReader Library Server internal web port."
+    },
+    {
+      "name": "YACREADER_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal config path."
+    },
+    {
+      "name": "YACREADER_COMICS_TARGET",
+      "label": "Comics Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/comics",
+      "editable": false,
+      "help": "Recipe-managed internal comics library path."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "YACReader Library Server serves your comic collection so it can be browsed from YACReader clients and a browser.",
+    "what_happens": [
+      "A YACReader Library Server container will be created",
+      "The web interface will be published on the port you choose",
+      "Your config folder and comics library folder will be mounted into the container",
+      "Bridge networking is used by default, with optional host or existing-network choices under Advanced"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}

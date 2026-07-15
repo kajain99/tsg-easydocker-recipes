@@ -37,6 +37,8 @@ Important files:
 
 - `recipes/index.json` - version map used by EasyDocker refresh
 - `recipes/*.json` - individual app recipes
+- `AUTHORING.md` - practical guide for defining new recipes
+- `RECIPE_REQUIREMENTS.md` - mandatory per-recipe checklist for Codex
 - `SCHEMA.md` - full recipe format
 - `FIELDS.md` - field-by-field reference
 - `recipe-template.json` - starter template for new recipes
@@ -89,12 +91,14 @@ When creating or updating recipes:
 
 If you add or update a recipe:
 
-1. start from `recipe-template.json`
-2. define `ui.sections` first
-3. define fields for every meaningful Compose value
-4. wire those fields into Compose placeholders
-5. test the recipe in EasyDocker
-6. update `recipes/index.json`
+1. read `RECIPE_REQUIREMENTS.md`
+2. use `AUTHORING.md` for extra details
+3. start from `recipe-template.json`
+4. define `ui.sections` first
+5. define fields for every meaningful Compose value
+6. wire those fields into Compose placeholders
+7. test the recipe in EasyDocker
+8. update `recipes/index.json`
 
 ## For EasyDocker Users
 

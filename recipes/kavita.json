@@ -1,0 +1,193 @@
+{
+  "name": "kavita",
+  "version": 1,
+  "description": "Self-hosted reading server for manga, comics, and ebooks",
+  "services": {
+    "kavita": {
+      "container_name": "${KAVITA_CONTAINER_NAME}",
+      "image": "${KAVITA_IMAGE}",
+      "environment": {
+        "PUID": "${PUID}",
+        "PGID": "${PGID}",
+        "TZ": "${TZ}"
+      },
+      "volumes": [
+        "${KAVITA_CONFIG_LOCATION}:${KAVITA_CONFIG_TARGET}",
+        "${KAVITA_DATA_MOUNT}"
+      ],
+      "ports": [
+        "${KAVITA_PORT_MAPPING}"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${KAVITA_NETWORK_MODE_MODE}",
+      "networks": "${KAVITA_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${KAVITA_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Kavita",
+      "service": "kavita",
+      "port": "${KAVITA_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "KAVITA_PORT",
+      "label": "App Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "5000",
+      "help": "Host port used to open Kavita in your browser."
+    },
+    {
+      "name": "KAVITA_CONFIG_LOCATION",
+      "label": "Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./kavita/config",
+      "help": "Stores Kavita configuration, database files, covers, and application state."
+    },
+    {
+      "name": "KAVITA_DATA_MOUNT",
+      "label": "Library Data Mount",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "./kavita/data:/data",
+      "help": "Optional library bind mount in the format <code>/host/path:/data</code> or <code>/host/path:/data:ro</code>.<br>Leave blank if you want to add libraries later from another mount."
+    },
+    {
+      "name": "PUID",
+      "label": "PUID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "1000",
+      "help": "User ID used by the container for file permissions."
+    },
+    {
+      "name": "PGID",
+      "label": "PGID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "1000",
+      "help": "Group ID used by the container for file permissions."
+    },
+    {
+      "name": "TZ",
+      "label": "Timezone",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "Etc/UTC",
+      "help": "Timezone used by Kavita logs and scheduled tasks.<br>Example: <code>Etc/UTC</code>."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "KAVITA_NETWORK_MODE",
+      "label": "Network",
+      "section": "advanced",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose the default bridge network, host networking, or an existing Docker network."
+    },
+    {
+      "name": "KAVITA_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "lscr.io/linuxserver/kavita:latest",
+      "docs_url": "https://docs.linuxserver.io/images/docker-kavita/",
+      "docs_label": "Official help",
+      "help": "Docker image used for Kavita.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "KAVITA_PORT_MAPPING",
+      "label": "Bridge Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${KAVITA_PORT}:${KAVITA_INTERNAL_PORT}",
+      "editable": false,
+      "hidden_when": {
+        "KAVITA_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Port mapping used when Kavita is not running in host mode."
+    },
+    {
+      "name": "KAVITA_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "kavita",
+      "editable": false,
+      "help": "Recipe-managed container name from the source Compose example."
+    },
+    {
+      "name": "KAVITA_INTERNAL_PORT",
+      "label": "Internal App Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "5000",
+      "editable": false,
+      "help": "Recipe-managed Kavita internal web port."
+    },
+    {
+      "name": "KAVITA_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal config path."
+    }
+  ],
+  "ui": {
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "Kavita is a self-hosted reading server for manga, comics, and ebooks with a browser-based interface.",
+    "what_happens": [
+      "A Kavita container will be created",
+      "The web interface will be published on the port you choose",
+      "Your config folder and library data folder will be mounted into the container",
+      "Bridge networking is used by default, with optional host or existing-network choices under Advanced"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}

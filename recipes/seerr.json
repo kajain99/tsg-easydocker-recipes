@@ -1,0 +1,222 @@
+{
+  "name": "seerr",
+  "version": 1,
+  "description": "Media request management for Jellyfin and Plex libraries",
+  "services": {
+    "seerr": {
+      "container_name": "${SEERR_CONTAINER_NAME}",
+      "image": "${SEERR_IMAGE}",
+      "restart": "${RESTART_POLICY}",
+      "init": "${SEERR_INIT}",
+      "environment": {
+        "TZ": "${TZ}",
+        "LOG_LEVEL": "${SEERR_LOG_LEVEL}"
+      },
+      "ports": [
+        "${SEERR_PORT}:${SEERR_INTERNAL_PORT}"
+      ],
+      "volumes": [
+        "${SEERR_CONFIG_LOCATION}:${SEERR_CONFIG_TARGET}"
+      ],
+      "network_mode": "${SEERR_NETWORK_MODE_MODE}",
+      "networks": "${SEERR_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${SEERR_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Seerr",
+      "service": "seerr",
+      "port": "${SEERR_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "SEERR_PORT",
+      "label": "App Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "5055",
+      "help": "Host port used to open Seerr in your browser."
+    },
+    {
+      "name": "SEERR_CONFIG_LOCATION",
+      "label": "Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./config",
+      "help": "Stores Seerr configuration, database, and application state."
+    },
+    {
+      "name": "TZ",
+      "label": "Timezone",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "Asia/Dubai",
+      "help": "Timezone used by Seerr logs and scheduled tasks.<br>Example: <code>Asia/Dubai</code>."
+    },
+    {
+      "name": "SEERR_LOG_LEVEL",
+      "label": "Log Level",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "info",
+      "options": [
+        {
+          "label": "Debug",
+          "value": "debug"
+        },
+        {
+          "label": "Info",
+          "value": "info"
+        },
+        {
+          "label": "Warn",
+          "value": "warn"
+        },
+        {
+          "label": "Error",
+          "value": "error"
+        }
+      ],
+      "help": "Controls how much information Seerr writes to its logs."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {
+          "label": "Unless Stopped",
+          "value": "unless-stopped"
+        },
+        {
+          "label": "Always",
+          "value": "always"
+        },
+        {
+          "label": "On Failure",
+          "value": "on-failure"
+        },
+        {
+          "label": "No",
+          "value": "no"
+        }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "SEERR_NETWORK_MODE",
+      "label": "Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the default Compose network, <code>Host Mode</code> for host networking, or an existing named Docker network."
+    },
+    {
+      "name": "SEERR_IMAGE",
+      "label": "Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "ghcr.io/seerr-team/seerr:latest",
+      "help": "Docker image used for Seerr.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "SEERR_INIT",
+      "label": "Init",
+      "section": "advanced",
+      "input_type": "select",
+      "required": true,
+      "default": "true",
+      "data_type": "yaml",
+      "options": [
+        {
+          "label": "Enabled",
+          "value": "true"
+        },
+        {
+          "label": "Disabled",
+          "value": "false"
+        }
+      ],
+      "help": "Runs Seerr with Docker init enabled, matching the recommended compose setting."
+    },
+    {
+      "name": "SEERR_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "SEERR_INTERNAL_PORT",
+      "label": "Internal App Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "5055",
+      "editable": false,
+      "help": "Recipe-managed Seerr internal port."
+    },
+    {
+      "name": "SEERR_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/app/config",
+      "editable": false,
+      "help": "Recipe-managed internal config path."
+    }
+  ],
+  "ui": {
+    "sections": [
+      {
+        "name": "required",
+        "label": "Minimum Required"
+      },
+      {
+        "name": "optional",
+        "label": "Optional",
+        "collapsed": true
+      },
+      {
+        "name": "advanced",
+        "label": "Advanced",
+        "collapsed": true
+      },
+      {
+        "name": "readonly",
+        "label": "Read-Only (Recipe Managed)",
+        "collapsed": true
+      }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "Seerr lets users request media and helps admins manage those requests for their media server.",
+    "what_happens": [
+      "A Seerr container will be created",
+      "The web interface will be published on the port you choose",
+      "Seerr configuration and application state will be stored in the config folder"
+    ],
+    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
+  }
+}

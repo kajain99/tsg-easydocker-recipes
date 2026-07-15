@@ -21,6 +21,10 @@
       "version": 1
     },
     {
+      "name": "kavita",
+      "version": 1
+    },
+    {
       "name": "tailscale",
       "version": 1
     },
@@ -49,6 +53,10 @@
       "version": 1
     },
     {
+      "name": "seerr",
+      "version": 1
+    },
+    {
       "name": "sonarr",
       "version": 1
     },
@@ -66,6 +74,10 @@
     },
     {
       "name": "vaultwarden",
+      "version": 1
+    },
+    {
+      "name": "yacreader",
       "version": 1
     }
   ]
