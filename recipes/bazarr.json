@@ -1,6 +1,6 @@
 {
   "name": "bazarr",
-  "version": 1,
+  "version": 1.01,
   "description": "Subtitle manager for movies and TV series",
   "services": {
     "bazarr": {
@@ -199,9 +199,10 @@
     ],
     "overview": "Bazarr helps you download and manage subtitles for both TV series and movies.",
     "what_happens": [
-      "A Bazarr container will be created",
-      "Your config, TV library, and movies library folders will be mounted into the container",
-      "You can keep the default bridge network or attach Bazarr to an existing network"
+      "You can mount your TV and movie library folders so Bazarr can access your existing media",
+      "After installation, you can connect Bazarr to Sonarr and Radarr. Plex can also be configured for additional integration",
+      "New media added through Sonarr or Radarr can then be discovered and processed by Bazarr",
+      "You must configure at least one subtitle provider in Bazarr before it can search for and download subtitles"
     ],
     "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
   }

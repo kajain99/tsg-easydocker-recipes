@@ -1,6 +1,6 @@
 {
   "name": "cups",
-  "version": 1,
+  "version": 1.01,
   "description": "CUPS print server with USB printer access and a browser-based admin interface",
   "services": {
     "cups": {
@@ -28,7 +28,7 @@
       "service": "cups",
       "port": "${CUPS_PORT}",
       "path": "/",
-      "scheme": "http"
+      "scheme": "https"
     }
   ],
   "fields": [
@@ -187,10 +187,10 @@
     ],
     "overview": "CUPS provides a local print server web interface and passes host USB printer access into Docker.",
     "what_happens": [
-      "A CUPS container will be created",
-      "The CUPS web interface will be published on the port you choose",
-      "Host D-Bus and USB bus paths will be mounted for printer discovery and access",
-      "CUPS configuration will be stored under this app's EasyDocker project folder"
+      "CUPS runs in privileged mode so it can access USB printers that may appear anywhere under /dev/bus/usb",
+      "The host USB bus and D-Bus paths are mounted into the container for printer discovery and communication",
+      "Access the CUPS web interface using HTTPS on the configured port",
+      "Administrative pages and printer configuration will not be accessible unless you use HTTPS"
     ],
     "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
   }
