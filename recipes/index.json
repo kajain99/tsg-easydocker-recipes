@@ -22,7 +22,11 @@
     },
     {
       "name": "kavita",
-      "version": 1
+      "version": 1.01
+    },
+    {
+      "name": "komga",
+      "version": 1.01
     },
     {
       "name": "tailscale",
@@ -78,7 +82,7 @@
     },
     {
       "name": "yacreader",
-      "version": 1
+      "version": 1.01
     }
   ]
 }

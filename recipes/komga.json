@@ -1,65 +1,64 @@
 {
-  "name": "kavita",
+  "name": "komga",
   "version": 1.01,
-  "description": "Self-hosted reading server for manga, comics, and ebooks",
+  "description": "Self-hosted comics, manga, and ebook server with a browser-based reader",
   "services": {
-    "kavita": {
-      "container_name": "${KAVITA_CONTAINER_NAME}",
-      "image": "${KAVITA_IMAGE}",
+    "komga": {
+      "container_name": "${KOMGA_CONTAINER_NAME}",
+      "image": "${KOMGA_IMAGE}",
+      "user": "${PUID}:${PGID}",
       "environment": {
-        "PUID": "${PUID}",
-        "PGID": "${PGID}",
         "TZ": "${TZ}"
       },
       "volumes": [
-        "${KAVITA_CONFIG_LOCATION}:${KAVITA_CONFIG_TARGET}",
-        "${KAVITA_DATA_MOUNT}"
+        "${KOMGA_CONFIG_LOCATION}:${KOMGA_CONFIG_TARGET}",
+        "${KOMGA_COMICS_LOCATION}:${KOMGA_DATA_TARGET}"
       ],
       "ports": [
-        "${KAVITA_PORT_MAPPING}"
+        "${KOMGA_PORT_MAPPING}"
       ],
       "restart": "${RESTART_POLICY}",
-      "network_mode": "${KAVITA_NETWORK_MODE_MODE}",
-      "networks": "${KAVITA_NETWORK_MODE_SERVICE_NETWORKS}"
+      "network_mode": "${KOMGA_NETWORK_MODE_MODE}",
+      "networks": "${KOMGA_NETWORK_MODE_SERVICE_NETWORKS}"
     }
   },
-  "networks": "${KAVITA_NETWORK_MODE_DEFINITIONS}",
+  "networks": "${KOMGA_NETWORK_MODE_DEFINITIONS}",
   "app_links": [
     {
-      "label": "Open Kavita",
-      "service": "kavita",
-      "port": "${KAVITA_PORT}",
+      "label": "Open Komga",
+      "service": "komga",
+      "port": "${KOMGA_PORT}",
       "path": "/",
       "scheme": "http"
     }
   ],
   "fields": [
     {
-      "name": "KAVITA_PORT",
+      "name": "KOMGA_PORT",
       "label": "App Port",
       "section": "required",
       "input_type": "text",
       "required": true,
-      "default": "5000",
-      "help": "Host port used to open Kavita in your browser."
+      "default": "25600",
+      "help": "Host port used to open Komga in your browser."
     },
     {
-      "name": "KAVITA_CONFIG_LOCATION",
+      "name": "KOMGA_CONFIG_LOCATION",
       "label": "Config Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
-      "default": "./kavita/config",
-      "help": "Stores Kavita configuration, database files, covers, and application state."
+      "default": "./komga/config",
+      "help": "Stores Komga configuration, database files, logs, and application state."
     },
     {
-      "name": "KAVITA_DATA_MOUNT",
-      "label": "Library Data Mount",
-      "section": "optional",
+      "name": "KOMGA_COMICS_LOCATION",
+      "label": "Comics Folder",
+      "section": "required",
       "input_type": "text",
-      "required": false,
-      "default": "./kavita/data:/data",
-      "help": "Optional library bind mount in the format <code>/host/path:/data</code> or <code>/host/path:/data:ro</code>.<br>Leave blank if you want to add libraries later from another mount."
+      "required": true,
+      "default": "./komga/comics",
+      "help": "Folder containing the comics, manga, and ebook library to scan in Komga."
     },
     {
       "name": "PUID",
@@ -68,7 +67,7 @@
       "input_type": "text",
       "required": true,
       "default": "1000",
-      "help": "User ID used by the container for file permissions."
+      "help": "User ID used by Komga for file permissions. This becomes the first part of the Compose <code>user</code> value."
     },
     {
       "name": "PGID",
@@ -77,7 +76,7 @@
       "input_type": "text",
       "required": true,
       "default": "1000",
-      "help": "Group ID used by the container for file permissions."
+      "help": "Group ID used by Komga for file permissions. This becomes the second part of the Compose <code>user</code> value."
     },
     {
       "name": "TZ",
@@ -85,8 +84,8 @@
       "section": "optional",
       "input_type": "text",
       "required": true,
-      "default": "Etc/UTC",
-      "help": "Timezone used by Kavita logs and scheduled tasks.<br>Example: <code>Etc/UTC</code>."
+      "default": "Asia/Dubai",
+      "help": "Timezone used by Komga logs and scheduled tasks.<br>Example: <code>Asia/Dubai</code>."
     },
     {
       "name": "RESTART_POLICY",
@@ -104,7 +103,7 @@
       "help": "Controls whether the container restarts automatically."
     },
     {
-      "name": "KAVITA_NETWORK_MODE",
+      "name": "KOMGA_NETWORK_MODE",
       "label": "Network",
       "section": "advanced",
       "input_type": "select",
@@ -115,32 +114,32 @@
       "help": "Choose the default bridge network, host networking, or an existing Docker network."
     },
     {
-      "name": "KAVITA_IMAGE",
+      "name": "KOMGA_IMAGE",
       "label": "Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,
-      "default": "lscr.io/linuxserver/kavita:latest",
-      "docs_url": "https://docs.linuxserver.io/images/docker-kavita/",
+      "default": "gotson/komga:latest",
+      "docs_url": "https://komga.org/docs/installation/docker/",
       "docs_label": "Official help",
-      "help": "Docker image used for Kavita.<br>Change this only if you want a different tag or image source."
+      "help": "Docker image used for Komga.<br>Change this only if you want a different tag or image source."
     },
     {
-      "name": "KAVITA_PORT_MAPPING",
+      "name": "KOMGA_PORT_MAPPING",
       "label": "Bridge Port Mapping",
       "section": "advanced",
       "input_type": "text",
       "required": false,
-      "default": "${KAVITA_PORT}:${KAVITA_INTERNAL_PORT}",
+      "default": "${KOMGA_PORT}:${KOMGA_INTERNAL_PORT}",
       "editable": false,
       "hidden_when": {
-        "KAVITA_NETWORK_MODE": ["__host__"]
+        "KOMGA_NETWORK_MODE": ["__host__"]
       },
       "omit_when_inactive": true,
-      "help": "Port mapping used when Kavita is not running in host mode."
+      "help": "Port mapping used when Komga is not running in host mode."
     },
     {
-      "name": "KAVITA_CONTAINER_NAME",
+      "name": "KOMGA_CONTAINER_NAME",
       "label": "Container Name",
       "section": "readonly",
       "input_type": "text",
@@ -150,17 +149,17 @@
       "help": "Recipe-managed container name from the source Compose example."
     },
     {
-      "name": "KAVITA_INTERNAL_PORT",
+      "name": "KOMGA_INTERNAL_PORT",
       "label": "Internal App Port",
       "section": "readonly",
       "input_type": "text",
       "required": true,
-      "default": "5000",
+      "default": "25600",
       "editable": false,
-      "help": "Recipe-managed Kavita internal web port."
+      "help": "Recipe-managed Komga internal web port."
     },
     {
-      "name": "KAVITA_CONFIG_TARGET",
+      "name": "KOMGA_CONFIG_TARGET",
       "label": "Config Path Inside Container",
       "section": "readonly",
       "input_type": "text",
@@ -168,6 +167,16 @@
       "default": "/config",
       "editable": false,
       "help": "Recipe-managed internal config path."
+    },
+    {
+      "name": "KOMGA_DATA_TARGET",
+      "label": "Data Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data",
+      "editable": false,
+      "help": "Recipe-managed internal library data path."
     }
   ],
   "ui": {
@@ -181,11 +190,12 @@
       "Intel/AMD",
       "ARM"
     ],
-    "overview": "Kavita is a self-hosted reading server for manga, comics, and ebooks with a browser-based interface.",
+    "overview": "Komga is a self-hosted comics, manga, and ebook server with library management and a browser-based reader.",
     "what_happens": [
-      "A Kavita container will be created",
+      "A Komga container will be created",
       "The web interface will be published on the port you choose",
-      "Your config folder and library data folder will be mounted into the container",
+      "Your config folder and comics library folder will be mounted into the container",
+      "Komga will run as the PUID and PGID you provide",
       "Bridge networking is used by default, with optional host or existing-network choices under Advanced"
     ],
     "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."

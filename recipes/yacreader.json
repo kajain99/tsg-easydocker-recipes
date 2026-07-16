@@ -1,6 +1,6 @@
 {
   "name": "yacreader",
-  "version": 1,
+  "version": 1.01,
   "description": "Comic library server for browsing and serving your YACReader collection",
   "services": {
     "yacreaderlibraryserver": {
@@ -145,7 +145,7 @@
       "section": "readonly",
       "input_type": "text",
       "required": true,
-      "default": "YACReaderLibraryServer",
+      "default": "${PROJECT_NAME}",
       "editable": false,
       "help": "Recipe-managed container name from the source Compose example."
     },
