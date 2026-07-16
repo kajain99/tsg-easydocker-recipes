@@ -1,6 +1,6 @@
 {
   "name": "immich",
-  "version": 1,
+  "version": 1.01,
   "description": "Photo and video backup with search, AI features, and a built-in database stack",
   "services": {
     "immich-server": {
@@ -553,7 +553,11 @@
       "Your photos and videos will be stored in the library folder you choose",
       "Postgres and model cache data will be stored in their own folders",
       "The web app will open on the port you choose",
-      "You can optionally add up to five extra bind mounts to the main Immich server"
+      "You can optionally add up to five extra bind mounts to the main Immich server",
+      "By default, Immich Server and Machine Learning use the current release image",
+      "To install a specific version, open Advanced and change both the Server Image and Machine Learning Image tags to the same version",
+      "For example, when an official v3 tag is available, change both image tags from release to the exact v3 tag",
+      "Always use matching versions for Server and Machine Learning, and back up your library and database before upgrading across major versions"
     ],
     "data_location": "Each storage field can be relative to this app's config folder or an absolute path."
   }
