@@ -1,6 +1,6 @@
 {
   "name": "gluetun",
-  "version": 1,
+  "version": 1.01,
   "description": "VPN gateway container for routing other apps through OpenVPN or WireGuard",
   "services": {
     "gluetun": {
@@ -415,11 +415,12 @@
     ],
     "overview": "Gluetun is a VPN gateway container that connects to your VPN provider and can later be reused by other apps that need to run through that VPN tunnel.",
     "what_happens": [
-      "A Gluetun container will be created",
-      "It will run with NET_ADMIN and access to /dev/net/tun",
-      "Its persistent state and server data will be saved in the folder you choose",
-      "You can choose your VPN provider, connection type, and optional server filters",
-      "You can optionally publish ports now for future apps that share Gluetun's network stack"
+      "Gluetun runs with NET_ADMIN and access to /dev/net/tun to create the VPN connection",
+      "Apps routed through Gluetun share its network stack and use Gluetun's VPN IP address",
+      "For example, the Transmission through Gluetun recipe uses network_mode: container:tsg_gluetun",
+      "Transmission does not publish ports itself. Its web UI and peer ports must be published on the Gluetun container",
+      "If your Gluetun container has a different name, enter that name in the Transmission recipe",
+      "If Gluetun stops, Transmission loses its network connection, helping prevent traffic from bypassing the VPN"
     ],
     "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
   }
