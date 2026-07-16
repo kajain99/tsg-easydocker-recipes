@@ -1,6 +1,6 @@
 {
   "name": "go2rtc",
-  "version": 1,
+  "version": 1.01,
   "description": "USB camera gateway for creating go2rtc streams through the web UI and config file",
   "services": {
     "go2rtc": {
@@ -184,11 +184,12 @@
     ],
     "overview": "go2rtc lets you pass a USB camera into Docker, add it from the go2rtc web UI with ffmpeg:device (USB), copy the generated URL, and save it as a named stream in the config file.",
     "what_happens": [
-      "A go2rtc container will be created",
-      "The selected Linux video device will be passed into Docker",
-      "The web UI, RTSP, and WebRTC ports will be published",
-      "The app's EasyDocker project folder will be mounted as /config",
-      "After deployment, open go2rtc, choose Add, select ffmpeg:device (USB), copy the generated URL, then add it to go2rtc.yaml under streams as usbcam: url"
+      "Connect your USB camera before deploying the container",
+      "If the selected device, such as /dev/video0, does not exist when Docker starts the container, deployment will fail",
+      "After deployment, open go2rtc and select Add, then ffmpeg:device, then USB",
+      "Find your camera and copy the generated source URL",
+      "Open go2rtc.yaml in the configured folder and add the camera under streams using: streams: { usbcam: <paste-generated-camera-url-here> }",
+      "Save the file and restart the go2rtc container to apply the configuration. You can replace usbcam with another simple stream name"
     ],
     "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
   }
