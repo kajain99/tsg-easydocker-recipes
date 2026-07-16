@@ -1,6 +1,6 @@
 {
   "name": "jellyfin",
-  "version": 1,
+  "version": 1.01,
   "description": "Media server for streaming your movies and TV library",
   "services": {
     "jellyfin": {
@@ -333,7 +333,12 @@
       "A LinuxServer Jellyfin container will be created",
       "Your config, TV library, and movies library folders will be mounted into the container",
       "Bridge networking is the default LinuxServer setup, with optional HTTPS and discovery ports available under Advanced",
-      "You can add more media mounts and optionally enable supported hardware acceleration devices"
+      "You can add more media mounts and optionally enable supported hardware acceleration devices",
+      "PUID and PGID must be set to your UGREEN user IDs. You can find these values by going to Docker > Projects > Add Project",
+      "The Jellyfin config folder is created automatically if it does not already exist",
+      "The TV and Movies folder fields must point to your actual existing media-library folders; they are not intended to be new empty folders",
+      "For any folder created automatically, make sure your UGREEN user owns the folder and has read/write permission. In the Files app, right-click the folder and update its ownership and permissions",
+      "Alternatively, create the config folder manually, set its ownership and permissions first, and then select that folder as the Jellyfin config location"
     ],
     "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
   }

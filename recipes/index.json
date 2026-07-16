@@ -22,7 +22,7 @@
     },
     {
       "name": "kavita",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "komga",
@@ -38,7 +38,7 @@
     },
     {
       "name": "jellyfin",
-      "version": 1
+      "version": 1.01
     },
     {
       "name": "nginx-proxy-manager",

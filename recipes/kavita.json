@@ -1,6 +1,6 @@
 {
   "name": "kavita",
-  "version": 1.01,
+  "version": 1.02,
   "description": "Self-hosted reading server for manga, comics, and ebooks",
   "services": {
     "kavita": {
@@ -13,7 +13,7 @@
       },
       "volumes": [
         "${KAVITA_CONFIG_LOCATION}:${KAVITA_CONFIG_TARGET}",
-        "${KAVITA_DATA_MOUNT}"
+        "${KAVITA_COMIC_LIBRARY_LOCATION}:${KAVITA_DATA_TARGET}"
       ],
       "ports": [
         "${KAVITA_PORT_MAPPING}"
@@ -40,7 +40,7 @@
       "section": "required",
       "input_type": "text",
       "required": true,
-      "default": "5000",
+      "default": "5005",
       "help": "Host port used to open Kavita in your browser."
     },
     {
@@ -53,13 +53,13 @@
       "help": "Stores Kavita configuration, database files, covers, and application state."
     },
     {
-      "name": "KAVITA_DATA_MOUNT",
-      "label": "Library Data Mount",
-      "section": "optional",
+      "name": "KAVITA_COMIC_LIBRARY_LOCATION",
+      "label": "Your Comic Library Location",
+      "section": "required",
       "input_type": "text",
-      "required": false,
-      "default": "./kavita/data:/data",
-      "help": "Optional library bind mount in the format <code>/host/path:/data</code> or <code>/host/path:/data:ro</code>.<br>Leave blank if you want to add libraries later from another mount."
+      "required": true,
+      "default": "",
+      "help": "Select the host folder containing your comics, manga, and ebooks. Kavita will see this folder as <code>/data</code> inside the container."
     },
     {
       "name": "PUID",
@@ -168,6 +168,16 @@
       "default": "/config",
       "editable": false,
       "help": "Recipe-managed internal config path."
+    },
+    {
+      "name": "KAVITA_DATA_TARGET",
+      "label": "Comic Library Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data",
+      "editable": false,
+      "help": "Recipe-managed internal path for your comic, manga, and ebook library."
     }
   ],
   "ui": {
@@ -183,10 +193,13 @@
     ],
     "overview": "Kavita is a self-hosted reading server for manga, comics, and ebooks with a browser-based interface.",
     "what_happens": [
-      "A Kavita container will be created",
-      "The web interface will be published on the port you choose",
-      "Your config folder and library data folder will be mounted into the container",
-      "Bridge networking is used by default, with optional host or existing-network choices under Advanced"
+      "A Kavita container will be created, and its web interface will be available on the port you choose",
+      "The config folder is created automatically if it does not already exist. It stores Kavita's settings, database, covers, and application data",
+      "Your Comic Library Location must point to the existing host folder containing your comics, manga, and ebooks",
+      "Your selected comic library is mounted automatically as /data inside Kavita",
+      "After installation, create a Kavita library and select /data as its content folder",
+      "PUID and PGID must match the user that owns your config and comic-library folders",
+      "For automatically created folders, make sure your user has the required ownership and read/write permissions. Alternatively, create the config folder manually, set its permissions, and then select it in the recipe"
     ],
     "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
   }
