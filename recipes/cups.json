@@ -1,6 +1,6 @@
 {
   "name": "cups",
-  "version": 1.01,
+  "version": 1.02,
   "description": "CUPS print server with USB printer access and a browser-based admin interface",
   "services": {
     "cups": {
@@ -34,7 +34,7 @@
   "fields": [
     {
       "name": "CUPS_PORT",
-      "label": "App Port",
+      "label": "R1: App Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -43,7 +43,7 @@
     },
     {
       "name": "CUPS_CONFIG_LOCATION",
-      "label": "CUPS Config Folder",
+      "label": "R2: CUPS Config Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -52,7 +52,7 @@
     },
     {
       "name": "CUPS_ADMIN_PASSWORD",
-      "label": "Admin Password",
+      "label": "R3: Admin Password",
       "section": "required",
       "input_type": "password",
       "required": true,
@@ -61,7 +61,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O1: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -70,7 +70,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O2: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -85,7 +85,7 @@
     },
     {
       "name": "CUPS_IMAGE",
-      "label": "Image",
+      "label": "A1: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,

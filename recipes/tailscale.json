@@ -1,6 +1,6 @@
 {
   "name": "tailscale",
-  "version": 1,
+  "version": 1.01,
   "description": "Secure remote access to your NAS",
   "services": {
     "tailscale": {
@@ -36,7 +36,7 @@
   "fields": [
     {
       "name": "TS_AUTHKEY",
-      "label": "Auth Key",
+      "label": "R1: Auth Key",
       "section": "required",
       "input_type": "password",
       "required": true,
@@ -45,7 +45,7 @@
     },
     {
       "name": "TAILSCALE_DATA_LOCATION",
-      "label": "Tailscale Data Folder",
+      "label": "R2: Tailscale Data Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -54,7 +54,7 @@
     },
     {
       "name": "TS_HOSTNAME",
-      "label": "Advertised Hostname",
+      "label": "O1: Advertised Hostname",
       "section": "optional",
       "input_type": "text",
       "required": false,
@@ -63,7 +63,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O2: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -90,7 +90,7 @@
     },
     {
       "name": "EXIT_NODE_EXTRA_ARGS",
-      "label": "Advertise as Exit Node",
+      "label": "O3: Advertise as Exit Node",
       "section": "optional",
       "input_type": "select",
       "required": false,
@@ -109,7 +109,7 @@
     },
     {
       "name": "TS_ROUTES",
-      "label": "Advertised Routes",
+      "label": "O4: Advertised Routes",
       "section": "optional",
       "input_type": "text",
       "required": false,
@@ -118,7 +118,7 @@
     },
     {
       "name": "TS_ACCEPT_DNS",
-      "label": "Accept DNS",
+      "label": "O5: Accept DNS",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -137,7 +137,7 @@
     },
     {
       "name": "TS_AUTH_ONCE",
-      "label": "Auth Once",
+      "label": "O6: Auth Once",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -156,7 +156,7 @@
     },
     {
       "name": "TS_EXTRA_ARGS",
-      "label": "Extra tailscale up Arguments",
+      "label": "A1: Extra tailscale up Arguments",
       "section": "advanced",
       "input_type": "textarea",
       "rows": 2,
@@ -166,7 +166,7 @@
     },
     {
       "name": "TS_TAILSCALED_EXTRA_ARGS",
-      "label": "Extra tailscaled Arguments",
+      "label": "A2: Extra tailscaled Arguments",
       "section": "advanced",
       "input_type": "textarea",
       "rows": 2,
@@ -176,7 +176,7 @@
     },
     {
       "name": "TS_USERSPACE",
-      "label": "Userspace Networking",
+      "label": "A3: Userspace Networking",
       "section": "advanced",
       "input_type": "select",
       "required": true,
@@ -195,7 +195,7 @@
     },
     {
       "name": "TAILSCALE_COMMAND",
-      "label": "Compose Command Override",
+      "label": "A4: Compose Command Override",
       "section": "advanced",
       "input_type": "textarea",
       "data_type": "yaml",
@@ -206,7 +206,7 @@
     },
     {
       "name": "TAILSCALE_ENTRYPOINT",
-      "label": "Compose Entrypoint Override",
+      "label": "A5: Compose Entrypoint Override",
       "section": "advanced",
       "input_type": "textarea",
       "data_type": "yaml",
@@ -217,7 +217,7 @@
     },
     {
       "name": "TAILSCALE_IMAGE",
-      "label": "Image",
+      "label": "A6: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,

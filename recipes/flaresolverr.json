@@ -1,6 +1,6 @@
 {
   "name": "flaresolverr",
-  "version": 1,
+  "version": 1.01,
   "description": "Proxy companion that helps apps bypass Cloudflare and anti-bot checks",
   "services": {
     "flaresolverr": {
@@ -31,7 +31,7 @@
   "fields": [
     {
       "name": "FLARESOLVERR_PORT",
-      "label": "App Port",
+      "label": "R1: App Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -40,7 +40,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O1: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -49,7 +49,7 @@
     },
     {
       "name": "FLARESOLVERR_LOG_LEVEL",
-      "label": "Log Level",
+      "label": "O2: Log Level",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -64,7 +64,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O3: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -79,7 +79,7 @@
     },
     {
       "name": "FLARESOLVERR_NETWORK_MODE",
-      "label": "Network",
+      "label": "O4: Network",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -90,7 +90,7 @@
     },
     {
       "name": "FLARESOLVERR_IMAGE",
-      "label": "Image",
+      "label": "A1: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,

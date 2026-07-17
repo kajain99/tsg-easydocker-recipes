@@ -1,6 +1,6 @@
 {
   "name": "plex",
-  "version": 2,
+  "version": 2.01,
   "description": "Media server for streaming your movies and TV library with Plex",
   "services": {
     "plex": {
@@ -59,7 +59,7 @@
   "fields": [
     {
       "name": "PLEX_PORT",
-      "label": "App Port",
+      "label": "O1: App Port",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -68,7 +68,7 @@
     },
     {
       "name": "PLEX_CONFIG_LOCATION",
-      "label": "Plex Config Folder",
+      "label": "R1: Plex Config Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -77,7 +77,7 @@
     },
     {
       "name": "TV_LOCATION",
-      "label": "TV Library Folder",
+      "label": "R2: TV Library Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -86,7 +86,7 @@
     },
     {
       "name": "MOVIES_LOCATION",
-      "label": "Movies Library Folder",
+      "label": "R3: Movies Library Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -95,7 +95,7 @@
     },
     {
       "name": "PUID",
-      "label": "PUID",
+      "label": "R4: PUID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -104,7 +104,7 @@
     },
     {
       "name": "PGID",
-      "label": "PGID",
+      "label": "R5: PGID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -113,7 +113,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O2: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -122,7 +122,7 @@
     },
     {
       "name": "PLEX_CLAIM",
-      "label": "Plex Claim Token",
+      "label": "O3: Plex Claim Token",
       "section": "optional",
       "input_type": "password",
       "required": false,
@@ -131,7 +131,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O4: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -146,7 +146,7 @@
     },
     {
       "name": "PLEX_NETWORK_MODE",
-      "label": "Network",
+      "label": "O5: Network",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -157,7 +157,7 @@
     },
     {
       "name": "PLEX_IMAGE",
-      "label": "Image",
+      "label": "A1: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,
@@ -168,7 +168,7 @@
     },
     {
       "name": "PLEX_VERSION",
-      "label": "Plex Version Mode",
+      "label": "A2: Plex Version Mode",
       "section": "advanced",
       "input_type": "text",
       "required": true,
@@ -177,7 +177,7 @@
     },
     {
       "name": "PLEX_TRANSCODE_MOUNT",
-      "label": "Transcode Mount",
+      "label": "A3: Transcode Mount",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -200,7 +200,7 @@
     },
     {
       "name": "PLEX_BRIDGE_PORT_1900",
-      "label": "Bridge Port 1900 UDP",
+      "label": "A4: Bridge Port 1900 UDP",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -213,7 +213,7 @@
     },
     {
       "name": "PLEX_BRIDGE_PORT_5353",
-      "label": "Bridge Port 5353 UDP",
+      "label": "A5: Bridge Port 5353 UDP",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -226,7 +226,7 @@
     },
     {
       "name": "PLEX_BRIDGE_PORT_8324",
-      "label": "Bridge Port 8324",
+      "label": "A6: Bridge Port 8324",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -239,7 +239,7 @@
     },
     {
       "name": "PLEX_BRIDGE_PORT_32410",
-      "label": "Bridge Port 32410 UDP",
+      "label": "A7: Bridge Port 32410 UDP",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -252,7 +252,7 @@
     },
     {
       "name": "PLEX_BRIDGE_PORT_32412",
-      "label": "Bridge Port 32412 UDP",
+      "label": "A8: Bridge Port 32412 UDP",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -265,7 +265,7 @@
     },
     {
       "name": "PLEX_BRIDGE_PORT_32413",
-      "label": "Bridge Port 32413 UDP",
+      "label": "A9: Bridge Port 32413 UDP",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -278,7 +278,7 @@
     },
     {
       "name": "PLEX_BRIDGE_PORT_32414",
-      "label": "Bridge Port 32414 UDP",
+      "label": "A10: Bridge Port 32414 UDP",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -291,7 +291,7 @@
     },
     {
       "name": "PLEX_BRIDGE_PORT_32469",
-      "label": "Bridge Port 32469",
+      "label": "A11: Bridge Port 32469",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -304,7 +304,7 @@
     },
     {
       "name": "PLEX_DRI_DEVICE",
-      "label": "Intel/AMD Hardware Transcoding",
+      "label": "A12: Intel/AMD Hardware Transcoding",
       "section": "advanced",
       "input_type": "select",
       "required": false,
@@ -320,7 +320,7 @@
     },
     {
       "name": "PLEX_DVB_DEVICE",
-      "label": "DVB Devices",
+      "label": "A13: DVB Devices",
       "section": "advanced",
       "input_type": "select",
       "required": false,
@@ -336,7 +336,7 @@
     },
     {
       "name": "PLEX_RUNTIME",
-      "label": "Container Runtime",
+      "label": "A14: Container Runtime",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -345,7 +345,7 @@
     },
     {
       "name": "PLEX_NVIDIA_VISIBLE_DEVICES",
-      "label": "Nvidia Visible Devices",
+      "label": "A15: Nvidia Visible Devices",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -354,7 +354,7 @@
     },
     {
       "name": "PLEX_EXTRA_MOUNT_1",
-      "label": "Extra Mount 1",
+      "label": "A16: Extra Mount 1",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -363,7 +363,7 @@
     },
     {
       "name": "PLEX_EXTRA_MOUNT_2",
-      "label": "Extra Mount 2",
+      "label": "A17: Extra Mount 2",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -372,7 +372,7 @@
     },
     {
       "name": "PLEX_EXTRA_MOUNT_3",
-      "label": "Extra Mount 3",
+      "label": "A18: Extra Mount 3",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -381,7 +381,7 @@
     },
     {
       "name": "PLEX_EXTRA_MOUNT_4",
-      "label": "Extra Mount 4",
+      "label": "A19: Extra Mount 4",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -390,7 +390,7 @@
     },
     {
       "name": "PLEX_EXTRA_MOUNT_5",
-      "label": "Extra Mount 5",
+      "label": "A20: Extra Mount 5",
       "section": "advanced",
       "input_type": "text",
       "required": false,

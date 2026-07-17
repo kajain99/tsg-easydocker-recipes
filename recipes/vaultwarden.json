@@ -1,6 +1,6 @@
 {
   "name": "vaultwarden",
-  "version": 1,
+  "version": 1.01,
   "description": "Lightweight self-hosted password manager compatible with Bitwarden clients",
   "services": {
     "vaultwarden": {
@@ -32,7 +32,7 @@
   "fields": [
     {
       "name": "VAULTWARDEN_PORT",
-      "label": "App Port",
+      "label": "R1: App Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -41,7 +41,7 @@
     },
     {
       "name": "VAULTWARDEN_DATA_LOCATION",
-      "label": "Vaultwarden Data Folder",
+      "label": "R2: Vaultwarden Data Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -50,7 +50,7 @@
     },
     {
       "name": "VAULTWARDEN_DOMAIN",
-      "label": "Public Domain",
+      "label": "O1: Public Domain",
       "section": "optional",
       "input_type": "text",
       "required": false,
@@ -59,7 +59,7 @@
     },
     {
       "name": "VAULTWARDEN_SIGNUPS_ALLOWED",
-      "label": "Allow New Signups",
+      "label": "O2: Allow New Signups",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -72,7 +72,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O3: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -87,7 +87,7 @@
     },
     {
       "name": "VAULTWARDEN_IMAGE",
-      "label": "Image",
+      "label": "A1: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,
@@ -98,7 +98,7 @@
     },
     {
       "name": "VAULTWARDEN_ADMIN_TOKEN",
-      "label": "Admin Token",
+      "label": "A2: Admin Token",
       "section": "advanced",
       "input_type": "password",
       "required": false,

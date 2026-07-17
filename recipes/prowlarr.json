@@ -1,6 +1,6 @@
 {
   "name": "prowlarr",
-  "version": 1,
+  "version": 1.01,
   "description": "Indexer manager for Sonarr, Radarr, and other arr apps",
   "services": {
     "prowlarr": {
@@ -35,7 +35,7 @@
   "fields": [
     {
       "name": "PROWLARR_PORT",
-      "label": "App Port",
+      "label": "R1: App Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -44,7 +44,7 @@
     },
     {
       "name": "PROWLARR_CONFIG_LOCATION",
-      "label": "Prowlarr Config Folder",
+      "label": "R2: Prowlarr Config Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -53,7 +53,7 @@
     },
     {
       "name": "PUID",
-      "label": "PUID",
+      "label": "R3: PUID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -62,7 +62,7 @@
     },
     {
       "name": "PGID",
-      "label": "PGID",
+      "label": "R4: PGID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -71,7 +71,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O1: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -80,7 +80,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O2: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -95,7 +95,7 @@
     },
     {
       "name": "PROWLARR_NETWORK_MODE",
-      "label": "Network",
+      "label": "O3: Network",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -106,7 +106,7 @@
     },
     {
       "name": "PROWLARR_IMAGE",
-      "label": "Image",
+      "label": "A1: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,

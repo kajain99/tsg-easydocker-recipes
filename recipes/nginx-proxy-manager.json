@@ -1,6 +1,6 @@
 {
   "name": "nginx-proxy-manager",
-  "version": 1,
+  "version": 1.01,
   "description": "Reverse proxy manager with a web UI, SSL certificates, and proxy host management",
   "services": {
     "nginx-proxy-manager": {
@@ -34,7 +34,7 @@
   "fields": [
     {
       "name": "NPM_HTTP_PORT",
-      "label": "Public HTTP Port",
+      "label": "R1: Public HTTP Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -43,7 +43,7 @@
     },
     {
       "name": "NPM_HTTPS_PORT",
-      "label": "Public HTTPS Port",
+      "label": "R2: Public HTTPS Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -52,7 +52,7 @@
     },
     {
       "name": "NPM_ADMIN_PORT",
-      "label": "Admin UI Port",
+      "label": "R3: Admin UI Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -61,7 +61,7 @@
     },
     {
       "name": "NPM_DATA_LOCATION",
-      "label": "Data Folder",
+      "label": "R4: Data Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -70,7 +70,7 @@
     },
     {
       "name": "NPM_LETSENCRYPT_LOCATION",
-      "label": "Let's Encrypt Folder",
+      "label": "R5: Let's Encrypt Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -79,7 +79,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O1: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": false,
@@ -88,7 +88,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O2: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -103,7 +103,7 @@
     },
     {
       "name": "NPM_IMAGE",
-      "label": "Image",
+      "label": "A1: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,
@@ -114,7 +114,7 @@
     },
     {
       "name": "NPM_DISABLE_IPV6",
-      "label": "Disable IPv6",
+      "label": "A2: Disable IPv6",
       "section": "advanced",
       "input_type": "select",
       "required": true,

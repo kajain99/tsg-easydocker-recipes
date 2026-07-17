@@ -1,6 +1,6 @@
 {
   "name": "gluetun",
-  "version": 1.01,
+  "version": 1.02,
   "description": "VPN gateway container for routing other apps through OpenVPN or WireGuard",
   "services": {
     "gluetun": {
@@ -42,7 +42,7 @@
   "fields": [
     {
       "name": "GLUETUN_STORAGE_LOCATION",
-      "label": "Gluetun Data Folder",
+      "label": "R1: Gluetun Data Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -51,7 +51,7 @@
     },
     {
       "name": "VPN_SERVICE_PROVIDER",
-      "label": "VPN Provider",
+      "label": "R2: VPN Provider",
       "section": "required",
       "input_type": "select",
       "required": true,
@@ -86,7 +86,7 @@
     },
     {
       "name": "VPN_TYPE",
-      "label": "VPN Type",
+      "label": "R3: VPN Type",
       "section": "required",
       "input_type": "select",
       "required": true,
@@ -99,7 +99,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "R4: Timezone",
       "section": "required",
       "input_type": "text",
       "required": false,
@@ -108,7 +108,7 @@
     },
     {
       "name": "OPENVPN_USER",
-      "label": "OpenVPN Username",
+      "label": "R5: OpenVPN Username",
       "section": "required",
       "input_type": "text",
       "required": false,
@@ -123,7 +123,7 @@
     },
     {
       "name": "OPENVPN_PASSWORD",
-      "label": "OpenVPN Password",
+      "label": "R6: OpenVPN Password",
       "section": "required",
       "input_type": "password",
       "required": false,
@@ -138,7 +138,7 @@
     },
     {
       "name": "WIREGUARD_PRIVATE_KEY",
-      "label": "WireGuard Private Key",
+      "label": "R7: WireGuard Private Key",
       "section": "required",
       "input_type": "password",
       "required": false,
@@ -153,7 +153,7 @@
     },
     {
       "name": "WIREGUARD_ADDRESSES",
-      "label": "WireGuard Addresses",
+      "label": "R8: WireGuard Addresses",
       "section": "required",
       "input_type": "text",
       "required": false,
@@ -168,7 +168,7 @@
     },
     {
       "name": "SERVER_COUNTRIES",
-      "label": "Server Countries",
+      "label": "O1: Server Countries",
       "section": "optional",
       "input_type": "text",
       "required": false,
@@ -180,7 +180,7 @@
     },
     {
       "name": "SERVER_REGIONS",
-      "label": "Server Regions",
+      "label": "O2: Server Regions",
       "section": "optional",
       "input_type": "text",
       "required": false,
@@ -192,7 +192,7 @@
     },
     {
       "name": "SERVER_CITIES",
-      "label": "Server Cities",
+      "label": "O3: Server Cities",
       "section": "optional",
       "input_type": "text",
       "required": false,
@@ -204,7 +204,7 @@
     },
     {
       "name": "SERVER_HOSTNAMES",
-      "label": "Server Hostnames",
+      "label": "O4: Server Hostnames",
       "section": "optional",
       "input_type": "text",
       "required": false,
@@ -216,7 +216,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O5: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -231,7 +231,7 @@
     },
     {
       "name": "PORT_FORWARD_ONLY",
-      "label": "Port Forwarding Servers Only",
+      "label": "O6: Port Forwarding Servers Only",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -247,7 +247,7 @@
     },
     {
       "name": "DOT",
-      "label": "DNS over TLS",
+      "label": "O7: DNS over TLS",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -260,7 +260,7 @@
     },
     {
       "name": "BLOCK_MALICIOUS",
-      "label": "Block Malicious Domains",
+      "label": "O8: Block Malicious Domains",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -273,7 +273,7 @@
     },
     {
       "name": "BLOCK_SURVEILLANCE",
-      "label": "Block Surveillance Domains",
+      "label": "O9: Block Surveillance Domains",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -289,7 +289,7 @@
     },
     {
       "name": "BLOCK_ADS",
-      "label": "Block Ad Domains",
+      "label": "O10: Block Ad Domains",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -302,7 +302,7 @@
     },
     {
       "name": "GLUETUN_PUBLISHED_PORTS",
-      "label": "Published Ports",
+      "label": "A1: Published Ports",
       "section": "advanced",
       "input_type": "textarea",
       "data_type": "yaml",
@@ -313,7 +313,7 @@
     },
     {
       "name": "GLUETUN_EXTRA_ENV",
-      "label": "Extra Environment Variables",
+      "label": "A2: Extra Environment Variables",
       "section": "advanced",
       "input_type": "textarea",
       "data_type": "yaml",
@@ -324,7 +324,7 @@
     },
     {
       "name": "VPN_PORT_FORWARDING",
-      "label": "VPN Port Forwarding",
+      "label": "A3: VPN Port Forwarding",
       "section": "advanced",
       "input_type": "select",
       "required": true,
@@ -337,7 +337,7 @@
     },
     {
       "name": "GLUETUN_IMAGE",
-      "label": "Image",
+      "label": "A4: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,

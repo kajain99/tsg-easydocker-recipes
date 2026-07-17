@@ -1,6 +1,6 @@
 {
   "name": "seerr",
-  "version": 1,
+  "version": 1.01,
   "description": "Media request management for Jellyfin and Plex libraries",
   "services": {
     "seerr": {
@@ -35,7 +35,7 @@
   "fields": [
     {
       "name": "SEERR_PORT",
-      "label": "App Port",
+      "label": "R1: App Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -44,7 +44,7 @@
     },
     {
       "name": "SEERR_CONFIG_LOCATION",
-      "label": "Config Folder",
+      "label": "R2: Config Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -53,7 +53,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O1: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -62,7 +62,7 @@
     },
     {
       "name": "SEERR_LOG_LEVEL",
-      "label": "Log Level",
+      "label": "O2: Log Level",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -89,7 +89,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O3: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -116,7 +116,7 @@
     },
     {
       "name": "SEERR_NETWORK_MODE",
-      "label": "Network",
+      "label": "O4: Network",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -127,7 +127,7 @@
     },
     {
       "name": "SEERR_IMAGE",
-      "label": "Image",
+      "label": "A1: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,
@@ -136,7 +136,7 @@
     },
     {
       "name": "SEERR_INIT",
-      "label": "Init",
+      "label": "A2: Init",
       "section": "advanced",
       "input_type": "select",
       "required": true,

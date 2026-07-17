@@ -1,6 +1,6 @@
 {
   "name": "go2rtc",
-  "version": 1.01,
+  "version": 1.02,
   "description": "USB camera gateway for creating go2rtc streams through the web UI and config file",
   "services": {
     "go2rtc": {
@@ -36,7 +36,7 @@
   "fields": [
     {
       "name": "GO2RTC_WEB_PORT",
-      "label": "App Port",
+      "label": "R1: App Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -45,7 +45,7 @@
     },
     {
       "name": "GO2RTC_CONFIG_LOCATION",
-      "label": "Config Folder",
+      "label": "R2: Config Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -54,7 +54,7 @@
     },
     {
       "name": "GO2RTC_VIDEO_DEVICE",
-      "label": "USB Camera Device",
+      "label": "R3: USB Camera Device",
       "section": "required",
       "input_type": "select",
       "required": false,
@@ -69,7 +69,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O1: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -78,7 +78,7 @@
     },
     {
       "name": "GO2RTC_RTSP_PORT",
-      "label": "RTSP Port",
+      "label": "O2: RTSP Port",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -87,7 +87,7 @@
     },
     {
       "name": "GO2RTC_WEBRTC_PORT",
-      "label": "WebRTC Port",
+      "label": "O3: WebRTC Port",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -96,7 +96,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O4: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -111,7 +111,7 @@
     },
     {
       "name": "GO2RTC_IMAGE",
-      "label": "Image",
+      "label": "A1: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,

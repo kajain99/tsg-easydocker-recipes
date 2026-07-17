@@ -1,6 +1,6 @@
 {
   "name": "transmission",
-  "version": 1,
+  "version": 1.01,
   "description": "BitTorrent client with a web UI and persistent config",
   "services": {
     "transmission": {
@@ -38,7 +38,7 @@
   "fields": [
     {
       "name": "TRANSMISSION_WEB_PORT",
-      "label": "Web UI Port",
+      "label": "R1: Web UI Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -47,7 +47,7 @@
     },
     {
       "name": "TRANSMISSION_PEER_PORT",
-      "label": "Peer Port",
+      "label": "R2: Peer Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -56,7 +56,7 @@
     },
     {
       "name": "TRANSMISSION_CONFIG_LOCATION",
-      "label": "Transmission Config Folder",
+      "label": "R3: Transmission Config Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -65,7 +65,7 @@
     },
     {
       "name": "DOWNLOADS_LOCATION",
-      "label": "Downloads Folder",
+      "label": "R4: Downloads Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -74,7 +74,7 @@
     },
     {
       "name": "PUID",
-      "label": "PUID",
+      "label": "R5: PUID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -83,7 +83,7 @@
     },
     {
       "name": "PGID",
-      "label": "PGID",
+      "label": "R6: PGID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -92,7 +92,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O1: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -101,7 +101,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O2: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -116,7 +116,7 @@
     },
     {
       "name": "TRANSMISSION_NETWORK_MODE",
-      "label": "Network",
+      "label": "O3: Network",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -127,7 +127,7 @@
     },
     {
       "name": "TRANSMISSION_IMAGE",
-      "label": "Image",
+      "label": "A1: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,

@@ -2,87 +2,87 @@
   "recipes": [
     {
       "name": "bazarr",
-      "version": 1.01
-    },
-    {
-      "name": "cups",
-      "version": 1.01
-    },
-    {
-      "name": "flaresolverr",
-      "version": 1
-    },
-    {
-      "name": "gluetun",
-      "version": 1.01
-    },
-    {
-      "name": "go2rtc",
-      "version": 1.01
-    },
-    {
-      "name": "kavita",
       "version": 1.02
     },
     {
-      "name": "komga",
+      "name": "cups",
+      "version": 1.02
+    },
+    {
+      "name": "flaresolverr",
       "version": 1.01
+    },
+    {
+      "name": "gluetun",
+      "version": 1.02
+    },
+    {
+      "name": "go2rtc",
+      "version": 1.02
+    },
+    {
+      "name": "kavita",
+      "version": 1.03
+    },
+    {
+      "name": "komga",
+      "version": 1.02
     },
     {
       "name": "tailscale",
-      "version": 1
+      "version": 1.01
     },
     {
       "name": "immich",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "jellyfin",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "nginx-proxy-manager",
-      "version": 1
+      "version": 1.01
     },
     {
       "name": "plex",
-      "version": 1
+      "version": 2.01
     },
     {
       "name": "prowlarr",
-      "version": 1
+      "version": 1.01
     },
     {
       "name": "radarr",
-      "version": 1
+      "version": 1.01
     },
     {
       "name": "seerr",
-      "version": 1
+      "version": 1.01
     },
     {
       "name": "sonarr",
-      "version": 1
+      "version": 1.01
     },
     {
       "name": "stirling-pdf",
-      "version": 1
+      "version": 1.01
     },
     {
       "name": "transmission",
-      "version": 1
+      "version": 1.01
     },
     {
       "name": "transmission-through-gluetun",
-      "version": 1
+      "version": 1.01
     },
     {
       "name": "vaultwarden",
-      "version": 1
+      "version": 1.01
     },
     {
       "name": "yacreader",
-      "version": 1.01
+      "version": 1.02
     }
   ]
 }

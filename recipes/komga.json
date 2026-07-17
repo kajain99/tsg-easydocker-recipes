@@ -1,6 +1,6 @@
 {
   "name": "komga",
-  "version": 1.01,
+  "version": 1.02,
   "description": "Self-hosted comics, manga, and ebook server with a browser-based reader",
   "services": {
     "komga": {
@@ -35,7 +35,7 @@
   "fields": [
     {
       "name": "KOMGA_PORT",
-      "label": "App Port",
+      "label": "R1: App Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -44,7 +44,7 @@
     },
     {
       "name": "KOMGA_CONFIG_LOCATION",
-      "label": "Config Folder",
+      "label": "R2: Config Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -53,7 +53,7 @@
     },
     {
       "name": "KOMGA_COMICS_LOCATION",
-      "label": "Comics Folder",
+      "label": "R3: Comics Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -62,7 +62,7 @@
     },
     {
       "name": "PUID",
-      "label": "PUID",
+      "label": "R4: PUID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -71,7 +71,7 @@
     },
     {
       "name": "PGID",
-      "label": "PGID",
+      "label": "R5: PGID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -80,7 +80,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O1: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -89,7 +89,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O2: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -104,7 +104,7 @@
     },
     {
       "name": "KOMGA_NETWORK_MODE",
-      "label": "Network",
+      "label": "A1: Network",
       "section": "advanced",
       "input_type": "select",
       "required": true,
@@ -115,7 +115,7 @@
     },
     {
       "name": "KOMGA_IMAGE",
-      "label": "Image",
+      "label": "A2: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,

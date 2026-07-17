@@ -1,6 +1,6 @@
 {
   "name": "bazarr",
-  "version": 1.01,
+  "version": 1.02,
   "description": "Subtitle manager for movies and TV series",
   "services": {
     "bazarr": {
@@ -37,7 +37,7 @@
   "fields": [
     {
       "name": "BAZARR_PORT",
-      "label": "App Port",
+      "label": "R1: App Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -46,7 +46,7 @@
     },
     {
       "name": "BAZARR_CONFIG_LOCATION",
-      "label": "Bazarr Config Folder",
+      "label": "R2: Bazarr Config Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -55,7 +55,7 @@
     },
     {
       "name": "TV_LOCATION",
-      "label": "TV Library Folder",
+      "label": "R3: TV Library Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -64,7 +64,7 @@
     },
     {
       "name": "MOVIES_LOCATION",
-      "label": "Movies Library Folder",
+      "label": "R4: Movies Library Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -73,7 +73,7 @@
     },
     {
       "name": "PUID",
-      "label": "PUID",
+      "label": "R5: PUID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -82,7 +82,7 @@
     },
     {
       "name": "PGID",
-      "label": "PGID",
+      "label": "R6: PGID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -91,7 +91,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O1: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -100,7 +100,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O2: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -115,7 +115,7 @@
     },
     {
       "name": "BAZARR_NETWORK_MODE",
-      "label": "Network",
+      "label": "O3: Network",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -126,7 +126,7 @@
     },
     {
       "name": "BAZARR_IMAGE",
-      "label": "Image",
+      "label": "A1: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,

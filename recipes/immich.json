@@ -1,6 +1,6 @@
 {
   "name": "immich",
-  "version": 1.01,
+  "version": 1.02,
   "description": "Photo and video backup with search, AI features, and a built-in database stack",
   "services": {
     "immich-server": {
@@ -96,7 +96,7 @@
   "fields": [
     {
       "name": "IMMICH_PORT",
-      "label": "App Port",
+      "label": "R1: App Port",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -105,7 +105,7 @@
     },
     {
       "name": "DB_USERNAME",
-      "label": "Database User",
+      "label": "R2: Database User",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -114,7 +114,7 @@
     },
     {
       "name": "DB_PASSWORD",
-      "label": "Database Password",
+      "label": "R3: Database Password",
       "section": "required",
       "input_type": "password",
       "required": true,
@@ -123,7 +123,7 @@
     },
     {
       "name": "DB_DATABASE_NAME",
-      "label": "Database Name",
+      "label": "R4: Database Name",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -132,7 +132,7 @@
     },
     {
       "name": "UPLOAD_LOCATION",
-      "label": "Library Folder",
+      "label": "R5: Library Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -141,7 +141,7 @@
     },
     {
       "name": "DB_DATA_LOCATION",
-      "label": "Database Folder",
+      "label": "R6: Database Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -150,7 +150,7 @@
     },
     {
       "name": "MODEL_CACHE_LOCATION",
-      "label": "Model Cache Folder",
+      "label": "R7: Model Cache Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -159,7 +159,7 @@
     },
     {
       "name": "IMMICH_RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O1: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -186,7 +186,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O2: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": false,
@@ -195,7 +195,7 @@
     },
     {
       "name": "IMMICH_SERVER_IMAGE",
-      "label": "Server Image",
+      "label": "A1: Server Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,
@@ -206,7 +206,7 @@
     },
     {
       "name": "IMMICH_ML_IMAGE",
-      "label": "Machine Learning Image",
+      "label": "A2: Machine Learning Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,
@@ -217,7 +217,7 @@
     },
     {
       "name": "IMMICH_SERVER_HEALTHCHECK_DISABLED",
-      "label": "Disable Server Healthcheck",
+      "label": "A3: Disable Server Healthcheck",
       "section": "advanced",
       "input_type": "select",
       "required": true,
@@ -237,7 +237,7 @@
     },
     {
       "name": "IMMICH_ML_HEALTHCHECK_DISABLED",
-      "label": "Disable Machine Learning Healthcheck",
+      "label": "A4: Disable Machine Learning Healthcheck",
       "section": "advanced",
       "input_type": "select",
       "required": true,
@@ -257,7 +257,7 @@
     },
     {
       "name": "IMMICH_DB_HEALTHCHECK_DISABLED",
-      "label": "Disable Database Healthcheck",
+      "label": "A5: Disable Database Healthcheck",
       "section": "advanced",
       "input_type": "select",
       "required": true,
@@ -277,7 +277,7 @@
     },
     {
       "name": "IMMICH_EXTRA_MOUNT_1",
-      "label": "Extra Mount 1",
+      "label": "A6: Extra Mount 1",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -286,7 +286,7 @@
     },
     {
       "name": "IMMICH_EXTRA_MOUNT_2",
-      "label": "Extra Mount 2",
+      "label": "A7: Extra Mount 2",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -295,7 +295,7 @@
     },
     {
       "name": "IMMICH_EXTRA_MOUNT_3",
-      "label": "Extra Mount 3",
+      "label": "A8: Extra Mount 3",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -304,7 +304,7 @@
     },
     {
       "name": "IMMICH_EXTRA_MOUNT_4",
-      "label": "Extra Mount 4",
+      "label": "A9: Extra Mount 4",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -313,7 +313,7 @@
     },
     {
       "name": "IMMICH_EXTRA_MOUNT_5",
-      "label": "Extra Mount 5",
+      "label": "A10: Extra Mount 5",
       "section": "advanced",
       "input_type": "text",
       "required": false,

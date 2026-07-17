@@ -1,6 +1,6 @@
 {
   "name": "transmission-through-gluetun",
-  "version": 1,
+  "version": 1.01,
   "description": "Transmission routed through an existing Gluetun container network stack",
   "services": {
     "transmission": {
@@ -22,7 +22,7 @@
   "fields": [
     {
       "name": "TRANSMISSION_CONFIG_LOCATION",
-      "label": "Transmission Config Folder",
+      "label": "R1: Transmission Config Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -31,7 +31,7 @@
     },
     {
       "name": "DOWNLOADS_LOCATION",
-      "label": "Downloads Folder",
+      "label": "R2: Downloads Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -40,7 +40,7 @@
     },
     {
       "name": "TRANSMISSION_GLUETUN_CONTAINER",
-      "label": "Existing Gluetun Container Name",
+      "label": "R3: Existing Gluetun Container Name",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -59,7 +59,7 @@
     },
     {
       "name": "PUID",
-      "label": "PUID",
+      "label": "R4: PUID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -68,7 +68,7 @@
     },
     {
       "name": "PGID",
-      "label": "PGID",
+      "label": "R5: PGID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -77,7 +77,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O1: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -86,7 +86,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O2: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -101,7 +101,7 @@
     },
     {
       "name": "TRANSMISSION_IMAGE",
-      "label": "Image",
+      "label": "A1: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,

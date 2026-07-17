@@ -1,6 +1,6 @@
 {
   "name": "jellyfin",
-  "version": 1.01,
+  "version": 1.02,
   "description": "Media server for streaming your movies and TV library",
   "services": {
     "jellyfin": {
@@ -50,7 +50,7 @@
   "fields": [
     {
       "name": "JELLYFIN_CONFIG_LOCATION",
-      "label": "Jellyfin Config Folder",
+      "label": "R1: Jellyfin Config Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -59,7 +59,7 @@
     },
     {
       "name": "TV_LOCATION",
-      "label": "TV Library Folder",
+      "label": "R2: TV Library Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -68,7 +68,7 @@
     },
     {
       "name": "MOVIES_LOCATION",
-      "label": "Movies Library Folder",
+      "label": "R3: Movies Library Folder",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -77,7 +77,7 @@
     },
     {
       "name": "PUID",
-      "label": "PUID",
+      "label": "R4: PUID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -86,7 +86,7 @@
     },
     {
       "name": "PGID",
-      "label": "PGID",
+      "label": "R5: PGID",
       "section": "required",
       "input_type": "text",
       "required": true,
@@ -95,7 +95,7 @@
     },
     {
       "name": "JELLYFIN_PORT",
-      "label": "HTTP App Port",
+      "label": "O1: HTTP App Port",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -104,7 +104,7 @@
     },
     {
       "name": "TZ",
-      "label": "Timezone",
+      "label": "O2: Timezone",
       "section": "optional",
       "input_type": "text",
       "required": true,
@@ -113,7 +113,7 @@
     },
     {
       "name": "RESTART_POLICY",
-      "label": "Restart Policy",
+      "label": "O3: Restart Policy",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -128,7 +128,7 @@
     },
     {
       "name": "JELLYFIN_NETWORK_MODE",
-      "label": "Network",
+      "label": "O4: Network",
       "section": "optional",
       "input_type": "select",
       "required": true,
@@ -139,7 +139,7 @@
     },
     {
       "name": "JELLYFIN_IMAGE",
-      "label": "Image",
+      "label": "A1: Image",
       "section": "advanced",
       "input_type": "text",
       "required": true,
@@ -150,7 +150,7 @@
     },
     {
       "name": "JELLYFIN_PUBLISHED_SERVER_URL",
-      "label": "Published Server URL",
+      "label": "A2: Published Server URL",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -173,7 +173,7 @@
     },
     {
       "name": "JELLYFIN_HTTPS_PORT_MAPPING",
-      "label": "HTTPS Port Mapping",
+      "label": "A3: HTTPS Port Mapping",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -182,7 +182,7 @@
     },
     {
       "name": "JELLYFIN_DISCOVERY_PORT_7359",
-      "label": "Client Discovery Port",
+      "label": "A4: Client Discovery Port",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -191,7 +191,7 @@
     },
     {
       "name": "JELLYFIN_DISCOVERY_PORT_1900",
-      "label": "DLNA Discovery Port",
+      "label": "A5: DLNA Discovery Port",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -200,7 +200,7 @@
     },
     {
       "name": "JELLYFIN_DRI_DEVICE",
-      "label": "Intel/AMD Hardware Acceleration",
+      "label": "A6: Intel/AMD Hardware Acceleration",
       "section": "advanced",
       "input_type": "select",
       "required": false,
@@ -214,7 +214,7 @@
     },
     {
       "name": "JELLYFIN_RUNTIME",
-      "label": "Container Runtime",
+      "label": "A7: Container Runtime",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -223,7 +223,7 @@
     },
     {
       "name": "JELLYFIN_EXTRA_MOUNT_1",
-      "label": "Extra Mount 1",
+      "label": "A8: Extra Mount 1",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -232,7 +232,7 @@
     },
     {
       "name": "JELLYFIN_EXTRA_MOUNT_2",
-      "label": "Extra Mount 2",
+      "label": "A9: Extra Mount 2",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -241,7 +241,7 @@
     },
     {
       "name": "JELLYFIN_EXTRA_MOUNT_3",
-      "label": "Extra Mount 3",
+      "label": "A10: Extra Mount 3",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -250,7 +250,7 @@
     },
     {
       "name": "JELLYFIN_EXTRA_MOUNT_4",
-      "label": "Extra Mount 4",
+      "label": "A11: Extra Mount 4",
       "section": "advanced",
       "input_type": "text",
       "required": false,
@@ -259,7 +259,7 @@
     },
     {
       "name": "JELLYFIN_EXTRA_MOUNT_5",
-      "label": "Extra Mount 5",
+      "label": "A12: Extra Mount 5",
       "section": "advanced",
       "input_type": "text",
       "required": false,
