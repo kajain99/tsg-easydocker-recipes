@@ -522,6 +522,7 @@
     }
   ],
   "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/immich/",
     "sections": [
       {
         "name": "required",

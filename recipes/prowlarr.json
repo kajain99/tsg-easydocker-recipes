@@ -147,6 +147,7 @@
     }
   ],
   "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/prowlarr/",
     "sections": [
       { "name": "required", "label": "Minimum Required" },
       { "name": "optional", "label": "Optional", "collapsed": true },

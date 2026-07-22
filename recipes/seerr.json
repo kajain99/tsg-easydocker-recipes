@@ -186,6 +186,7 @@
     }
   ],
   "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/seerr/",
     "sections": [
       {
         "name": "required",

@@ -175,6 +175,7 @@
     }
   ],
   "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/cups/",
     "sections": [
       { "name": "required", "label": "Minimum Required" },
       { "name": "optional", "label": "Optional", "collapsed": true },

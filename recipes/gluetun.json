@@ -388,6 +388,7 @@
     }
   ],
   "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/gluetun/",
     "sections": [
       {
         "name": "required",

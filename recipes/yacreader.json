@@ -181,6 +181,7 @@
     }
   ],
   "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/yacreader/",
     "sections": [
       { "name": "required", "label": "Minimum Required" },
       { "name": "optional", "label": "Optional", "collapsed": true },
