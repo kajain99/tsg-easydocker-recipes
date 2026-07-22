@@ -1,6 +1,6 @@
 {
   "name": "jellyfin",
-  "version": 1.02,
+  "version": 1.03,
   "description": "Media server for streaming your movies and TV library",
   "services": {
     "jellyfin": {

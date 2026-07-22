@@ -1,6 +1,6 @@
 {
   "name": "seerr",
-  "version": 1.01,
+  "version": 1.02,
   "description": "Media request management for Jellyfin and Plex libraries",
   "services": {
     "seerr": {

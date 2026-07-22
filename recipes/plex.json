@@ -1,6 +1,6 @@
 {
   "name": "plex",
-  "version": 2.01,
+  "version": 2.02,
   "description": "Media server for streaming your movies and TV library with Plex",
   "services": {
     "plex": {

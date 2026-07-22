@@ -1,6 +1,6 @@
 {
   "name": "stirling-pdf",
-  "version": 1.01,
+  "version": 1.02,
   "description": "Private browser-based PDF tools for converting, editing, signing, OCR, and organizing documents",
   "services": {
     "stirling-pdf": {

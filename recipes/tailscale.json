@@ -1,6 +1,6 @@
 {
   "name": "tailscale",
-  "version": 1.01,
+  "version": 1.02,
   "description": "Secure remote access to your NAS",
   "services": {
     "tailscale": {

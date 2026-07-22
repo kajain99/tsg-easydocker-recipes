@@ -1,6 +1,6 @@
 {
   "name": "flaresolverr",
-  "version": 1.01,
+  "version": 1.02,
   "description": "Proxy companion that helps apps bypass Cloudflare and anti-bot checks",
   "services": {
     "flaresolverr": {

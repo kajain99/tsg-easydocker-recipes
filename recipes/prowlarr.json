@@ -1,6 +1,6 @@
 {
   "name": "prowlarr",
-  "version": 1.01,
+  "version": 1.02,
   "description": "Indexer manager for Sonarr, Radarr, and other arr apps",
   "services": {
     "prowlarr": {

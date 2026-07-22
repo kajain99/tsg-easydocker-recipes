@@ -1,6 +1,6 @@
 {
   "name": "vaultwarden",
-  "version": 1.01,
+  "version": 1.02,
   "description": "Lightweight self-hosted password manager compatible with Bitwarden clients",
   "services": {
     "vaultwarden": {

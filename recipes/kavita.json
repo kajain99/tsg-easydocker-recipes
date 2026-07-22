@@ -1,6 +1,6 @@
 {
   "name": "kavita",
-  "version": 1.03,
+  "version": 1.04,
   "description": "Self-hosted reading server for manga, comics, and ebooks",
   "services": {
     "kavita": {

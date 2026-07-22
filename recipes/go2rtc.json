@@ -1,6 +1,6 @@
 {
   "name": "go2rtc",
-  "version": 1.02,
+  "version": 1.03,
   "description": "USB camera gateway for creating go2rtc streams through the web UI and config file",
   "services": {
     "go2rtc": {

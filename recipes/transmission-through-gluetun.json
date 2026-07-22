@@ -1,6 +1,6 @@
 {
   "name": "transmission-through-gluetun",
-  "version": 1.01,
+  "version": 1.02,
   "description": "Transmission routed through an existing Gluetun container network stack",
   "services": {
     "transmission": {

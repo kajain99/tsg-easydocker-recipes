@@ -1,6 +1,6 @@
 {
   "name": "immich",
-  "version": 1.02,
+  "version": 1.03,
   "description": "Photo and video backup with search, AI features, and a built-in database stack",
   "services": {
     "immich-server": {

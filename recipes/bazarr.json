@@ -1,6 +1,6 @@
 {
   "name": "bazarr",
-  "version": 1.02,
+  "version": 1.03,
   "description": "Subtitle manager for movies and TV series",
   "services": {
     "bazarr": {

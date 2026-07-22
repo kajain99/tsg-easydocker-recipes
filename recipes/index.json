@@ -2,87 +2,87 @@
   "recipes": [
     {
       "name": "bazarr",
-      "version": 1.02
-    },
-    {
-      "name": "cups",
-      "version": 1.02
-    },
-    {
-      "name": "flaresolverr",
-      "version": 1.01
-    },
-    {
-      "name": "gluetun",
-      "version": 1.02
-    },
-    {
-      "name": "go2rtc",
-      "version": 1.02
-    },
-    {
-      "name": "kavita",
       "version": 1.03
     },
     {
-      "name": "komga",
+      "name": "cups",
+      "version": 1.03
+    },
+    {
+      "name": "flaresolverr",
       "version": 1.02
+    },
+    {
+      "name": "gluetun",
+      "version": 1.03
+    },
+    {
+      "name": "go2rtc",
+      "version": 1.03
+    },
+    {
+      "name": "kavita",
+      "version": 1.04
+    },
+    {
+      "name": "komga",
+      "version": 1.03
     },
     {
       "name": "tailscale",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "immich",
-      "version": 1.02
+      "version": 1.03
     },
     {
       "name": "jellyfin",
-      "version": 1.02
+      "version": 1.03
     },
     {
       "name": "nginx-proxy-manager",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "plex",
-      "version": 2.01
+      "version": 2.02
     },
     {
       "name": "prowlarr",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "radarr",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "seerr",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "sonarr",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "stirling-pdf",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "transmission",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "transmission-through-gluetun",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "vaultwarden",
-      "version": 1.01
+      "version": 1.02
     },
     {
       "name": "yacreader",
-      "version": 1.02
+      "version": 1.03
     }
   ]
 }

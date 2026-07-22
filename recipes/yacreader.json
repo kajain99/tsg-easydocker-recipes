@@ -1,6 +1,6 @@
 {
   "name": "yacreader",
-  "version": 1.02,
+  "version": 1.03,
   "description": "Comic library server for browsing and serving your YACReader collection",
   "services": {
     "yacreaderlibraryserver": {

@@ -1,6 +1,6 @@
 {
   "name": "transmission",
-  "version": 1.01,
+  "version": 1.02,
   "description": "BitTorrent client with a web UI and persistent config",
   "services": {
     "transmission": {

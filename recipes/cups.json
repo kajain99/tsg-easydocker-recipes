@@ -1,6 +1,6 @@
 {
   "name": "cups",
-  "version": 1.02,
+  "version": 1.03,
   "description": "CUPS print server with USB printer access and a browser-based admin interface",
   "services": {
     "cups": {
