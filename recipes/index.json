@@ -1,6 +1,10 @@
 {
   "recipes": [
     {
+      "name": "bentopdf",
+      "version": 1
+    },
+    {
       "name": "bazarr",
       "version": 1.03
     },
