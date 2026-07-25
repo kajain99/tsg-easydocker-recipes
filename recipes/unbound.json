@@ -1,0 +1,117 @@
+{
+  "name": "unbound",
+  "version": 1,
+  "description": "Validating, recursive, and caching DNS resolver",
+  "services": {
+    "unbound": {
+      "container_name": "${UNBOUND_CONTAINER_NAME}",
+      "image": "${UNBOUND_IMAGE}",
+      "ports": [
+        "${UNBOUND_DNS_TCP_MAPPING}",
+        "${UNBOUND_DNS_UDP_MAPPING}"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${UNBOUND_NETWORK_MODE_MODE}",
+      "networks": "${UNBOUND_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${UNBOUND_NETWORK_MODE_DEFINITIONS}",
+  "fields": [
+    {
+      "name": "UNBOUND_DNS_TCP_MAPPING",
+      "label": "R1: DNS TCP Port Mapping",
+      "section": "required",
+      "input_type": "text",
+      "required": false,
+      "default": "5553:53/tcp",
+      "hidden_when": {
+        "UNBOUND_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Publishes Unbound DNS over TCP on host port <code>5553</code> and container port <code>53</code>.<br>The mapping is omitted automatically in host mode."
+    },
+    {
+      "name": "UNBOUND_DNS_UDP_MAPPING",
+      "label": "R2: DNS UDP Port Mapping",
+      "section": "required",
+      "input_type": "text",
+      "required": false,
+      "default": "5553:53/udp",
+      "hidden_when": {
+        "UNBOUND_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Publishes Unbound DNS over UDP on host port <code>5553</code> and container port <code>53</code>.<br>The mapping is omitted automatically in host mode."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O1: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "UNBOUND_NETWORK_MODE",
+      "label": "O2: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code>, <code>Host Mode</code>, or an existing Docker network such as <code>dns-network</code>.<br>Bridge or an existing network keeps host port <code>5553</code>. Host mode removes port translation and Unbound listens directly on host port <code>53</code>."
+    },
+    {
+      "name": "UNBOUND_IMAGE",
+      "label": "A1: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "klutchell/unbound:latest",
+      "docs_url": "https://hub.docker.com/r/klutchell/unbound",
+      "docs_label": "Image documentation",
+      "help": "Docker image used for Unbound.<br>Change this only if you want a different tag or image source."
+    },
+    {
+      "name": "UNBOUND_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    }
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/unbound/",
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "Unbound is a validating, recursive, and caching DNS resolver that can be used directly or as the upstream resolver for AdGuard Home.",
+    "what_happens": [
+      "An Unbound container will be created using the klutchell/unbound image",
+      "DNS will be published over both TCP and UDP on host port 5553 in bridge or selected-network mode",
+      "You can create a new bridge, use host networking, or attach Unbound to an existing network such as dns-network",
+      "When AdGuard Home shares the same Docker network, configure its upstream DNS server as unbound:53",
+      "When AdGuard Home reaches Unbound through the Docker host, configure its upstream DNS server as the host address on port 5553",
+      "Host mode does not use port translation and therefore makes Unbound listen directly on host port 53"
+    ],
+    "data_location": "The default image configuration is built into the container; this recipe does not create or mount persistent data folders."
+  }
+}

@@ -1,0 +1,266 @@
+{
+    "name":  "audiobookshelf",
+    "version":  5,
+    "description":  "Self-hosted audiobook and podcast server with progress syncing",
+    "services":  {
+                     "audiobookshelf":  {
+                                            "container_name":  "${AUDIOBOOKSHELF_CONTAINER_NAME}",
+                                            "image":  "${AUDIOBOOKSHELF_IMAGE}",
+                                            "user":  "${AUDIOBOOKSHELF_USER}",
+                                            "ports":  [
+                                                          "${AUDIOBOOKSHELF_PORT}:${AUDIOBOOKSHELF_INTERNAL_PORT}"
+                                                      ],
+                                            "volumes":  [
+                                                            "${AUDIOBOOKSHELF_CONFIG_LOCATION}:${AUDIOBOOKSHELF_CONFIG_TARGET}",
+                                                            "${AUDIOBOOKSHELF_METADATA_LOCATION}:${AUDIOBOOKSHELF_METADATA_TARGET}",
+                                                            "${AUDIOBOOKS_LOCATION}:${AUDIOBOOKS_TARGET}",
+                                                            "${PODCASTS_LOCATION}:${PODCASTS_TARGET}",
+                                                            "${AUDIOBOOKSHELF_EXTRA_MOUNT_1}",
+                                                            "${AUDIOBOOKSHELF_EXTRA_MOUNT_2}",
+                                                            "${AUDIOBOOKSHELF_EXTRA_MOUNT_3}"
+                                                        ],
+                                            "environment":  {
+                                                                "TZ":  "${TZ}"
+                                                            },
+                                            "restart":  "${RESTART_POLICY}"
+                                        }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open Audiobookshelf",
+                          "service":  "audiobookshelf",
+                          "port":  "${AUDIOBOOKSHELF_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "AUDIOBOOKSHELF_PORT",
+                       "label":  "R1: App Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "13378",
+                       "help":  "Host port used to open Audiobookshelf in your browser.\u003cbr\u003eThe container always listens internally on port \u003ccode\u003e80\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "AUDIOBOOKSHELF_CONFIG_LOCATION",
+                       "label":  "R2: Config Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./config",
+                       "help":  "Stores the Audiobookshelf SQLite database and configuration.\u003cbr\u003e\u003cstrong\u003eKeep this folder on the same physical NAS that runs the container. Do not place it on a remotely mounted network share.\u003c/strong\u003e"
+                   },
+                   {
+                       "name":  "AUDIOBOOKSHELF_METADATA_LOCATION",
+                       "label":  "R3: Metadata Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./metadata",
+                       "help":  "Stores cover images, author images, logs, downloaded metadata, and backups."
+                   },
+                   {
+                       "name":  "AUDIOBOOKS_LOCATION",
+                       "label":  "R4: Audiobooks Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./audiobooks",
+                       "help":  "Host folder containing your audiobooks.\u003cbr\u003eAfter deployment, create an Audiobookshelf library that points to \u003ccode\u003e/audiobooks\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "PODCASTS_LOCATION",
+                       "label":  "R5: Podcasts Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./podcasts",
+                       "help":  "Host folder used for podcasts.\u003cbr\u003eAfter deployment, create a podcast library that points to \u003ccode\u003e/podcasts\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "TZ",
+                       "label":  "R6: Timezone",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "Asia/Dubai",
+                       "help":  "Timezone used by Audiobookshelf logs and scheduled tasks.\u003cbr\u003eExample: \u003ccode\u003eAsia/Dubai\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O1: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "label":  "Unless Stopped",
+                                           "value":  "unless-stopped"
+                                       },
+                                       {
+                                           "label":  "Always",
+                                           "value":  "always"
+                                       },
+                                       {
+                                           "label":  "On Failure",
+                                           "value":  "on-failure"
+                                       },
+                                       {
+                                           "label":  "No",
+                                           "value":  "no"
+                                       }
+                                   ],
+                       "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "AUDIOBOOKSHELF_USER",
+                       "label":  "O2: Run as User",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "",
+                       "help":  "Optional Linux user and group in \u003ccode\u003eUID:GID\u003c/code\u003e format, for example \u003ccode\u003e1000:1000\u003c/code\u003e.\u003cbr\u003eLeave blank initially. Audiobookshelf does not use PUID or PGID environment variables."
+                   },
+                   {
+                       "name":  "AUDIOBOOKSHELF_EXTRA_MOUNT_1",
+                       "label":  "A1: Extra Media Mount 1",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "",
+                       "help":  "Optional additional media mount in \u003ccode\u003e/host/path:/container/path\u003c/code\u003e format.\u003cbr\u003eExample: \u003ccode\u003e/share/English_Audiobooks:/english\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "AUDIOBOOKSHELF_EXTRA_MOUNT_2",
+                       "label":  "A2: Extra Media Mount 2",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "",
+                       "help":  "Optional additional media mount.\u003cbr\u003eExample: \u003ccode\u003e/share/Hindi_Audiobooks:/hindi\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "AUDIOBOOKSHELF_EXTRA_MOUNT_3",
+                       "label":  "A3: Extra Media Mount 3",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "",
+                       "help":  "Optional additional media mount.\u003cbr\u003eExample: \u003ccode\u003e/share/Children_Audiobooks:/children\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "AUDIOBOOKSHELF_IMAGE",
+                       "label":  "A4: Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "ghcr.io/advplyr/audiobookshelf:latest",
+                       "docs_url":  "https://www.audiobookshelf.org/docs/",
+                       "docs_label":  "Official help",
+                       "help":  "Official Audiobookshelf Docker image.\u003cbr\u003eChange this only if you want a different tag or image source."
+                   },
+                   {
+                       "name":  "AUDIOBOOKSHELF_CONTAINER_NAME",
+                       "label":  "Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the container name from the project name."
+                   },
+                   {
+                       "name":  "AUDIOBOOKSHELF_INTERNAL_PORT",
+                       "label":  "Internal App Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "80",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal Audiobookshelf web port."
+                   },
+                   {
+                       "name":  "AUDIOBOOKSHELF_CONFIG_TARGET",
+                       "label":  "Config Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/config",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal path for the database and configuration."
+                   },
+                   {
+                       "name":  "AUDIOBOOKSHELF_METADATA_TARGET",
+                       "label":  "Metadata Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/metadata",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal path for metadata, images, logs, and backups."
+                   },
+                   {
+                       "name":  "AUDIOBOOKS_TARGET",
+                       "label":  "Audiobooks Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/audiobooks",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal path for the main audiobook library."
+                   },
+                   {
+                       "name":  "PODCASTS_TARGET",
+                       "label":  "Podcasts Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/podcasts",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal path for the podcast library."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/audiobookshelf/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "name":  "optional",
+                                    "label":  "Optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "advanced",
+                                    "label":  "Advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "readonly",
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "Audiobookshelf is a self-hosted audiobook and podcast server with multi-user access, progress syncing, metadata management, and mobile apps.",
+               "what_happens":  [
+                                    "An Audiobookshelf container will be created using the official image",
+                                    "The web interface will be published on host port 13378 by default",
+                                    "The config database and metadata will be stored in separate persistent folders",
+                                    "Audiobook and podcast folders will be mounted at /audiobooks and /podcasts",
+                                    "Up to three additional media libraries can be mounted under Advanced",
+                                    "If you publish Audiobookshelf through a reverse proxy, WebSocket support must be enabled",
+                                    "An optional UID:GID value can be supplied through the Compose user setting"
+                                ],
+               "data_location":  "The config folder contains the SQLite database and must remain on local storage attached to the NAS running the container. Metadata and media folders may use the locations selected above."
+           }
+}

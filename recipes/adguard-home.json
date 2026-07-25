@@ -1,0 +1,503 @@
+{
+    "name":  "adguard-home",
+    "version":  3,
+    "description":  "Network-wide DNS server that blocks ads, trackers, and malicious domains",
+    "services":  {
+                     "adguard-home":  {
+                                          "container_name":  "${ADGUARD_CONTAINER_NAME}",
+                                          "image":  "${ADGUARD_IMAGE}",
+                                          "ports":  [
+                                                        "${ADGUARD_DNS_TCP_MAPPING}",
+                                                        "${ADGUARD_DNS_UDP_MAPPING}",
+                                                        "${ADGUARD_DHCP_67_UDP_MAPPING}",
+                                                        "${ADGUARD_DHCP_68_TCP_MAPPING}",
+                                                        "${ADGUARD_DHCP_68_UDP_MAPPING}",
+                                                        "${ADGUARD_WEB_MAPPING}",
+                                                        "${ADGUARD_HTTPS_TCP_MAPPING}",
+                                                        "${ADGUARD_HTTPS_UDP_MAPPING}",
+                                                        "${ADGUARD_SETUP_MAPPING}",
+                                                        "${ADGUARD_DOT_MAPPING}",
+                                                        "${ADGUARD_DOQ_784_MAPPING}",
+                                                        "${ADGUARD_DOQ_853_MAPPING}",
+                                                        "${ADGUARD_DOQ_8853_MAPPING}",
+                                                        "${ADGUARD_DNSCRYPT_TCP_MAPPING}",
+                                                        "${ADGUARD_DNSCRYPT_UDP_MAPPING}"
+                                                    ],
+                                          "volumes":  [
+                                                          "${ADGUARD_WORK_LOCATION}:${ADGUARD_WORK_TARGET}",
+                                                          "${ADGUARD_CONFIG_LOCATION}:${ADGUARD_CONFIG_TARGET}"
+                                                      ],
+                                          "restart":  "${RESTART_POLICY}",
+                                          "hostname":  "${ADGUARD_HOSTNAME}",
+                                          "cap_add":  [
+                                                          "${ADGUARD_CAP_NET_ADMIN}"
+                                                      ],
+                                          "network_mode":  "${ADGUARD_NETWORK_MODE_MODE}",
+                                          "networks":  "${ADGUARD_NETWORK_MODE_SERVICE_NETWORKS}"
+                                      }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open AdGuard Home Setup",
+                          "service":  "adguard-home",
+                          "port":  "${ADGUARD_SETUP_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      },
+                      {
+                          "label":  "Open AdGuard Home",
+                          "service":  "adguard-home",
+                          "port":  "${ADGUARD_WEB_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "ADGUARD_DNS_PORT",
+                       "label":  "DNS Host Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "53",
+                       "help":  "Recipe-managed host port for plain DNS over TCP and UDP.",
+                       "editable":  false
+                   },
+                   {
+                       "name":  "ADGUARD_WEB_PORT",
+                       "label":  "Web Interface Host Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "80",
+                       "help":  "Recipe-managed host port for the AdGuard Home web interface after setup.",
+                       "editable":  false
+                   },
+                   {
+                       "name":  "ADGUARD_SETUP_PORT",
+                       "label":  "Initial Setup Host Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "3000",
+                       "help":  "Recipe-managed host port for the first-run setup wizard.",
+                       "editable":  false
+                   },
+                   {
+                       "name":  "ADGUARD_WORK_LOCATION",
+                       "label":  "R4: Work Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./work",
+                       "help":  "Stores AdGuard Home runtime data, filters, query logs, and statistics."
+                   },
+                   {
+                       "name":  "ADGUARD_CONFIG_LOCATION",
+                       "label":  "R5: Config Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./conf",
+                       "help":  "Stores the persistent \u003ccode\u003eAdGuardHome.yaml\u003c/code\u003e configuration file."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O1: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "label":  "Unless Stopped",
+                                           "value":  "unless-stopped"
+                                       },
+                                       {
+                                           "label":  "Always",
+                                           "value":  "always"
+                                       },
+                                       {
+                                           "label":  "On Failure",
+                                           "value":  "on-failure"
+                                       },
+                                       {
+                                           "label":  "No",
+                                           "value":  "no"
+                                       }
+                                   ],
+                       "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "ADGUARD_IMAGE",
+                       "label":  "A1: Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "adguard/adguardhome:latest",
+                       "docs_url":  "https://github.com/AdguardTeam/AdGuardHome/wiki/Docker",
+                       "docs_label":  "Official help",
+                       "help":  "Official Docker image used for AdGuard Home.\u003cbr\u003eChange this only if you want a different tag or image source."
+                   },
+                   {
+                       "name":  "ADGUARD_CONTAINER_NAME",
+                       "label":  "Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the container name from the project name."
+                   },
+                   {
+                       "name":  "ADGUARD_INTERNAL_DNS_PORT",
+                       "label":  "Internal DNS Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "53",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal TCP and UDP DNS port."
+                   },
+                   {
+                       "name":  "ADGUARD_INTERNAL_WEB_PORT",
+                       "label":  "Internal Web Interface Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "80",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal web interface port."
+                   },
+                   {
+                       "name":  "ADGUARD_INTERNAL_SETUP_PORT",
+                       "label":  "Internal Setup Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "3000",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal first-run setup port."
+                   },
+                   {
+                       "name":  "ADGUARD_WORK_TARGET",
+                       "label":  "Work Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/opt/adguardhome/work",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal path for AdGuard Home runtime data."
+                   },
+                   {
+                       "name":  "ADGUARD_CONFIG_TARGET",
+                       "label":  "Config Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/opt/adguardhome/conf",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal path for AdGuard Home configuration."
+                   },
+                   {
+                       "name":  "ADGUARD_NETWORK_MODE",
+                       "label":  "O2: Network",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "__create_bridge__",
+                       "data_type":  "docker_network",
+                       "options_source":  "docker_networks",
+                       "help":  "Choose \u003ccode\u003eCreate New Bridge\u003c/code\u003e, \u003ccode\u003eHost Mode\u003c/code\u003e, or an existing Docker network. Pre-create a macvlan network in Docker, then select it here. Host or macvlan networking is recommended when using DHCP; host mode also lets AdGuard Home see original client IP addresses."
+                   },
+                   {
+                       "name":  "ADGUARD_DNS_TCP_MAPPING",
+                       "label":  "A2: Plain DNS TCP Mapping",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "53:53/tcp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "Recipe-managed plain DNS TCP mapping for bridge or selected-network mode. It is omitted automatically in host mode.",
+                       "editable":  false
+                   },
+                   {
+                       "name":  "ADGUARD_DNS_UDP_MAPPING",
+                       "label":  "A3: Plain DNS UDP Mapping",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "53:53/udp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "Recipe-managed plain DNS UDP mapping for bridge or selected-network mode. It is omitted automatically in host mode.",
+                       "editable":  false
+                   },
+                   {
+                       "name":  "ADGUARD_DHCP_67_UDP_MAPPING",
+                       "label":  "A4: DHCP Server Port 67 UDP",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "67:67/udp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "DHCP server traffic. Host or macvlan networking is recommended for DHCP broadcasts."
+                   },
+                   {
+                       "name":  "ADGUARD_DHCP_68_TCP_MAPPING",
+                       "label":  "A5: DHCP Client Port 68 TCP",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "68:68/tcp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "DHCP client traffic over TCP. Host or macvlan networking is recommended for DHCP."
+                   },
+                   {
+                       "name":  "ADGUARD_DHCP_68_UDP_MAPPING",
+                       "label":  "A6: DHCP Client Port 68 UDP",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "68:68/udp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "DHCP client traffic over UDP. Host or macvlan networking is recommended for DHCP broadcasts."
+                   },
+                   {
+                       "name":  "ADGUARD_WEB_MAPPING",
+                       "label":  "A7: Web Interface Mapping",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "80:80/tcp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "Recipe-managed web interface and DNS-over-HTTPS HTTP mapping for bridge or selected-network mode. It is omitted automatically in host mode.",
+                       "editable":  false
+                   },
+                   {
+                       "name":  "ADGUARD_HTTPS_TCP_MAPPING",
+                       "label":  "A8: HTTPS TCP",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "443:443/tcp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "HTTPS and DNS-over-HTTPS traffic over TCP."
+                   },
+                   {
+                       "name":  "ADGUARD_HTTPS_UDP_MAPPING",
+                       "label":  "A9: HTTPS UDP",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "443:443/udp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "HTTPS HTTP/3 and related encrypted DNS traffic over UDP."
+                   },
+                   {
+                       "name":  "ADGUARD_SETUP_MAPPING",
+                       "label":  "A10: Initial Setup Mapping",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "3000:3000/tcp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "Recipe-managed first-run setup mapping for bridge or selected-network mode. It is omitted automatically in host mode.",
+                       "editable":  false
+                   },
+                   {
+                       "name":  "ADGUARD_DOT_MAPPING",
+                       "label":  "A11: DNS-over-TLS",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "853:853/tcp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "DNS-over-TLS service over TCP port 853."
+                   },
+                   {
+                       "name":  "ADGUARD_DOQ_784_MAPPING",
+                       "label":  "A12: DNS-over-QUIC Port 784",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "784:784/udp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "DNS-over-QUIC traffic over UDP port 784."
+                   },
+                   {
+                       "name":  "ADGUARD_DOQ_853_MAPPING",
+                       "label":  "A13: DNS-over-QUIC Port 853",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "853:853/udp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "DNS-over-QUIC traffic over UDP port 853."
+                   },
+                   {
+                       "name":  "ADGUARD_DOQ_8853_MAPPING",
+                       "label":  "A14: DNS-over-QUIC Port 8853",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "8853:8853/udp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "DNS-over-QUIC traffic over UDP port 8853."
+                   },
+                   {
+                       "name":  "ADGUARD_DNSCRYPT_TCP_MAPPING",
+                       "label":  "A15: DNSCrypt TCP",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "5443:5443/tcp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "DNSCrypt traffic over TCP port 5443."
+                   },
+                   {
+                       "name":  "ADGUARD_DNSCRYPT_UDP_MAPPING",
+                       "label":  "A16: DNSCrypt UDP",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "5443:5443/udp",
+                       "hidden_when":  {
+                                           "ADGUARD_NETWORK_MODE":  [
+                                                                        "__host__"
+                                                                    ]
+                                       },
+                       "omit_when_inactive":  true,
+                       "help":  "DNSCrypt traffic over UDP port 5443."
+                   },
+                   {
+                       "name":  "ADGUARD_HOSTNAME",
+                       "label":  "Container Hostname",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "adguardhome",
+                       "editable":  false,
+                       "help":  "Recipe-managed hostname assigned inside the container."
+                   },
+                   {
+                       "name":  "ADGUARD_CAP_NET_ADMIN",
+                       "label":  "Linux Capability: NET_ADMIN",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "NET_ADMIN",
+                       "editable":  false,
+                       "help":  "Allows AdGuard Home to perform network administration needed for its DHCP server."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/adguard-home/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "name":  "optional",
+                                    "label":  "Optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "advanced",
+                                    "label":  "Advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "readonly",
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "AdGuard Home provides network-wide ad and tracker blocking, encrypted DNS, and optional DHCP service by acting as the DNS server for your devices.",
+               "what_happens":  [
+                                    "An AdGuard Home container will be created using the official image",
+                                    "Plain DNS, DHCP, web, encrypted DNS, DNS-over-QUIC, and DNSCrypt ports are available in bridge or selected-network mode",
+                                    "NET_ADMIN is added so AdGuard Home can provide DHCP service",
+                                    "Choose a new Compose bridge, host networking, or an existing Docker network such as a pre-created macvlan network",
+                                    "Port mappings are omitted automatically in host mode because the container uses the host network directly",
+                                    "Runtime data and configuration will be stored in the folders you choose",
+                                    "If port 53 is already in use by systemd-resolved or another DNS service, deployment will fail until that conflict is resolved"
+                                ],
+               "data_location":  "Relative paths are stored inside this app\u0027s project folder under the mounted EasyDocker base config path."
+           },
+    "networks":  "${ADGUARD_NETWORK_MODE_DEFINITIONS}"
+}

@@ -1,6 +1,14 @@
 {
   "recipes": [
     {
+      "name": "adguard-home",
+      "version": 3
+    },
+    {
+      "name": "audiobookshelf",
+      "version": 5
+    },
+    {
       "name": "bentopdf",
       "version": 1
     },
@@ -49,6 +57,10 @@
       "version": 1.02
     },
     {
+      "name": "pairdrop",
+      "version": 1
+    },
+    {
       "name": "plex",
       "version": 2.02
     },
@@ -79,6 +91,10 @@
     {
       "name": "transmission-through-gluetun",
       "version": 1.02
+    },
+    {
+      "name": "unbound",
+      "version": 1
     },
     {
       "name": "vaultwarden",
