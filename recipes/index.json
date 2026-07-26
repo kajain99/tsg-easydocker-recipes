@@ -61,6 +61,10 @@
       "version": 1
     },
     {
+      "name": "paperless-ngx",
+      "version": 1
+    },
+    {
       "name": "plex",
       "version": 2.02
     },
