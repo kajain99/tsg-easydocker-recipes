@@ -17,6 +17,14 @@
       "version": 1.03
     },
     {
+      "name": "changedetection-io",
+      "version": 1
+    },
+    {
+      "name": "changedetection-io-browser",
+      "version": 1.01
+    },
+    {
       "name": "cups",
       "version": 1.03
     },
@@ -33,12 +41,20 @@
       "version": 1.03
     },
     {
+      "name": "gotify",
+      "version": 1
+    },
+    {
       "name": "kavita",
       "version": 1.04
     },
     {
       "name": "komga",
       "version": 1.03
+    },
+    {
+      "name": "metube",
+      "version": 1
     },
     {
       "name": "tailscale",
@@ -63,6 +79,10 @@
     {
       "name": "paperless-ngx",
       "version": 1
+    },
+    {
+      "name": "paperless-ngx-tika",
+      "version": 1.01
     },
     {
       "name": "plex",

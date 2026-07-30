@@ -1,0 +1,597 @@
+{
+    "name":  "paperless-ngx-tika",
+    "version":  1.01,
+    "description":  "Document management with OCR, Office document support, PostgreSQL, Valkey, Apache Tika, and Gotenberg",
+    "services":  {
+                     "broker":  {
+                                    "container_name":  "${PAPERLESS_BROKER_CONTAINER_NAME}",
+                                    "image":  "${PAPERLESS_BROKER_IMAGE}",
+                                    "restart":  "${PAPERLESS_RESTART_POLICY}",
+                                    "volumes":  [
+                                                    "${REDIS_DATA_LOCATION}:${PAPERLESS_REDIS_DATA_TARGET}"
+                                                ]
+                                },
+                     "db":  {
+                                "container_name":  "${PAPERLESS_DB_CONTAINER_NAME}",
+                                "image":  "${PAPERLESS_DATABASE_IMAGE}",
+                                "restart":  "${PAPERLESS_RESTART_POLICY}",
+                                "volumes":  [
+                                                "${DB_DATA_LOCATION}:${PAPERLESS_DB_DATA_TARGET}"
+                                            ],
+                                "environment":  {
+                                                    "POSTGRES_DB":  "${PAPERLESS_DB_NAME}",
+                                                    "POSTGRES_USER":  "${PAPERLESS_DB_USER}",
+                                                    "POSTGRES_PASSWORD":  "${PAPERLESS_DB_PASSWORD}"
+                                                }
+                            },
+                     "webserver":  {
+                                       "container_name":  "${PAPERLESS_CONTAINER_NAME}",
+                                       "image":  "${PAPERLESS_IMAGE}",
+                                       "restart":  "${PAPERLESS_RESTART_POLICY}",
+                                       "depends_on":  [
+                                                          "${PAPERLESS_DEPENDS_ON_DB}",
+                                                          "${PAPERLESS_DEPENDS_ON_BROKER}",
+                                                          "${PAPERLESS_DEPENDS_ON_GOTENBERG}",
+                                                          "${PAPERLESS_DEPENDS_ON_TIKA}"
+                                                      ],
+                                       "ports":  [
+                                                     "${PAPERLESS_PORT}:${PAPERLESS_INTERNAL_PORT}"
+                                                 ],
+                                       "volumes":  [
+                                                       "${DATA_LOCATION}:${PAPERLESS_DATA_TARGET}",
+                                                       "${MEDIA_LOCATION}:${PAPERLESS_MEDIA_TARGET}",
+                                                       "${EXPORT_LOCATION}:${PAPERLESS_EXPORT_TARGET}",
+                                                       "${CONSUME_LOCATION}:${PAPERLESS_CONSUME_TARGET}"
+                                                   ],
+                                       "environment":  {
+                                                           "PAPERLESS_REDIS":  "${PAPERLESS_REDIS_URL}",
+                                                           "PAPERLESS_DBHOST":  "${PAPERLESS_DB_HOST}",
+                                                           "PAPERLESS_DBENGINE":  "${PAPERLESS_DB_ENGINE}",
+                                                           "PAPERLESS_DBNAME":  "${PAPERLESS_DB_NAME}",
+                                                           "PAPERLESS_DBUSER":  "${PAPERLESS_DB_USER}",
+                                                           "PAPERLESS_DBPASS":  "${PAPERLESS_DB_PASSWORD}",
+                                                           "PAPERLESS_SECRET_KEY":  "${PAPERLESS_SECRET_KEY}",
+                                                           "PAPERLESS_TIME_ZONE":  "${TZ}",
+                                                           "PAPERLESS_OCR_LANGUAGE":  "${PAPERLESS_OCR_LANGUAGE}",
+                                                           "USERMAP_UID":  "${PAPERLESS_UID}",
+                                                           "USERMAP_GID":  "${PAPERLESS_GID}",
+                                                           "PAPERLESS_TIKA_ENABLED":  "${PAPERLESS_TIKA_ENABLED}",
+                                                           "PAPERLESS_TIKA_GOTENBERG_ENDPOINT":  "${PAPERLESS_GOTENBERG_ENDPOINT}",
+                                                           "PAPERLESS_TIKA_ENDPOINT":  "${PAPERLESS_TIKA_ENDPOINT}"
+                                                       }
+                                   },
+                     "gotenberg":  {
+                                       "container_name":  "${PAPERLESS_GOTENBERG_CONTAINER_NAME}",
+                                       "image":  "${PAPERLESS_GOTENBERG_IMAGE}",
+                                       "restart":  "${PAPERLESS_RESTART_POLICY}",
+                                       "command":  [
+                                                       "${PAPERLESS_GOTENBERG_COMMAND}",
+                                                       "${PAPERLESS_GOTENBERG_DISABLE_JAVASCRIPT_ARG}",
+                                                       "${PAPERLESS_GOTENBERG_ALLOW_LIST_ARG}"
+                                                   ]
+                                   },
+                     "tika":  {
+                                  "container_name":  "${PAPERLESS_TIKA_CONTAINER_NAME}",
+                                  "image":  "${PAPERLESS_TIKA_IMAGE}",
+                                  "restart":  "${PAPERLESS_RESTART_POLICY}"
+                              }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open Paperless-ngx",
+                          "service":  "webserver",
+                          "port":  "${PAPERLESS_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "PAPERLESS_PORT",
+                       "label":  "R1: App Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8000",
+                       "help":  "The web app will open on this host port."
+                   },
+                   {
+                       "name":  "PAPERLESS_DB_PASSWORD",
+                       "label":  "R2: Database Password",
+                       "section":  "required",
+                       "input_type":  "password",
+                       "required":  true,
+                       "default":  "",
+                       "help":  "Choose a strong PostgreSQL password."
+                   },
+                   {
+                       "name":  "PAPERLESS_SECRET_KEY",
+                       "label":  "R3: Secret Key",
+                       "section":  "required",
+                       "input_type":  "password",
+                       "required":  true,
+                       "default":  "",
+                       "help":  "Choose a long random value used to secure sessions.",
+                       "generator":  {
+                                         "type":  "hex",
+                                         "bytes":  32
+                                     }
+                   },
+                   {
+                       "name":  "DATA_LOCATION",
+                       "label":  "R4: Data Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./data",
+                       "help":  "Host path for application data."
+                   },
+                   {
+                       "name":  "MEDIA_LOCATION",
+                       "label":  "R5: Media Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./media",
+                       "help":  "Host path for documents and thumbnails."
+                   },
+                   {
+                       "name":  "DB_DATA_LOCATION",
+                       "label":  "R6: Database Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./postgres",
+                       "help":  "Host path for PostgreSQL data."
+                   },
+                   {
+                       "name":  "REDIS_DATA_LOCATION",
+                       "label":  "R7: Valkey Data Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./valkey",
+                       "help":  "Host path for Valkey data."
+                   },
+                   {
+                       "name":  "CONSUME_LOCATION",
+                       "label":  "R8: Consume Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./consume",
+                       "help":  "Documents placed here are imported automatically."
+                   },
+                   {
+                       "name":  "EXPORT_LOCATION",
+                       "label":  "R9: Export Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./export",
+                       "help":  "Host path used by the document exporter."
+                   },
+                   {
+                       "name":  "TZ",
+                       "label":  "O1: Timezone",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "Etc/UTC",
+                       "help":  "Timezone such as Asia/Dubai or Etc/UTC."
+                   },
+                   {
+                       "name":  "PAPERLESS_OCR_LANGUAGE",
+                       "label":  "O2: OCR Language",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "eng",
+                       "help":  "Three-letter OCR language code."
+                   },
+                   {
+                       "name":  "PAPERLESS_UID",
+                       "label":  "O3: User ID",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1000",
+                       "help":  "Host user ID for bind-mounted files."
+                   },
+                   {
+                       "name":  "PAPERLESS_GID",
+                       "label":  "O4: Group ID",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1000",
+                       "help":  "Host group ID for bind-mounted files."
+                   },
+                   {
+                       "name":  "PAPERLESS_RESTART_POLICY",
+                       "label":  "O5: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "value":  "unless-stopped",
+                                           "label":  "Unless Stopped"
+                                       },
+                                       {
+                                           "value":  "always",
+                                           "label":  "Always"
+                                       },
+                                       {
+                                           "value":  "on-failure",
+                                           "label":  "On Failure"
+                                       },
+                                       {
+                                           "value":  "no",
+                                           "label":  "No"
+                                       }
+                                   ],
+                       "help":  "Controls automatic service restarts."
+                   },
+                   {
+                       "name":  "PAPERLESS_IMAGE",
+                       "label":  "A1: Paperless-ngx Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "ghcr.io/paperless-ngx/paperless-ngx:latest",
+                       "docs_url":  "https://docs.paperless-ngx.com/setup/",
+                       "docs_label":  "Official help",
+                       "help":  "Docker image used for the webserver."
+                   },
+                   {
+                       "name":  "PAPERLESS_DB_NAME",
+                       "label":  "A2: Database Name",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "paperless",
+                       "help":  "PostgreSQL database used by Paperless-ngx."
+                   },
+                   {
+                       "name":  "PAPERLESS_DB_USER",
+                       "label":  "A3: Database User",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "paperless",
+                       "help":  "PostgreSQL user used by Paperless-ngx."
+                   },
+                   {
+                       "name":  "PAPERLESS_CONTAINER_NAME",
+                       "label":  "Webserver Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}_webserver",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_DB_CONTAINER_NAME",
+                       "label":  "Database Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}_db",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_BROKER_CONTAINER_NAME",
+                       "label":  "Broker Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}_broker",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_DATABASE_IMAGE",
+                       "label":  "Database Image",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "docker.io/library/postgres:18",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_BROKER_IMAGE",
+                       "label":  "Broker Image",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "docker.io/valkey/valkey:9-alpine",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_INTERNAL_PORT",
+                       "label":  "Internal App Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8000",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_REDIS_URL",
+                       "label":  "Internal Broker URL",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "redis://broker:6379",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_DB_HOST",
+                       "label":  "Internal Database Host",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "db",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_DB_ENGINE",
+                       "label":  "Database Engine",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "postgresql",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_DEPENDS_ON_DB",
+                       "label":  "Depends On: Database",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "db",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_DEPENDS_ON_BROKER",
+                       "label":  "Depends On: Broker",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "broker",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_DATA_TARGET",
+                       "label":  "Data Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/usr/src/paperless/data",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_MEDIA_TARGET",
+                       "label":  "Media Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/usr/src/paperless/media",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_EXPORT_TARGET",
+                       "label":  "Export Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/usr/src/paperless/export",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_CONSUME_TARGET",
+                       "label":  "Consume Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/usr/src/paperless/consume",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_DB_DATA_TARGET",
+                       "label":  "Database Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/var/lib/postgresql",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_REDIS_DATA_TARGET",
+                       "label":  "Broker Data Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/data",
+                       "editable":  false,
+                       "help":  "Recipe-managed value."
+                   },
+                   {
+                       "name":  "PAPERLESS_GOTENBERG_CONTAINER_NAME",
+                       "label":  "Gotenberg Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}_gotenberg",
+                       "editable":  false,
+                       "help":  "EasyDocker names the Gotenberg container from the project name."
+                   },
+                   {
+                       "name":  "PAPERLESS_TIKA_CONTAINER_NAME",
+                       "label":  "Tika Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}_tika",
+                       "editable":  false,
+                       "help":  "EasyDocker names the Apache Tika container from the project name."
+                   },
+                   {
+                       "name":  "PAPERLESS_GOTENBERG_IMAGE",
+                       "label":  "Gotenberg Image",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "docker.io/gotenberg/gotenberg:8.34",
+                       "editable":  false,
+                       "help":  "Recipe-managed Gotenberg image."
+                   },
+                   {
+                       "name":  "PAPERLESS_TIKA_IMAGE",
+                       "label":  "Apache Tika Image",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "docker.io/apache/tika:latest",
+                       "editable":  false,
+                       "help":  "Recipe-managed Apache Tika image."
+                   },
+                   {
+                       "name":  "PAPERLESS_DEPENDS_ON_GOTENBERG",
+                       "label":  "Depends On: Gotenberg",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "gotenberg",
+                       "editable":  false,
+                       "help":  "Starts the webserver after Gotenberg."
+                   },
+                   {
+                       "name":  "PAPERLESS_DEPENDS_ON_TIKA",
+                       "label":  "Depends On: Tika",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "tika",
+                       "editable":  false,
+                       "help":  "Starts the webserver after Apache Tika."
+                   },
+                   {
+                       "name":  "PAPERLESS_TIKA_ENABLED",
+                       "label":  "Tika Integration Enabled",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1",
+                       "editable":  false,
+                       "help":  "Enables Paperless document conversion through Tika and Gotenberg."
+                   },
+                   {
+                       "name":  "PAPERLESS_GOTENBERG_ENDPOINT",
+                       "label":  "Internal Gotenberg Endpoint",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "http://gotenberg:3000",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal Gotenberg endpoint."
+                   },
+                   {
+                       "name":  "PAPERLESS_TIKA_ENDPOINT",
+                       "label":  "Internal Tika Endpoint",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "http://tika:9998",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal Apache Tika endpoint."
+                   },
+                   {
+                       "name":  "PAPERLESS_GOTENBERG_COMMAND",
+                       "label":  "Gotenberg Command",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "gotenberg",
+                       "editable":  false,
+                       "help":  "Recipe-managed Gotenberg executable."
+                   },
+                   {
+                       "name":  "PAPERLESS_GOTENBERG_DISABLE_JAVASCRIPT_ARG",
+                       "label":  "Gotenberg Disable JavaScript Argument",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "--chromium-disable-javascript=true",
+                       "editable":  false,
+                       "help":  "Disables JavaScript during Chromium conversions."
+                   },
+                   {
+                       "name":  "PAPERLESS_GOTENBERG_ALLOW_LIST_ARG",
+                       "label":  "Gotenberg Chromium Allow List",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "--chromium-allow-list=file:///tmp/.*",
+                       "editable":  false,
+                       "help":  "Restricts Chromium external access to temporary local files."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/paperless-ngx-tika/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "label":  "Optional",
+                                    "name":  "optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Advanced",
+                                    "name":  "advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "name":  "readonly",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "Paperless-ngx with Apache Tika and Gotenberg adds support for importing Office documents, including Word, Excel, and PowerPoint files.",
+               "what_happens":  [
+                                    "Five containers will be created as one compose project",
+                                    "PostgreSQL stores the application database",
+                                    "Valkey provides the task broker and cache",
+                                    "Apache Tika extracts content and metadata from Office documents",
+                                    "Gotenberg converts supported documents for Paperless-ngx, with JavaScript disabled for safer email conversion",
+                                    "Documents placed in the consume folder will be imported automatically",
+                                    "Data is stored in the folders you choose",
+                                    "The web app will open on the port you choose"
+                                ],
+               "data_location":  "Each storage field can be relative to this app\u0027s config folder or an absolute path."
+           }
+}

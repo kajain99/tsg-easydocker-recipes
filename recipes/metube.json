@@ -1,0 +1,173 @@
+{
+    "name":  "metube",
+    "version":  1,
+    "description":  "Self-hosted web interface for downloading videos and audio with yt-dlp",
+    "services":  {
+                     "metube":  {
+                                    "container_name":  "${METUBE_CONTAINER_NAME}",
+                                    "image":  "${METUBE_IMAGE}",
+                                    "restart":  "${RESTART_POLICY}",
+                                    "ports":  [
+                                                  "${METUBE_PORT}:${METUBE_INTERNAL_PORT}"
+                                              ],
+                                    "environment":  {
+                                                        "PUID":  "${PUID}",
+                                                        "PGID":  "${PGID}"
+                                                    },
+                                    "volumes":  [
+                                                    "${DOWNLOADS_LOCATION}:${METUBE_DOWNLOADS_TARGET}"
+                                                ]
+                                }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open MeTube",
+                          "service":  "metube",
+                          "port":  "${METUBE_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "METUBE_PORT",
+                       "label":  "R1: App Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8081",
+                       "help":  "Host port used to open MeTube."
+                   },
+                   {
+                       "name":  "DOWNLOADS_LOCATION",
+                       "label":  "R2: Downloads Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./downloads",
+                       "help":  "Host path where downloaded media and MeTube state will be stored."
+                   },
+                   {
+                       "name":  "PUID",
+                       "label":  "O1: User ID (PUID)",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "",
+                       "help":  "Optional user ID under which MeTube runs.\u003cbr\u003eLeave blank to use MeTube default \u003ccode\u003e1000\u003c/code\u003e. Set this only when downloaded files need to be owned by a specific NAS or Linux user."
+                   },
+                   {
+                       "name":  "PGID",
+                       "label":  "O2: Group ID (PGID)",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "",
+                       "help":  "Optional group ID under which MeTube runs.\u003cbr\u003eLeave blank to use MeTube default \u003ccode\u003e1000\u003c/code\u003e. Set this only when downloaded files need a specific NAS or Linux group."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O3: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "value":  "unless-stopped",
+                                           "label":  "Unless Stopped"
+                                       },
+                                       {
+                                           "value":  "always",
+                                           "label":  "Always"
+                                       },
+                                       {
+                                           "value":  "on-failure",
+                                           "label":  "On Failure"
+                                       },
+                                       {
+                                           "value":  "no",
+                                           "label":  "No"
+                                       }
+                                   ],
+                       "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "METUBE_IMAGE",
+                       "label":  "A1: Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "ghcr.io/alexta69/metube:latest",
+                       "docs_url":  "https://github.com/alexta69/metube",
+                       "docs_label":  "Official help",
+                       "help":  "Docker image used for MeTube.\u003cbr\u003eChange this only if you want a different tag."
+                   },
+                   {
+                       "name":  "METUBE_CONTAINER_NAME",
+                       "label":  "Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the container name from the project name."
+                   },
+                   {
+                       "name":  "METUBE_INTERNAL_PORT",
+                       "label":  "Internal App Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8081",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal MeTube web port."
+                   },
+                   {
+                       "name":  "METUBE_DOWNLOADS_TARGET",
+                       "label":  "Downloads Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/downloads",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal downloads path."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/metube/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "label":  "Optional",
+                                    "name":  "optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Advanced",
+                                    "name":  "advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "name":  "readonly",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "MeTube provides a browser-based interface for downloading video and audio from YouTube and other sites supported by yt-dlp.",
+               "what_happens":  [
+                                    "One MeTube container will be created",
+                                    "Downloaded media and persistent queue history will be stored in the folder you choose",
+                                    "The web interface will open on the port you choose",
+                                    "PUID and PGID are optional and will be omitted when left blank, allowing MeTube to use its defaults"
+                                ],
+               "data_location":  "Stored relative to this app\u0027s config folder unless you enter an absolute path."
+           }
+}

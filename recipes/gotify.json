@@ -1,0 +1,177 @@
+{
+    "name":  "gotify",
+    "version":  1,
+    "description":  "Self-hosted notification server for sending and receiving messages",
+    "services":  {
+                     "gotify":  {
+                                    "container_name":  "${GOTIFY_CONTAINER_NAME}",
+                                    "image":  "${GOTIFY_IMAGE}",
+                                    "restart":  "${RESTART_POLICY}",
+                                    "environment":  {
+                                                        "TZ":  "${TZ}",
+                                                        "GOTIFY_DEFAULTUSER_PASS":  "${GOTIFY_DEFAULTUSER_PASS}"
+                                                    },
+                                    "volumes":  [
+                                                    "${DATA_LOCATION}:${GOTIFY_DATA_TARGET}"
+                                                ],
+                                    "ports":  [
+                                                  "${GOTIFY_PORT}:${GOTIFY_INTERNAL_PORT}"
+                                              ]
+                                }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open Gotify",
+                          "service":  "gotify",
+                          "port":  "${GOTIFY_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "GOTIFY_PORT",
+                       "label":  "R1: App Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8080",
+                       "help":  "Host port used to open Gotify."
+                   },
+                   {
+                       "name":  "GOTIFY_DEFAULTUSER_PASS",
+                       "label":  "R2: Default Admin Password",
+                       "section":  "required",
+                       "input_type":  "password",
+                       "required":  true,
+                       "default":  "",
+                       "generator":  {
+                                         "type":  "password",
+                                         "length":  24
+                                     },
+                       "help":  "Password for the initial Gotify admin account.\u003cbr\u003eUse Generate to create a strong password instead of using the insecure \u003ccode\u003echangeme\u003c/code\u003e example."
+                   },
+                   {
+                       "name":  "DATA_LOCATION",
+                       "label":  "R3: Data Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./data",
+                       "help":  "Host path for Gotify application data and its database."
+                   },
+                   {
+                       "name":  "TZ",
+                       "label":  "R4: Timezone",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "Asia/Dubai",
+                       "help":  "Timezone such as \u003ccode\u003eAsia/Dubai\u003c/code\u003e or \u003ccode\u003eEtc/UTC\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O1: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "value":  "unless-stopped",
+                                           "label":  "Unless Stopped"
+                                       },
+                                       {
+                                           "value":  "always",
+                                           "label":  "Always"
+                                       },
+                                       {
+                                           "value":  "on-failure",
+                                           "label":  "On Failure"
+                                       },
+                                       {
+                                           "value":  "no",
+                                           "label":  "No"
+                                       }
+                                   ],
+                       "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "GOTIFY_IMAGE",
+                       "label":  "A1: Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "gotify/server:latest",
+                       "docs_url":  "https://gotify.net/docs/install",
+                       "docs_label":  "Official help",
+                       "help":  "Docker image used for Gotify.\u003cbr\u003eChange this only if you want a different tag or image source."
+                   },
+                   {
+                       "name":  "GOTIFY_CONTAINER_NAME",
+                       "label":  "Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the container name from the project name."
+                   },
+                   {
+                       "name":  "GOTIFY_INTERNAL_PORT",
+                       "label":  "Internal App Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "80",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal Gotify web port."
+                   },
+                   {
+                       "name":  "GOTIFY_DATA_TARGET",
+                       "label":  "Data Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/app/data",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal Gotify data path."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/gotify/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "label":  "Optional",
+                                    "name":  "optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Advanced",
+                                    "name":  "advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "name":  "readonly",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "Gotify is a lightweight self-hosted server for sending and receiving real-time notifications through web and mobile clients.",
+               "what_happens":  [
+                                    "One Gotify container will be created",
+                                    "Application data and the Gotify database will be stored in the folder you choose",
+                                    "The initial admin password will be set to the value you enter or generate",
+                                    "The web interface will open on the port you choose"
+                                ],
+               "data_location":  "Stored relative to this app\u0027s config folder unless you enter an absolute path."
+           }
+}

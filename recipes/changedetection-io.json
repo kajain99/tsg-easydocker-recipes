@@ -1,0 +1,184 @@
+{
+    "name":  "changedetection-io",
+    "version":  1,
+    "description":  "Website change monitoring with notifications and persistent history",
+    "services":  {
+                     "changedetection":  {
+                                             "container_name":  "${CHANGEDETECTION_CONTAINER_NAME}",
+                                             "image":  "${CHANGEDETECTION_IMAGE}",
+                                             "restart":  "${RESTART_POLICY}",
+                                             "environment":  {
+                                                                 "PUID":  "${PUID}",
+                                                                 "PGID":  "${PGID}",
+                                                                 "TZ":  "${TZ}"
+                                                             },
+                                             "volumes":  [
+                                                             "${CONFIG_LOCATION}:${CHANGEDETECTION_CONFIG_TARGET}"
+                                                         ],
+                                             "ports":  [
+                                                           "${CHANGEDETECTION_PORT}:${CHANGEDETECTION_INTERNAL_PORT}"
+                                                       ]
+                                         }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open changedetection.io",
+                          "service":  "changedetection",
+                          "port":  "${CHANGEDETECTION_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "CHANGEDETECTION_PORT",
+                       "label":  "R1: App Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "5000",
+                       "help":  "Host port used to open changedetection.io."
+                   },
+                   {
+                       "name":  "CONFIG_LOCATION",
+                       "label":  "R2: Config Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./config",
+                       "help":  "Host path for changedetection.io configuration and persistent data."
+                   },
+                   {
+                       "name":  "PUID",
+                       "label":  "R3: PUID",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1000",
+                       "help":  "Linux user ID used by the container."
+                   },
+                   {
+                       "name":  "PGID",
+                       "label":  "R4: PGID",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1000",
+                       "help":  "Linux group ID used by the container."
+                   },
+                   {
+                       "name":  "TZ",
+                       "label":  "R5: Timezone",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "Asia/Dubai",
+                       "help":  "Timezone such as Asia/Dubai or Etc/UTC."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O1: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "value":  "unless-stopped",
+                                           "label":  "Unless Stopped"
+                                       },
+                                       {
+                                           "value":  "always",
+                                           "label":  "Always"
+                                       },
+                                       {
+                                           "value":  "on-failure",
+                                           "label":  "On Failure"
+                                       },
+                                       {
+                                           "value":  "no",
+                                           "label":  "No"
+                                       }
+                                   ],
+                       "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "CHANGEDETECTION_IMAGE",
+                       "label":  "A1: changedetection.io Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "lscr.io/linuxserver/changedetection.io:latest",
+                       "docs_url":  "https://docs.linuxserver.io/images/docker-changedetection.io/",
+                       "docs_label":  "Official help",
+                       "help":  "LinuxServer changedetection.io image."
+                   },
+                   {
+                       "name":  "CHANGEDETECTION_CONTAINER_NAME",
+                       "label":  "Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the container name from the project name."
+                   },
+                   {
+                       "name":  "CHANGEDETECTION_INTERNAL_PORT",
+                       "label":  "Internal App Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "5000",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal changedetection.io port."
+                   },
+                   {
+                       "name":  "CHANGEDETECTION_CONFIG_TARGET",
+                       "label":  "Config Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/config",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal configuration path."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/changedetection-io/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "label":  "Optional",
+                                    "name":  "optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Advanced",
+                                    "name":  "advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "name":  "readonly",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "changedetection.io watches web pages for changes and can notify you when new content appears.",
+               "what_happens":  [
+                                    "One changedetection.io container will be created using the LinuxServer image",
+                                    "Configuration and monitoring history will be stored in the folder you choose",
+                                    "PUID, PGID, and timezone will be passed into the container",
+                                    "The web interface will open on the port you choose",
+                                    "This standalone recipe does not include a browser service"
+                                ],
+               "data_location":  "Stored relative to this app\u0027s config folder unless you enter an absolute path."
+           }
+}
