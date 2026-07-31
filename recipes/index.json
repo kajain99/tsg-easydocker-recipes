@@ -53,6 +53,10 @@
       "version": 1.03
     },
     {
+      "name": "linkwarden",
+      "version": 1
+    },
+    {
       "name": "metube",
       "version": 1
     },
@@ -118,6 +122,10 @@
     },
     {
       "name": "unbound",
+      "version": 1
+    },
+    {
+      "name": "uptime-kuma",
       "version": 1
     },
     {

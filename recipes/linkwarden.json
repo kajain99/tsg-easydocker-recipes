@@ -1,0 +1,362 @@
+{
+    "name":  "linkwarden",
+    "version":  1,
+    "description":  "Collaborative bookmark manager with webpage archiving and full-text search",
+    "services":  {
+                     "postgres":  {
+                                      "container_name":  "${POSTGRES_CONTAINER_NAME}",
+                                      "image":  "${POSTGRES_IMAGE}",
+                                      "restart":  "${RESTART_POLICY}",
+                                      "environment":  {
+                                                          "POSTGRES_PASSWORD":  "${POSTGRES_PASSWORD}",
+                                                          "POSTGRES_USER":  "${POSTGRES_USER}",
+                                                          "POSTGRES_DB":  "${POSTGRES_DB}"
+                                                      },
+                                      "volumes":  [
+                                                      "${POSTGRES_DATA_LOCATION}:${POSTGRES_DATA_TARGET}"
+                                                  ]
+                                  },
+                     "linkwarden":  {
+                                        "container_name":  "${LINKWARDEN_CONTAINER_NAME}",
+                                        "image":  "${LINKWARDEN_IMAGE}",
+                                        "restart":  "${RESTART_POLICY}",
+                                        "environment":  {
+                                                            "DATABASE_URL":  "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}",
+                                                            "NEXTAUTH_URL":  "${NEXTAUTH_URL}",
+                                                            "NEXTAUTH_SECRET":  "${NEXTAUTH_SECRET}",
+                                                            "MEILI_HOST":  "${MEILI_HOST}",
+                                                            "MEILI_MASTER_KEY":  "${MEILI_MASTER_KEY}"
+                                                        },
+                                        "ports":  [
+                                                      "${LINKWARDEN_PORT}:${LINKWARDEN_INTERNAL_PORT}"
+                                                  ],
+                                        "volumes":  [
+                                                        "${LINKWARDEN_DATA_LOCATION}:${LINKWARDEN_DATA_TARGET}"
+                                                    ],
+                                        "depends_on":  [
+                                                           "${LINKWARDEN_DEPENDS_ON_POSTGRES}",
+                                                           "${LINKWARDEN_DEPENDS_ON_MEILISEARCH}"
+                                                       ]
+                                    },
+                     "meilisearch":  {
+                                         "container_name":  "${MEILISEARCH_CONTAINER_NAME}",
+                                         "image":  "${MEILISEARCH_IMAGE}",
+                                         "restart":  "${RESTART_POLICY}",
+                                         "environment":  {
+                                                             "MEILI_MASTER_KEY":  "${MEILI_MASTER_KEY}"
+                                                         },
+                                         "volumes":  [
+                                                         "${MEILI_DATA_LOCATION}:${MEILI_DATA_TARGET}"
+                                                     ]
+                                     }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open Linkwarden",
+                          "service":  "linkwarden",
+                          "port":  "${LINKWARDEN_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "LINKWARDEN_PORT",
+                       "label":  "R1: App Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "3000",
+                       "help":  "Host port used to open Linkwarden."
+                   },
+                   {
+                       "name":  "NEXTAUTH_URL",
+                       "label":  "R2: Authentication URL",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "",
+                       "help":  "Full URL used for authentication callbacks.\u003cbr\u003eIt must end with \u003ccode\u003e/api/v1/auth\u003c/code\u003e. Enter your real NAS address or public domain, for example \u003ccode\u003ehttp://192.168.1.10:3000/api/v1/auth\u003c/code\u003e or \u003ccode\u003ehttps://links.example.com/api/v1/auth\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "POSTGRES_PASSWORD",
+                       "label":  "R3: PostgreSQL Password",
+                       "section":  "required",
+                       "input_type":  "password",
+                       "required":  true,
+                       "default":  "",
+                       "generator":  {
+                                         "type":  "hex",
+                                         "bytes":  32
+                                     },
+                       "help":  "Password shared by Linkwarden and its PostgreSQL service.\u003cbr\u003eUse Generate to create a URL-safe 64-character hexadecimal secret."
+                   },
+                   {
+                       "name":  "NEXTAUTH_SECRET",
+                       "label":  "R4: Authentication Secret",
+                       "section":  "required",
+                       "input_type":  "password",
+                       "required":  true,
+                       "default":  "",
+                       "generator":  {
+                                         "type":  "hex",
+                                         "bytes":  32
+                                     },
+                       "help":  "Secret used to sign sessions, tokens, and preserved-content links.\u003cbr\u003eUse Generate to create a 64-character hexadecimal secret."
+                   },
+                   {
+                       "name":  "MEILI_MASTER_KEY",
+                       "label":  "R5: MeiliSearch Master Key",
+                       "section":  "required",
+                       "input_type":  "password",
+                       "required":  true,
+                       "default":  "",
+                       "generator":  {
+                                         "type":  "hex",
+                                         "bytes":  32
+                                     },
+                       "help":  "Master key shared by Linkwarden and MeiliSearch.\u003cbr\u003eUse Generate to create a 64-character hexadecimal secret."
+                   },
+                   {
+                       "name":  "POSTGRES_DATA_LOCATION",
+                       "label":  "R6: PostgreSQL Data Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./pgdata",
+                       "help":  "Host path for the PostgreSQL database files."
+                   },
+                   {
+                       "name":  "LINKWARDEN_DATA_LOCATION",
+                       "label":  "R7: Linkwarden Data Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./data",
+                       "help":  "Host path for archived pages, screenshots, PDFs, previews, and uploads."
+                   },
+                   {
+                       "name":  "MEILI_DATA_LOCATION",
+                       "label":  "R8: MeiliSearch Data Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./meili_data",
+                       "help":  "Host path for the MeiliSearch index data."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O1: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "always",
+                       "options":  [
+                                       {
+                                           "value":  "always",
+                                           "label":  "Always"
+                                       },
+                                       {
+                                           "value":  "unless-stopped",
+                                           "label":  "Unless Stopped"
+                                       },
+                                       {
+                                           "value":  "on-failure",
+                                           "label":  "On Failure"
+                                       },
+                                       {
+                                           "value":  "no",
+                                           "label":  "No"
+                                       }
+                                   ],
+                       "help":  "Controls whether all three containers restart automatically."
+                   },
+                   {
+                       "name":  "LINKWARDEN_IMAGE",
+                       "label":  "A1: Linkwarden Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "ghcr.io/linkwarden/linkwarden:latest",
+                       "docs_url":  "https://docs.linkwarden.app/self-hosting/installation",
+                       "docs_label":  "Official help",
+                       "help":  "Docker image used for Linkwarden."
+                   },
+                   {
+                       "name":  "POSTGRES_IMAGE",
+                       "label":  "A2: PostgreSQL Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "postgres:16-alpine",
+                       "help":  "Docker image used for the bundled PostgreSQL database."
+                   },
+                   {
+                       "name":  "MEILISEARCH_IMAGE",
+                       "label":  "A3: MeiliSearch Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "getmeili/meilisearch:v1.12.8",
+                       "help":  "Docker image used for full-text search."
+                   },
+                   {
+                       "name":  "LINKWARDEN_CONTAINER_NAME",
+                       "label":  "Linkwarden Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the main container name from the project name."
+                   },
+                   {
+                       "name":  "POSTGRES_CONTAINER_NAME",
+                       "label":  "PostgreSQL Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}_postgres",
+                       "editable":  false,
+                       "help":  "EasyDocker names the PostgreSQL container from the project name."
+                   },
+                   {
+                       "name":  "MEILISEARCH_CONTAINER_NAME",
+                       "label":  "MeiliSearch Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}_meilisearch",
+                       "editable":  false,
+                       "help":  "EasyDocker names the MeiliSearch container from the project name."
+                   },
+                   {
+                       "name":  "LINKWARDEN_INTERNAL_PORT",
+                       "label":  "Internal App Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "3000",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal Linkwarden web port."
+                   },
+                   {
+                       "name":  "LINKWARDEN_DATA_TARGET",
+                       "label":  "Linkwarden Data Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/data/data",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal Linkwarden storage path."
+                   },
+                   {
+                       "name":  "POSTGRES_DATA_TARGET",
+                       "label":  "PostgreSQL Data Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/var/lib/postgresql/data",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal PostgreSQL data path."
+                   },
+                   {
+                       "name":  "MEILI_DATA_TARGET",
+                       "label":  "MeiliSearch Data Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/meili_data",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal MeiliSearch data path."
+                   },
+                   {
+                       "name":  "POSTGRES_USER",
+                       "label":  "PostgreSQL User",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "postgres",
+                       "editable":  false,
+                       "help":  "Recipe-managed PostgreSQL username."
+                   },
+                   {
+                       "name":  "POSTGRES_DB",
+                       "label":  "PostgreSQL Database",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "postgres",
+                       "editable":  false,
+                       "help":  "Recipe-managed PostgreSQL database name."
+                   },
+                   {
+                       "name":  "MEILI_HOST",
+                       "label":  "Internal MeiliSearch URL",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "http://meilisearch:7700",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal MeiliSearch URL."
+                   },
+                   {
+                       "name":  "LINKWARDEN_DEPENDS_ON_POSTGRES",
+                       "label":  "Depends On: PostgreSQL",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "postgres",
+                       "editable":  false,
+                       "help":  "Starts Linkwarden after the PostgreSQL service."
+                   },
+                   {
+                       "name":  "LINKWARDEN_DEPENDS_ON_MEILISEARCH",
+                       "label":  "Depends On: MeiliSearch",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "meilisearch",
+                       "editable":  false,
+                       "help":  "Starts Linkwarden after the MeiliSearch service."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/linkwarden/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "label":  "Optional",
+                                    "name":  "optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Advanced",
+                                    "name":  "advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "name":  "readonly",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "Linkwarden collects, organizes, searches, and preserves bookmarks using PostgreSQL and MeiliSearch.",
+               "what_happens":  [
+                                    "Three containers will be created as one compose project",
+                                    "PostgreSQL stores Linkwarden application data",
+                                    "MeiliSearch provides full-text search",
+                                    "Archived pages, screenshots, PDFs, previews, and uploads are stored in the Linkwarden data folder",
+                                    "All three required secrets can be generated securely from the recipe form",
+                                    "The web interface will open on the port you choose"
+                                ],
+               "data_location":  "All storage uses bind mounts. Each folder can be relative to this app\u0027s config folder or an absolute path."
+           }
+}

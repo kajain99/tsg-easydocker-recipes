@@ -1,0 +1,172 @@
+{
+    "name":  "uptime-kuma",
+    "version":  1,
+    "description":  "Self-hosted uptime monitoring with status pages and notifications",
+    "services":  {
+                     "uptime-kuma":  {
+                                         "container_name":  "${UPTIME_KUMA_CONTAINER_NAME}",
+                                         "image":  "${UPTIME_KUMA_IMAGE}",
+                                         "restart":  "${RESTART_POLICY}",
+                                         "volumes":  [
+                                                         "${DATA_LOCATION}:${UPTIME_KUMA_DATA_TARGET}",
+                                                         "${DOCKER_SOCKET_MOUNT}"
+                                                     ],
+                                         "ports":  [
+                                                       "${UPTIME_KUMA_PORT}:${UPTIME_KUMA_INTERNAL_PORT}"
+                                                   ]
+                                     }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open Uptime Kuma",
+                          "service":  "uptime-kuma",
+                          "port":  "${UPTIME_KUMA_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "UPTIME_KUMA_PORT",
+                       "label":  "R1: App Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "3001",
+                       "help":  "Host port used to open Uptime Kuma."
+                   },
+                   {
+                       "name":  "DATA_LOCATION",
+                       "label":  "R2: Data Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./data",
+                       "help":  "Host path for Uptime Kuma configuration, monitors, history, and its database.\u003cbr\u003eUse local storage; Uptime Kuma does not support NFS for this data."
+                   },
+                   {
+                       "name":  "DOCKER_SOCKET_MOUNT",
+                       "label":  "O1: Local Docker Container Monitoring",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  false,
+                       "default":  "",
+                       "options":  [
+                                       {
+                                           "value":  "",
+                                           "label":  "Disabled (Recommended)"
+                                       },
+                                       {
+                                           "value":  "/var/run/docker.sock:/var/run/docker.sock",
+                                           "label":  "Enabled"
+                                       }
+                                   ],
+                       "help":  "Optionally mounts the host Docker socket so Uptime Kuma can monitor local containers.\u003cbr\u003e\u003cstrong\u003eSecurity warning:\u003c/strong\u003e Docker socket access effectively gives Uptime Kuma full control of the Docker daemon and host containers. Enable it only when necessary, keep Uptime Kuma trusted and updated, and do not expose this instance directly to the Internet."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O2: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "value":  "unless-stopped",
+                                           "label":  "Unless Stopped"
+                                       },
+                                       {
+                                           "value":  "always",
+                                           "label":  "Always"
+                                       },
+                                       {
+                                           "value":  "on-failure",
+                                           "label":  "On Failure"
+                                       },
+                                       {
+                                           "value":  "no",
+                                           "label":  "No"
+                                       }
+                                   ],
+                       "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "UPTIME_KUMA_IMAGE",
+                       "label":  "A1: Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "louislam/uptime-kuma:2",
+                       "docs_url":  "https://github.com/louislam/uptime-kuma",
+                       "docs_label":  "Official help",
+                       "help":  "Docker image used for Uptime Kuma v2.\u003cbr\u003eChange this only if you want a different supported tag."
+                   },
+                   {
+                       "name":  "UPTIME_KUMA_CONTAINER_NAME",
+                       "label":  "Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the container name from the project name."
+                   },
+                   {
+                       "name":  "UPTIME_KUMA_INTERNAL_PORT",
+                       "label":  "Internal App Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "3001",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal Uptime Kuma web port."
+                   },
+                   {
+                       "name":  "UPTIME_KUMA_DATA_TARGET",
+                       "label":  "Data Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/app/data",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal Uptime Kuma data path."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/uptime-kuma/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "label":  "Optional",
+                                    "name":  "optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Advanced",
+                                    "name":  "advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "name":  "readonly",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "Uptime Kuma monitors websites, network services, and optional local Docker containers, with notifications and public status pages.",
+               "what_happens":  [
+                                    "One Uptime Kuma v2 container will be created",
+                                    "Monitor configuration, history, and the database will be stored in the folder you choose",
+                                    "The web interface will open on the port you choose",
+                                    "Local Docker container monitoring is disabled by default",
+                                    "Enabling local Docker monitoring mounts the powerful host Docker socket into Uptime Kuma"
+                                ],
+               "data_location":  "Store Uptime Kuma data on a local filesystem, not NFS. The folder can be relative to this app\u0027s config folder or an absolute path."
+           }
+}
