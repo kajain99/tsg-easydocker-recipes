@@ -1,140 +1,156 @@
 {
-  "recipes": [
-    {
-      "name": "adguard-home",
-      "version": 3
-    },
-    {
-      "name": "audiobookshelf",
-      "version": 5
-    },
-    {
-      "name": "bentopdf",
-      "version": 1
-    },
-    {
-      "name": "bazarr",
-      "version": 1.03
-    },
-    {
-      "name": "changedetection-io",
-      "version": 1
-    },
-    {
-      "name": "changedetection-io-browser",
-      "version": 1.01
-    },
-    {
-      "name": "cups",
-      "version": 1.03
-    },
-    {
-      "name": "flaresolverr",
-      "version": 1.02
-    },
-    {
-      "name": "gluetun",
-      "version": 1.03
-    },
-    {
-      "name": "go2rtc",
-      "version": 1.03
-    },
-    {
-      "name": "gotify",
-      "version": 1
-    },
-    {
-      "name": "kavita",
-      "version": 1.04
-    },
-    {
-      "name": "komga",
-      "version": 1.03
-    },
-    {
-      "name": "linkwarden",
-      "version": 1
-    },
-    {
-      "name": "metube",
-      "version": 1
-    },
-    {
-      "name": "tailscale",
-      "version": 1.02
-    },
-    {
-      "name": "immich",
-      "version": 1.03
-    },
-    {
-      "name": "jellyfin",
-      "version": 1.03
-    },
-    {
-      "name": "nginx-proxy-manager",
-      "version": 1.02
-    },
-    {
-      "name": "pairdrop",
-      "version": 1
-    },
-    {
-      "name": "paperless-ngx",
-      "version": 1
-    },
-    {
-      "name": "paperless-ngx-tika",
-      "version": 1.01
-    },
-    {
-      "name": "plex",
-      "version": 2.02
-    },
-    {
-      "name": "prowlarr",
-      "version": 1.02
-    },
-    {
-      "name": "radarr",
-      "version": 1.02
-    },
-    {
-      "name": "seerr",
-      "version": 1.02
-    },
-    {
-      "name": "sonarr",
-      "version": 1.02
-    },
-    {
-      "name": "stirling-pdf",
-      "version": 1.02
-    },
-    {
-      "name": "transmission",
-      "version": 1.02
-    },
-    {
-      "name": "transmission-through-gluetun",
-      "version": 1.02
-    },
-    {
-      "name": "unbound",
-      "version": 1
-    },
-    {
-      "name": "uptime-kuma",
-      "version": 1
-    },
-    {
-      "name": "vaultwarden",
-      "version": 1.02
-    },
-    {
-      "name": "yacreader",
-      "version": 1.03
-    }
-  ]
+    "recipes":  [
+                    {
+                        "name":  "adguard-home",
+                        "version":  3
+                    },
+                    {
+                        "name":  "audiobookshelf",
+                        "version":  5.01
+                    },
+                    {
+                        "name":  "bentopdf",
+                        "version":  1.01
+                    },
+                    {
+                        "name":  "bazarr",
+                        "version":  1.03
+                    },
+                    {
+                        "name":  "changedetection-io",
+                        "version":  1.01
+                    },
+                    {
+                        "name":  "changedetection-io-browser",
+                        "version":  1.01
+                    },
+                    {
+                        "name":  "cups",
+                        "version":  1.04
+                    },
+                    {
+                        "name":  "deluge",
+                        "version":  1
+                    },
+                    {
+                        "name":  "flaresolverr",
+                        "version":  1.02
+                    },
+                    {
+                        "name":  "gluetun",
+                        "version":  1.03
+                    },
+                    {
+                        "name":  "go2rtc",
+                        "version":  1.04
+                    },
+                    {
+                        "name":  "gotify",
+                        "version":  1.01
+                    },
+                    {
+                        "name":  "homarr",
+                        "version":  1.02
+                    },
+                    {
+                        "name":  "kavita",
+                        "version":  1.04
+                    },
+                    {
+                        "name":  "komga",
+                        "version":  1.03
+                    },
+                    {
+                        "name":  "linkwarden",
+                        "version":  1
+                    },
+                    {
+                        "name":  "metube",
+                        "version":  1.01
+                    },
+                    {
+                        "name":  "tailscale",
+                        "version":  1.02
+                    },
+                    {
+                        "name":  "immich",
+                        "version":  1.03
+                    },
+                    {
+                        "name":  "jellyfin",
+                        "version":  1.03
+                    },
+                    {
+                        "name":  "nginx-proxy-manager",
+                        "version":  1.03
+                    },
+                    {
+                        "name":  "pairdrop",
+                        "version":  1.01
+                    },
+                    {
+                        "name":  "paperless-ngx",
+                        "version":  1
+                    },
+                    {
+                        "name":  "paperless-ngx-tika",
+                        "version":  1.01
+                    },
+                    {
+                        "name":  "plex",
+                        "version":  2.02
+                    },
+                    {
+                        "name":  "prowlarr",
+                        "version":  1.02
+                    },
+                    {
+                        "name":  "qbittorrent",
+                        "version":  1.02
+                    },
+                    {
+                        "name":  "radarr",
+                        "version":  1.02
+                    },
+                    {
+                        "name":  "sabnzbd",
+                        "version":  1
+                    },
+                    {
+                        "name":  "seerr",
+                        "version":  1.02
+                    },
+                    {
+                        "name":  "sonarr",
+                        "version":  1.02
+                    },
+                    {
+                        "name":  "stirling-pdf",
+                        "version":  1.03
+                    },
+                    {
+                        "name":  "transmission",
+                        "version":  1.02
+                    },
+                    {
+                        "name":  "transmission-through-gluetun",
+                        "version":  1.02
+                    },
+                    {
+                        "name":  "unbound",
+                        "version":  1
+                    },
+                    {
+                        "name":  "uptime-kuma",
+                        "version":  1.01
+                    },
+                    {
+                        "name":  "vaultwarden",
+                        "version":  1.03
+                    },
+                    {
+                        "name":  "yacreader",
+                        "version":  1.03
+                    }
+                ]
 }

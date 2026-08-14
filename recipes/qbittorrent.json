@@ -1,0 +1,222 @@
+{
+    "name":  "qbittorrent",
+    "version":  1.02,
+    "description":  "BitTorrent client with a web interface and persistent configuration",
+    "services":  {
+                     "qbittorrent":  {
+                                         "container_name":  "${QBITTORRENT_CONTAINER_NAME}",
+                                         "image":  "${QBITTORRENT_IMAGE}",
+                                         "environment":  {
+                                                             "PUID":  "${PUID}",
+                                                             "PGID":  "${PGID}",
+                                                             "TZ":  "${TZ}",
+                                                             "WEBUI_PORT":  "${WEBUI_PORT}",
+                                                             "TORRENTING_PORT":  "${TORRENTING_PORT}"
+                                                         },
+                                         "volumes":  [
+                                                         "${CONFIG_LOCATION}:${QBITTORRENT_CONFIG_TARGET}",
+                                                         "${DOWNLOADS_LOCATION}:${QBITTORRENT_DOWNLOADS_TARGET}"
+                                                     ],
+                                         "ports":  [
+                                                       "${WEBUI_PORT}:${WEBUI_PORT}",
+                                                       "${TORRENTING_PORT}:${TORRENTING_PORT}",
+                                                       "${TORRENTING_PORT}:${TORRENTING_PORT}/udp"
+                                                   ],
+                                         "restart":  "${RESTART_POLICY}",
+                                         "network_mode":  "${QBITTORRENT_NETWORK_MODE_MODE}",
+                                         "networks":  "${QBITTORRENT_NETWORK_MODE_SERVICE_NETWORKS}"
+                                     }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open qBittorrent",
+                          "service":  "qbittorrent",
+                          "port":  "${WEBUI_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "WEBUI_PORT",
+                       "label":  "R1: Web UI Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8080",
+                       "help":  "Port used to open the qBittorrent Web UI.\u003cbr\u003eThis single value is applied to the host port, container port, and \u003ccode\u003eWEBUI_PORT\u003c/code\u003e environment variable because all three must match to avoid CSRF and port-mapping problems.\u003cbr\u003e\u003cstrong\u003eFirst login:\u003c/strong\u003e Open the Web UI at \u003ccode\u003ehttp://YOUR-SERVER-IP:PORT\u003c/code\u003e with username \u003ccode\u003eadmin\u003c/code\u003e. The temporary password is printed in the qBittorrent container log during startup. After signing in, set your own username and password under Web UI settings. If you do not save a permanent password, a new temporary password is generated whenever the container starts."
+                   },
+                   {
+                       "name":  "TORRENTING_PORT",
+                       "label":  "R2: Torrenting Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "6881",
+                       "help":  "Incoming BitTorrent connection port.\u003cbr\u003eThis single value is applied to \u003ccode\u003eTORRENTING_PORT\u003c/code\u003e and both the TCP and UDP port mappings because all three must match."
+                   },
+                   {
+                       "name":  "CONFIG_LOCATION",
+                       "label":  "R3: Config Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./config",
+                       "help":  "Host path for qBittorrent configuration files."
+                   },
+                   {
+                       "name":  "DOWNLOADS_LOCATION",
+                       "label":  "R4: Downloads Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./downloads",
+                       "help":  "Host path where qBittorrent stores downloaded files."
+                   },
+                   {
+                       "name":  "PUID",
+                       "label":  "R5: PUID",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1000",
+                       "help":  "Linux user ID used by the container.\u003cbr\u003eUse the ID of the account that should own configuration and downloaded files."
+                   },
+                   {
+                       "name":  "PGID",
+                       "label":  "R6: PGID",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1000",
+                       "help":  "Linux group ID used by the container.\u003cbr\u003eUse the group ID associated with the selected PUID."
+                   },
+                   {
+                       "name":  "TZ",
+                       "label":  "R7: Timezone",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "Etc/UTC",
+                       "help":  "Timezone used by qBittorrent, such as \u003ccode\u003eAsia/Dubai\u003c/code\u003e or \u003ccode\u003eEtc/UTC\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O1: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "value":  "unless-stopped",
+                                           "label":  "Unless Stopped"
+                                       },
+                                       {
+                                           "value":  "always",
+                                           "label":  "Always"
+                                       },
+                                       {
+                                           "value":  "on-failure",
+                                           "label":  "On Failure"
+                                       },
+                                       {
+                                           "value":  "no",
+                                           "label":  "No"
+                                       }
+                                   ],
+                       "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "QBITTORRENT_NETWORK_MODE",
+                       "label":  "O2: Network",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "__create_bridge__",
+                       "data_type":  "docker_network",
+                       "options_source":  "docker_networks",
+                       "help":  "Choose \u003ccode\u003eCreate New Bridge\u003c/code\u003e for the default Compose network, \u003ccode\u003eHost Mode\u003c/code\u003e for host networking, or an existing named Docker network."
+                   },
+                   {
+                       "name":  "QBITTORRENT_IMAGE",
+                       "label":  "A1: Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "lscr.io/linuxserver/qbittorrent:latest",
+                       "docs_url":  "https://docs.linuxserver.io/images/docker-qbittorrent/",
+                       "docs_label":  "Official help",
+                       "help":  "LinuxServer qBittorrent image.\u003cbr\u003eThe \u003ccode\u003elatest\u003c/code\u003e tag uses stable qBittorrent releases with libtorrent v2."
+                   },
+                   {
+                       "name":  "QBITTORRENT_CONTAINER_NAME",
+                       "label":  "Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the container name from the project name."
+                   },
+                   {
+                       "name":  "QBITTORRENT_CONFIG_TARGET",
+                       "label":  "Config Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/config",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal configuration path."
+                   },
+                   {
+                       "name":  "QBITTORRENT_DOWNLOADS_TARGET",
+                       "label":  "Downloads Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/downloads",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal downloads path."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/qbittorrent/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "label":  "Optional",
+                                    "name":  "optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Advanced",
+                                    "name":  "advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "name":  "readonly",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "qBittorrent is a full-featured BitTorrent client managed through a browser-based interface.",
+               "what_happens":  [
+                                    "One qBittorrent container will be created using the LinuxServer image",
+                                    "Configuration and downloaded files will be stored in the folders you choose",
+                                    "The selected Web UI port is used identically for the host, container, and WEBUI_PORT setting",
+                                    "The selected torrenting port is used identically for TORRENTING_PORT and both TCP and UDP mappings",
+                                    "For the first login, use username admin and find the temporary password in the qBittorrent container startup log",
+                                    "After signing in, set and save your own username and password in qBittorrent\u0027s Web UI settings; otherwise a new temporary password is generated whenever the container starts"
+                                ],
+               "data_location":  "Each storage field can be relative to this app\u0027s config folder or an absolute path."
+           },
+    "networks":  "${QBITTORRENT_NETWORK_MODE_DEFINITIONS}"
+}

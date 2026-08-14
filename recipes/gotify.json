@@ -1,6 +1,6 @@
 {
     "name":  "gotify",
-    "version":  1,
+    "version":  1.01,
     "description":  "Self-hosted notification server for sending and receiving messages",
     "services":  {
                      "gotify":  {
@@ -16,7 +16,9 @@
                                                 ],
                                     "ports":  [
                                                   "${GOTIFY_PORT}:${GOTIFY_INTERNAL_PORT}"
-                                              ]
+                                              ],
+                                    "network_mode":  "${GOTIFY_NETWORK_MODE_MODE}",
+                                    "networks":  "${GOTIFY_NETWORK_MODE_SERVICE_NETWORKS}"
                                 }
                  },
     "app_links":  [
@@ -97,6 +99,17 @@
                        "help":  "Controls whether the container restarts automatically."
                    },
                    {
+                       "name":  "GOTIFY_NETWORK_MODE",
+                       "label":  "O2: Network",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "__create_bridge__",
+                       "data_type":  "docker_network",
+                       "options_source":  "docker_networks",
+                       "help":  "Choose \u003ccode\u003eCreate New Bridge\u003c/code\u003e for the default Compose network, \u003ccode\u003eHost Mode\u003c/code\u003e for host networking, or an existing named Docker network."
+                   },
+                   {
                        "name":  "GOTIFY_IMAGE",
                        "label":  "A1: Image",
                        "section":  "advanced",
@@ -173,5 +186,6 @@
                                     "The web interface will open on the port you choose"
                                 ],
                "data_location":  "Stored relative to this app\u0027s config folder unless you enter an absolute path."
-           }
+           },
+    "networks":  "${GOTIFY_NETWORK_MODE_DEFINITIONS}"
 }

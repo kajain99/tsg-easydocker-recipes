@@ -1,197 +1,250 @@
 {
-  "name": "go2rtc",
-  "version": 1.03,
-  "description": "USB camera gateway for creating go2rtc streams through the web UI and config file",
-  "services": {
-    "go2rtc": {
-      "container_name": "${GO2RTC_CONTAINER_NAME}",
-      "image": "${GO2RTC_IMAGE}",
-      "environment": {
-        "TZ": "${TZ}"
-      },
-      "ports": [
-        "${GO2RTC_WEB_PORT}:${GO2RTC_INTERNAL_WEB_PORT}",
-        "${GO2RTC_RTSP_PORT}:${GO2RTC_INTERNAL_RTSP_PORT}",
-        "${GO2RTC_WEBRTC_PORT}:${GO2RTC_INTERNAL_WEBRTC_PORT}/tcp",
-        "${GO2RTC_WEBRTC_PORT}:${GO2RTC_INTERNAL_WEBRTC_PORT}/udp"
-      ],
-      "volumes": [
-        "${GO2RTC_CONFIG_LOCATION}:${GO2RTC_CONFIG_TARGET}"
-      ],
-      "devices": [
-        "${GO2RTC_VIDEO_DEVICE}"
-      ],
-      "restart": "${RESTART_POLICY}"
-    }
-  },
-  "app_links": [
-    {
-      "label": "Open go2rtc",
-      "service": "go2rtc",
-      "port": "${GO2RTC_WEB_PORT}",
-      "path": "/",
-      "scheme": "http"
-    }
-  ],
-  "fields": [
-    {
-      "name": "GO2RTC_WEB_PORT",
-      "label": "R1: App Port",
-      "section": "required",
-      "input_type": "text",
-      "required": true,
-      "default": "1984",
-      "help": "Host port used to open the go2rtc web UI and API in your browser."
-    },
-    {
-      "name": "GO2RTC_CONFIG_LOCATION",
-      "label": "R2: Config Folder",
-      "section": "required",
-      "input_type": "text",
-      "required": true,
-      "default": "./config",
-      "help": "Stores go2rtc configuration in this app's EasyDocker project folder."
-    },
-    {
-      "name": "GO2RTC_VIDEO_DEVICE",
-      "label": "R3: USB Camera Device",
-      "section": "required",
-      "input_type": "select",
-      "required": false,
-      "default": "/dev/video0:/dev/video0",
-      "options": [
-        { "label": "Use /dev/video0", "value": "/dev/video0:/dev/video0" },
-        { "label": "Use /dev/video1", "value": "/dev/video1:/dev/video1" },
-        { "label": "Use /dev/video2", "value": "/dev/video2:/dev/video2" },
-        { "label": "Disabled", "value": "" }
-      ],
-      "help": "Most Linux USB webcams appear as <code>/dev/video0</code>. After deployment, open go2rtc, choose <strong>Add</strong>, select <code>ffmpeg:device</code> for USB, copy the generated URL, then add it to <code>go2rtc.yaml</code> in this format:<br><code>api:</code><br><code>&nbsp;&nbsp;listen: &quot;:1984&quot;</code><br><code>&nbsp;&nbsp;username: admin</code><br><code>&nbsp;&nbsp;password: your-strong-password</code><br><code>rtsp:</code><br><code>&nbsp;&nbsp;listen: &quot;:8554&quot;</code><br><code>&nbsp;&nbsp;username: admin</code><br><code>&nbsp;&nbsp;password: your-strong-password</code><br><code>streams:</code><br><code>&nbsp;&nbsp;usbcam: url</code>."
-    },
-    {
-      "name": "TZ",
-      "label": "O1: Timezone",
-      "section": "optional",
-      "input_type": "text",
-      "required": true,
-      "default": "",
-      "help": "Timezone used by go2rtc logs.<br>Example: <code>Asia/Dubai</code>."
-    },
-    {
-      "name": "GO2RTC_RTSP_PORT",
-      "label": "O2: RTSP Port",
-      "section": "optional",
-      "input_type": "text",
-      "required": true,
-      "default": "8554",
-      "help": "Host port used for RTSP streams."
-    },
-    {
-      "name": "GO2RTC_WEBRTC_PORT",
-      "label": "O3: WebRTC Port",
-      "section": "optional",
-      "input_type": "text",
-      "required": true,
-      "default": "8555",
-      "help": "Host port used for WebRTC TCP and UDP traffic."
-    },
-    {
-      "name": "RESTART_POLICY",
-      "label": "O4: Restart Policy",
-      "section": "optional",
-      "input_type": "select",
-      "required": true,
-      "default": "unless-stopped",
-      "options": [
-        { "label": "Unless Stopped", "value": "unless-stopped" },
-        { "label": "Always", "value": "always" },
-        { "label": "On Failure", "value": "on-failure" },
-        { "label": "No", "value": "no" }
-      ],
-      "help": "Controls whether the container restarts automatically."
-    },
-    {
-      "name": "GO2RTC_IMAGE",
-      "label": "A1: Image",
-      "section": "advanced",
-      "input_type": "text",
-      "required": true,
-      "default": "alexxit/go2rtc:latest",
-      "docs_url": "https://github.com/AlexxIT/go2rtc",
-      "docs_label": "Official help",
-      "help": "Docker image used for go2rtc.<br>Change this only if you want a different tag or image source."
-    },
-    {
-      "name": "GO2RTC_CONTAINER_NAME",
-      "label": "Container Name",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "${PROJECT_NAME}",
-      "editable": false,
-      "help": "EasyDocker sets the container name from the project name."
-    },
-    {
-      "name": "GO2RTC_INTERNAL_WEB_PORT",
-      "label": "Internal App Port",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "1984",
-      "editable": false,
-      "help": "Recipe-managed go2rtc internal web UI and API port."
-    },
-    {
-      "name": "GO2RTC_INTERNAL_RTSP_PORT",
-      "label": "Internal RTSP Port",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "8554",
-      "editable": false,
-      "help": "Recipe-managed go2rtc internal RTSP port."
-    },
-    {
-      "name": "GO2RTC_INTERNAL_WEBRTC_PORT",
-      "label": "Internal WebRTC Port",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "8555",
-      "editable": false,
-      "help": "Recipe-managed go2rtc internal WebRTC port."
-    },
-    {
-      "name": "GO2RTC_CONFIG_TARGET",
-      "label": "Config Path Inside Container",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "/config",
-      "editable": false,
-      "help": "Recipe-managed internal config path."
-    }
-  ],
-  "ui": {
-    "manual": "https://tsg-easydocker.com/docs/recipes/go2rtc/",
-    "sections": [
-      { "name": "required", "label": "Minimum Required" },
-      { "name": "optional", "label": "Optional", "collapsed": true },
-      { "name": "advanced", "label": "Advanced", "collapsed": true },
-      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
-    ],
-    "tags": [
-      "Intel/AMD",
-      "ARM"
-    ],
-    "overview": "go2rtc lets you pass a USB camera into Docker, add it from the go2rtc web UI with ffmpeg:device (USB), copy the generated URL, and save it as a named stream in the config file.",
-    "what_happens": [
-      "Connect your USB camera before deploying the container",
-      "If the selected device, such as /dev/video0, does not exist when Docker starts the container, deployment will fail",
-      "After deployment, open go2rtc and select Add, then ffmpeg:device, then USB",
-      "Find your camera and copy the generated source URL",
-      "Open go2rtc.yaml in the configured folder and add the camera under streams using: streams: { usbcam: <paste-generated-camera-url-here> }",
-      "Save the file and restart the go2rtc container to apply the configuration. You can replace usbcam with another simple stream name"
-    ],
-    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
-  }
+    "name":  "go2rtc",
+    "version":  1.04,
+    "description":  "USB camera gateway for creating go2rtc streams through the web UI and config file",
+    "services":  {
+                     "go2rtc":  {
+                                    "container_name":  "${GO2RTC_CONTAINER_NAME}",
+                                    "image":  "${GO2RTC_IMAGE}",
+                                    "environment":  {
+                                                        "TZ":  "${TZ}"
+                                                    },
+                                    "ports":  [
+                                                  "${GO2RTC_WEB_PORT}:${GO2RTC_INTERNAL_WEB_PORT}",
+                                                  "${GO2RTC_RTSP_PORT}:${GO2RTC_INTERNAL_RTSP_PORT}",
+                                                  "${GO2RTC_WEBRTC_PORT}:${GO2RTC_INTERNAL_WEBRTC_PORT}/tcp",
+                                                  "${GO2RTC_WEBRTC_PORT}:${GO2RTC_INTERNAL_WEBRTC_PORT}/udp"
+                                              ],
+                                    "volumes":  [
+                                                    "${GO2RTC_CONFIG_LOCATION}:${GO2RTC_CONFIG_TARGET}"
+                                                ],
+                                    "devices":  [
+                                                    "${GO2RTC_VIDEO_DEVICE}"
+                                                ],
+                                    "restart":  "${RESTART_POLICY}",
+                                    "network_mode":  "${GO2RTC_NETWORK_MODE_MODE}",
+                                    "networks":  "${GO2RTC_NETWORK_MODE_SERVICE_NETWORKS}"
+                                }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open go2rtc",
+                          "service":  "go2rtc",
+                          "port":  "${GO2RTC_WEB_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "GO2RTC_WEB_PORT",
+                       "label":  "R1: App Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1984",
+                       "help":  "Host port used to open the go2rtc web UI and API in your browser."
+                   },
+                   {
+                       "name":  "GO2RTC_CONFIG_LOCATION",
+                       "label":  "R2: Config Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./config",
+                       "help":  "Stores go2rtc configuration in this app\u0027s EasyDocker project folder."
+                   },
+                   {
+                       "name":  "GO2RTC_VIDEO_DEVICE",
+                       "label":  "R3: USB Camera Device",
+                       "section":  "required",
+                       "input_type":  "select",
+                       "required":  false,
+                       "default":  "/dev/video0:/dev/video0",
+                       "options":  [
+                                       {
+                                           "label":  "Use /dev/video0",
+                                           "value":  "/dev/video0:/dev/video0"
+                                       },
+                                       {
+                                           "label":  "Use /dev/video1",
+                                           "value":  "/dev/video1:/dev/video1"
+                                       },
+                                       {
+                                           "label":  "Use /dev/video2",
+                                           "value":  "/dev/video2:/dev/video2"
+                                       },
+                                       {
+                                           "label":  "Disabled",
+                                           "value":  ""
+                                       }
+                                   ],
+                       "help":  "Most Linux USB webcams appear as \u003ccode\u003e/dev/video0\u003c/code\u003e. After deployment, open go2rtc, choose \u003cstrong\u003eAdd\u003c/strong\u003e, select \u003ccode\u003effmpeg:device\u003c/code\u003e for USB, copy the generated URL, then add it to \u003ccode\u003ego2rtc.yaml\u003c/code\u003e in this format:\u003cbr\u003e\u003ccode\u003eapi:\u003c/code\u003e\u003cbr\u003e\u003ccode\u003e\u0026nbsp;\u0026nbsp;listen: \u0026quot;:1984\u0026quot;\u003c/code\u003e\u003cbr\u003e\u003ccode\u003e\u0026nbsp;\u0026nbsp;username: admin\u003c/code\u003e\u003cbr\u003e\u003ccode\u003e\u0026nbsp;\u0026nbsp;password: your-strong-password\u003c/code\u003e\u003cbr\u003e\u003ccode\u003ertsp:\u003c/code\u003e\u003cbr\u003e\u003ccode\u003e\u0026nbsp;\u0026nbsp;listen: \u0026quot;:8554\u0026quot;\u003c/code\u003e\u003cbr\u003e\u003ccode\u003e\u0026nbsp;\u0026nbsp;username: admin\u003c/code\u003e\u003cbr\u003e\u003ccode\u003e\u0026nbsp;\u0026nbsp;password: your-strong-password\u003c/code\u003e\u003cbr\u003e\u003ccode\u003estreams:\u003c/code\u003e\u003cbr\u003e\u003ccode\u003e\u0026nbsp;\u0026nbsp;usbcam: url\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "TZ",
+                       "label":  "O1: Timezone",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "",
+                       "help":  "Timezone used by go2rtc logs.\u003cbr\u003eExample: \u003ccode\u003eAsia/Dubai\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "GO2RTC_RTSP_PORT",
+                       "label":  "O2: RTSP Port",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8554",
+                       "help":  "Host port used for RTSP streams."
+                   },
+                   {
+                       "name":  "GO2RTC_WEBRTC_PORT",
+                       "label":  "O3: WebRTC Port",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8555",
+                       "help":  "Host port used for WebRTC TCP and UDP traffic."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O4: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "label":  "Unless Stopped",
+                                           "value":  "unless-stopped"
+                                       },
+                                       {
+                                           "label":  "Always",
+                                           "value":  "always"
+                                       },
+                                       {
+                                           "label":  "On Failure",
+                                           "value":  "on-failure"
+                                       },
+                                       {
+                                           "label":  "No",
+                                           "value":  "no"
+                                       }
+                                   ],
+                       "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "GO2RTC_NETWORK_MODE",
+                       "label":  "O5: Network",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "__create_bridge__",
+                       "data_type":  "docker_network",
+                       "options_source":  "docker_networks",
+                       "help":  "Choose \u003ccode\u003eCreate New Bridge\u003c/code\u003e for the default Compose network, \u003ccode\u003eHost Mode\u003c/code\u003e for host networking, or an existing named Docker network."
+                   },
+                   {
+                       "name":  "GO2RTC_IMAGE",
+                       "label":  "A1: Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "alexxit/go2rtc:latest",
+                       "docs_url":  "https://github.com/AlexxIT/go2rtc",
+                       "docs_label":  "Official help",
+                       "help":  "Docker image used for go2rtc.\u003cbr\u003eChange this only if you want a different tag or image source."
+                   },
+                   {
+                       "name":  "GO2RTC_CONTAINER_NAME",
+                       "label":  "Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the container name from the project name."
+                   },
+                   {
+                       "name":  "GO2RTC_INTERNAL_WEB_PORT",
+                       "label":  "Internal App Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1984",
+                       "editable":  false,
+                       "help":  "Recipe-managed go2rtc internal web UI and API port."
+                   },
+                   {
+                       "name":  "GO2RTC_INTERNAL_RTSP_PORT",
+                       "label":  "Internal RTSP Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8554",
+                       "editable":  false,
+                       "help":  "Recipe-managed go2rtc internal RTSP port."
+                   },
+                   {
+                       "name":  "GO2RTC_INTERNAL_WEBRTC_PORT",
+                       "label":  "Internal WebRTC Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8555",
+                       "editable":  false,
+                       "help":  "Recipe-managed go2rtc internal WebRTC port."
+                   },
+                   {
+                       "name":  "GO2RTC_CONFIG_TARGET",
+                       "label":  "Config Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/config",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal config path."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/go2rtc/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "name":  "optional",
+                                    "label":  "Optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "advanced",
+                                    "label":  "Advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "readonly",
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "go2rtc lets you pass a USB camera into Docker, add it from the go2rtc web UI with ffmpeg:device (USB), copy the generated URL, and save it as a named stream in the config file.",
+               "what_happens":  [
+                                    "Connect your USB camera before deploying the container",
+                                    "If the selected device, such as /dev/video0, does not exist when Docker starts the container, deployment will fail",
+                                    "After deployment, open go2rtc and select Add, then ffmpeg:device, then USB",
+                                    "Find your camera and copy the generated source URL",
+                                    "Open go2rtc.yaml in the configured folder and add the camera under streams using: streams: { usbcam: \u003cpaste-generated-camera-url-here\u003e }",
+                                    "Save the file and restart the go2rtc container to apply the configuration. You can replace usbcam with another simple stream name"
+                                ],
+               "data_location":  "Relative paths are stored inside this app\u0027s project folder under the mounted EasyDocker base config path."
+           },
+    "networks":  "${GO2RTC_NETWORK_MODE_DEFINITIONS}"
 }

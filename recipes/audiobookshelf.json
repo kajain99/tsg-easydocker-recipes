@@ -1,6 +1,6 @@
 {
     "name":  "audiobookshelf",
-    "version":  5,
+    "version":  5.01,
     "description":  "Self-hosted audiobook and podcast server with progress syncing",
     "services":  {
                      "audiobookshelf":  {
@@ -22,7 +22,9 @@
                                             "environment":  {
                                                                 "TZ":  "${TZ}"
                                                             },
-                                            "restart":  "${RESTART_POLICY}"
+                                            "restart":  "${RESTART_POLICY}",
+                                            "network_mode":  "${AUDIOBOOKSHELF_NETWORK_MODE_MODE}",
+                                            "networks":  "${AUDIOBOOKSHELF_NETWORK_MODE_SERVICE_NETWORKS}"
                                         }
                  },
     "app_links":  [
@@ -124,6 +126,17 @@
                        "required":  false,
                        "default":  "",
                        "help":  "Optional Linux user and group in \u003ccode\u003eUID:GID\u003c/code\u003e format, for example \u003ccode\u003e1000:1000\u003c/code\u003e.\u003cbr\u003eLeave blank initially. Audiobookshelf does not use PUID or PGID environment variables."
+                   },
+                   {
+                       "name":  "AUDIOBOOKSHELF_NETWORK_MODE",
+                       "label":  "O3: Network",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "__create_bridge__",
+                       "data_type":  "docker_network",
+                       "options_source":  "docker_networks",
+                       "help":  "Choose \u003ccode\u003eCreate New Bridge\u003c/code\u003e for the default Compose network, \u003ccode\u003eHost Mode\u003c/code\u003e for host networking, or an existing named Docker network."
                    },
                    {
                        "name":  "AUDIOBOOKSHELF_EXTRA_MOUNT_1",
@@ -262,5 +275,6 @@
                                     "An optional UID:GID value can be supplied through the Compose user setting"
                                 ],
                "data_location":  "The config folder contains the SQLite database and must remain on local storage attached to the NAS running the container. Metadata and media folders may use the locations selected above."
-           }
+           },
+    "networks":  "${AUDIOBOOKSHELF_NETWORK_MODE_DEFINITIONS}"
 }

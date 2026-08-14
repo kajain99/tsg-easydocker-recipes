@@ -1,0 +1,210 @@
+{
+  "name": "sabnzbd",
+  "version": 1,
+  "description": "Automated Usenet downloader with a browser-based interface",
+  "services": {
+    "sabnzbd": {
+      "container_name": "${SABNZBD_CONTAINER_NAME}",
+      "image": "${SABNZBD_IMAGE}",
+      "environment": {
+        "PUID": "${PUID}",
+        "PGID": "${PGID}",
+        "TZ": "${TZ}"
+      },
+      "volumes": [
+        "${CONFIG_LOCATION}:${SABNZBD_CONFIG_TARGET}",
+        "${INCOMPLETE_DOWNLOADS_LOCATION}:${SABNZBD_INCOMPLETE_DOWNLOADS_TARGET}",
+        "${DOWNLOADS_LOCATION}:${SABNZBD_DOWNLOADS_TARGET}"
+      ],
+      "ports": [
+        "${SABNZBD_PORT}:${SABNZBD_INTERNAL_PORT}"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${SABNZBD_NETWORK_MODE_MODE}",
+      "networks": "${SABNZBD_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${SABNZBD_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open SABnzbd",
+      "service": "sabnzbd",
+      "port": "${SABNZBD_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "SABNZBD_PORT",
+      "label": "R1: Web UI Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "8080",
+      "help": "Host port used to open the SABnzbd setup wizard and Web UI."
+    },
+    {
+      "name": "CONFIG_LOCATION",
+      "label": "R2: Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./config",
+      "help": "Host folder for SABnzbd configuration and application state."
+    },
+    {
+      "name": "INCOMPLETE_DOWNLOADS_LOCATION",
+      "label": "R3: Incomplete Downloads Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./incomplete-downloads",
+      "help": "Host folder used while downloads are incomplete or being processed."
+    },
+    {
+      "name": "DOWNLOADS_LOCATION",
+      "label": "R4: Completed Downloads Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./downloads",
+      "help": "Host folder for completed downloads.<br>For hardlinks or atomic moves with other media applications, plan compatible host paths and filesystems before deployment."
+    },
+    {
+      "name": "PUID",
+      "label": "R5: PUID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "1000",
+      "help": "Linux user ID used by the container for bind-mounted file permissions."
+    },
+    {
+      "name": "PGID",
+      "label": "R6: PGID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "1000",
+      "help": "Linux group ID used by the container for bind-mounted file permissions."
+    },
+    {
+      "name": "TZ",
+      "label": "R7: Timezone",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "Etc/UTC",
+      "help": "Timezone used by SABnzbd, such as <code>Asia/Dubai</code> or <code>Etc/UTC</code>."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O1: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        { "label": "Unless Stopped", "value": "unless-stopped" },
+        { "label": "Always", "value": "always" },
+        { "label": "On Failure", "value": "on-failure" },
+        { "label": "No", "value": "no" }
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "SABNZBD_NETWORK_MODE",
+      "label": "O2: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the default Compose network, <code>Host Mode</code> for host networking, or an existing named Docker network."
+    },
+    {
+      "name": "SABNZBD_IMAGE",
+      "label": "A1: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "lscr.io/linuxserver/sabnzbd:latest",
+      "docs_url": "https://docs.linuxserver.io/images/docker-sabnzbd/",
+      "docs_label": "Official help",
+      "help": "LinuxServer SABnzbd stable image. Change this only if you need a different tag or image source."
+    },
+    {
+      "name": "SABNZBD_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "SABNZBD_INTERNAL_PORT",
+      "label": "Internal Web UI Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "8080",
+      "editable": false,
+      "help": "Recipe-managed SABnzbd Web UI port inside the container."
+    },
+    {
+      "name": "SABNZBD_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal configuration path."
+    },
+    {
+      "name": "SABNZBD_INCOMPLETE_DOWNLOADS_TARGET",
+      "label": "Incomplete Downloads Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/incomplete-downloads",
+      "editable": false,
+      "help": "Recipe-managed internal incomplete-downloads path."
+    },
+    {
+      "name": "SABNZBD_DOWNLOADS_TARGET",
+      "label": "Completed Downloads Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/downloads",
+      "editable": false,
+      "help": "Recipe-managed internal completed-downloads path."
+    }
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/sabnzbd/",
+    "sections": [
+      { "name": "required", "label": "Minimum Required" },
+      { "name": "optional", "label": "Optional", "collapsed": true },
+      { "name": "advanced", "label": "Advanced", "collapsed": true },
+      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
+    ],
+    "tags": [
+      "Intel/AMD",
+      "ARM"
+    ],
+    "overview": "SABnzbd automates downloading, verification, repair, extraction, and organization of Usenet downloads.",
+    "what_happens": [
+      "One SABnzbd container will be created using the LinuxServer image",
+      "Configuration, incomplete downloads, and completed downloads will be stored in the bind-mounted folders you choose",
+      "The initial SABnzbd setup wizard will be available on the selected Web UI port",
+      "The container will use the selected Docker networking mode"
+    ],
+    "data_location": "Each storage field can be relative to this app's config folder or an absolute host path."
+  }
+}

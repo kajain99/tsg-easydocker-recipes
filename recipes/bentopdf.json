@@ -1,94 +1,142 @@
 {
-  "name": "bentopdf",
-  "version": 1,
-  "description": "Privacy-focused browser-based PDF tools for editing, converting, signing, OCR, and organizing documents",
-  "services": {
-    "bentopdf": {
-      "container_name": "${BENTOPDF_CONTAINER_NAME}",
-      "image": "${BENTOPDF_IMAGE}",
-      "ports": ["${BENTOPDF_PORT}:${BENTOPDF_INTERNAL_PORT}"],
-      "restart": "${RESTART_POLICY}"
-    }
-  },
-  "app_links": [{
-    "label": "Open BentoPDF",
-    "service": "bentopdf",
-    "port": "${BENTOPDF_PORT}",
-    "path": "/",
-    "scheme": "http"
-  }],
-  "fields": [
-    {
-      "name": "BENTOPDF_PORT",
-      "label": "R1: App Port",
-      "section": "required",
-      "input_type": "text",
-      "required": true,
-      "default": "3000",
-      "help": "Host port used to open BentoPDF in your browser."
-    },
-    {
-      "name": "RESTART_POLICY",
-      "label": "O1: Restart Policy",
-      "section": "optional",
-      "input_type": "select",
-      "required": true,
-      "default": "unless-stopped",
-      "options": [
-        {"label": "Unless Stopped", "value": "unless-stopped"},
-        {"label": "Always", "value": "always"},
-        {"label": "On Failure", "value": "on-failure"},
-        {"label": "No", "value": "no"}
-      ],
-      "help": "Controls whether the container restarts automatically."
-    },
-    {
-      "name": "BENTOPDF_IMAGE",
-      "label": "A1: Image",
-      "section": "advanced",
-      "input_type": "text",
-      "required": true,
-      "default": "ghcr.io/alam00000/bentopdf-simple:latest",
-      "docs_url": "https://www.bentopdf.com/docs/self-hosting/docker",
-      "docs_label": "Official help",
-      "help": "Official self-hosted BentoPDF image.<br>Change this only if you want to pin a specific image tag."
-    },
-    {
-      "name": "BENTOPDF_CONTAINER_NAME",
-      "label": "Container Name",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "${PROJECT_NAME}",
-      "editable": false,
-      "help": "EasyDocker sets the container name from the project name."
-    },
-    {
-      "name": "BENTOPDF_INTERNAL_PORT",
-      "label": "Internal App Port",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "8080",
-      "editable": false,
-      "help": "Recipe-managed BentoPDF container port."
-    }
-  ],
-  "ui": {
-    "manual": "https://tsg-easydocker.com/docs/recipes/bentopdf/",
-    "sections": [
-      {"name": "required", "label": "Minimum Required"},
-      {"name": "optional", "label": "Optional", "collapsed": true},
-      {"name": "advanced", "label": "Advanced", "collapsed": true},
-      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
-    ],
-    "tags": ["Intel/AMD", "ARM"],
-    "overview": "BentoPDF is a privacy-focused PDF toolkit that performs document processing in the browser.",
-    "what_happens": [
-      "One BentoPDF container will be created",
-      "The web interface will be published on the port you choose",
-      "No database or persistent data volume is required because PDF processing happens in the browser"
-    ],
-    "data_location": "BentoPDF does not require a persistent data folder; documents are processed in the user's browser."
-  }
+    "name":  "bentopdf",
+    "version":  1.01,
+    "description":  "Privacy-focused browser-based PDF tools for editing, converting, signing, OCR, and organizing documents",
+    "services":  {
+                     "bentopdf":  {
+                                      "container_name":  "${BENTOPDF_CONTAINER_NAME}",
+                                      "image":  "${BENTOPDF_IMAGE}",
+                                      "ports":  [
+                                                    "${BENTOPDF_PORT}:${BENTOPDF_INTERNAL_PORT}"
+                                                ],
+                                      "restart":  "${RESTART_POLICY}",
+                                      "network_mode":  "${BENTOPDF_NETWORK_MODE_MODE}",
+                                      "networks":  "${BENTOPDF_NETWORK_MODE_SERVICE_NETWORKS}"
+                                  }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open BentoPDF",
+                          "service":  "bentopdf",
+                          "port":  "${BENTOPDF_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "BENTOPDF_PORT",
+                       "label":  "R1: App Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "3000",
+                       "help":  "Host port used to open BentoPDF in your browser."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O1: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "label":  "Unless Stopped",
+                                           "value":  "unless-stopped"
+                                       },
+                                       {
+                                           "label":  "Always",
+                                           "value":  "always"
+                                       },
+                                       {
+                                           "label":  "On Failure",
+                                           "value":  "on-failure"
+                                       },
+                                       {
+                                           "label":  "No",
+                                           "value":  "no"
+                                       }
+                                   ],
+                       "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "BENTOPDF_NETWORK_MODE",
+                       "label":  "O2: Network",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "__create_bridge__",
+                       "data_type":  "docker_network",
+                       "options_source":  "docker_networks",
+                       "help":  "Choose \u003ccode\u003eCreate New Bridge\u003c/code\u003e for the default Compose network, \u003ccode\u003eHost Mode\u003c/code\u003e for host networking, or an existing named Docker network."
+                   },
+                   {
+                       "name":  "BENTOPDF_IMAGE",
+                       "label":  "A1: Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "ghcr.io/alam00000/bentopdf-simple:latest",
+                       "docs_url":  "https://www.bentopdf.com/docs/self-hosting/docker",
+                       "docs_label":  "Official help",
+                       "help":  "Official self-hosted BentoPDF image.\u003cbr\u003eChange this only if you want to pin a specific image tag."
+                   },
+                   {
+                       "name":  "BENTOPDF_CONTAINER_NAME",
+                       "label":  "Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the container name from the project name."
+                   },
+                   {
+                       "name":  "BENTOPDF_INTERNAL_PORT",
+                       "label":  "Internal App Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8080",
+                       "editable":  false,
+                       "help":  "Recipe-managed BentoPDF container port."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/bentopdf/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "name":  "optional",
+                                    "label":  "Optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "advanced",
+                                    "label":  "Advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "readonly",
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "BentoPDF is a privacy-focused PDF toolkit that performs document processing in the browser.",
+               "what_happens":  [
+                                    "One BentoPDF container will be created",
+                                    "The web interface will be published on the port you choose",
+                                    "No database or persistent data volume is required because PDF processing happens in the browser"
+                                ],
+               "data_location":  "BentoPDF does not require a persistent data folder; documents are processed in the user\u0027s browser."
+           },
+    "networks":  "${BENTOPDF_NETWORK_MODE_DEFINITIONS}"
 }

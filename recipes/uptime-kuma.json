@@ -1,6 +1,6 @@
 {
     "name":  "uptime-kuma",
-    "version":  1,
+    "version":  1.01,
     "description":  "Self-hosted uptime monitoring with status pages and notifications",
     "services":  {
                      "uptime-kuma":  {
@@ -13,7 +13,9 @@
                                                      ],
                                          "ports":  [
                                                        "${UPTIME_KUMA_PORT}:${UPTIME_KUMA_INTERNAL_PORT}"
-                                                   ]
+                                                   ],
+                                         "network_mode":  "${UPTIME_KUMA_NETWORK_MODE_MODE}",
+                                         "networks":  "${UPTIME_KUMA_NETWORK_MODE_SERVICE_NETWORKS}"
                                      }
                  },
     "app_links":  [
@@ -89,6 +91,17 @@
                                        }
                                    ],
                        "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "UPTIME_KUMA_NETWORK_MODE",
+                       "label":  "O3: Network",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "__create_bridge__",
+                       "data_type":  "docker_network",
+                       "options_source":  "docker_networks",
+                       "help":  "Choose \u003ccode\u003eCreate New Bridge\u003c/code\u003e for the default Compose network, \u003ccode\u003eHost Mode\u003c/code\u003e for host networking, or an existing named Docker network."
                    },
                    {
                        "name":  "UPTIME_KUMA_IMAGE",
@@ -168,5 +181,6 @@
                                     "Enabling local Docker monitoring mounts the powerful host Docker socket into Uptime Kuma"
                                 ],
                "data_location":  "Store Uptime Kuma data on a local filesystem, not NFS. The folder can be relative to this app\u0027s config folder or an absolute path."
-           }
+           },
+    "networks":  "${UPTIME_KUMA_NETWORK_MODE_DEFINITIONS}"
 }

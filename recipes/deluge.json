@@ -1,0 +1,280 @@
+{
+    "name":  "deluge",
+    "version":  1,
+    "description":  "BitTorrent client with a browser-based interface and persistent downloads",
+    "services":  {
+                     "deluge":  {
+                                    "container_name":  "${DELUGE_CONTAINER_NAME}",
+                                    "image":  "${DELUGE_IMAGE}",
+                                    "environment":  {
+                                                        "PUID":  "${PUID}",
+                                                        "PGID":  "${PGID}",
+                                                        "TZ":  "${TZ}",
+                                                        "DELUGE_LOGLEVEL":  "${DELUGE_LOGLEVEL}"
+                                                    },
+                                    "volumes":  [
+                                                    "${CONFIG_LOCATION}:${DELUGE_CONFIG_TARGET}",
+                                                    "${DOWNLOADS_LOCATION}:${DELUGE_DOWNLOADS_TARGET}"
+                                                ],
+                                    "ports":  [
+                                                  "${WEBUI_PORT}:${DELUGE_WEBUI_INTERNAL_PORT}",
+                                                  "${TORRENTING_PORT}:${DELUGE_TORRENT_INTERNAL_PORT}",
+                                                  "${TORRENTING_PORT}:${DELUGE_TORRENT_INTERNAL_PORT}/udp",
+                                                  "${DAEMON_PORT_MAPPING}"
+                                              ],
+                                    "restart":  "${RESTART_POLICY}",
+                                    "network_mode":  "${DELUGE_NETWORK_MODE_MODE}",
+                                    "networks":  "${DELUGE_NETWORK_MODE_SERVICE_NETWORKS}"
+                                }
+                 },
+    "networks":  "${DELUGE_NETWORK_MODE_DEFINITIONS}",
+    "app_links":  [
+                      {
+                          "label":  "Open Deluge",
+                          "service":  "deluge",
+                          "port":  "${WEBUI_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "WEBUI_PORT",
+                       "label":  "R1: Web UI Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8112",
+                       "help":  "Host port used to open the Deluge Web UI.\u003cbr\u003e\u003cstrong\u003eFirst login:\u003c/strong\u003e Use username \u003ccode\u003eadmin\u003c/code\u003e and password \u003ccode\u003edeluge\u003c/code\u003e, then change the password under Preferences \u0026gt; Interface \u0026gt; Password."
+                   },
+                   {
+                       "name":  "TORRENTING_PORT",
+                       "label":  "R2: Torrenting Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "6881",
+                       "help":  "Host port used for incoming BitTorrent connections. It is published over both TCP and UDP and mapped to Deluge\u0027s internal port 6881.\u003cbr\u003eAfter deployment, open Preferences \u0026gt; Network and set Deluge\u0027s incoming port to \u003ccode\u003e6881\u003c/code\u003e; otherwise Deluge may continue using random inbound ports."
+                   },
+                   {
+                       "name":  "CONFIG_LOCATION",
+                       "label":  "R3: Config Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./config",
+                       "help":  "Host folder for Deluge configuration and application state."
+                   },
+                   {
+                       "name":  "DOWNLOADS_LOCATION",
+                       "label":  "R4: Downloads Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./downloads",
+                       "help":  "Host folder where Deluge stores downloaded files."
+                   },
+                   {
+                       "name":  "PUID",
+                       "label":  "R5: PUID",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1000",
+                       "help":  "Linux user ID used by the container for file permissions."
+                   },
+                   {
+                       "name":  "PGID",
+                       "label":  "R6: PGID",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1000",
+                       "help":  "Linux group ID used by the container for file permissions."
+                   },
+                   {
+                       "name":  "TZ",
+                       "label":  "R7: Timezone",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "Etc/UTC",
+                       "help":  "Timezone used by Deluge, such as \u003ccode\u003eAsia/Dubai\u003c/code\u003e or \u003ccode\u003eEtc/UTC\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "DELUGE_LOGLEVEL",
+                       "label":  "O1: Log Level",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  false,
+                       "default":  "error",
+                       "options":  [
+                                       {
+                                           "label":  "Error",
+                                           "value":  "error"
+                                       },
+                                       {
+                                           "label":  "Warning",
+                                           "value":  "warning"
+                                       },
+                                       {
+                                           "label":  "Info",
+                                           "value":  "info"
+                                       },
+                                       {
+                                           "label":  "Debug",
+                                           "value":  "debug"
+                                       }
+                                   ],
+                       "help":  "Controls Deluge\u0027s container log verbosity. Clear the value to omit this environment variable."
+                   },
+                   {
+                       "name":  "DAEMON_PORT_MAPPING",
+                       "label":  "O2: Daemon Port Mapping",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "58846:58846",
+                       "help":  "Optional mapping for remote Deluge daemon clients, written as \u003ccode\u003eHOST_PORT:58846\u003c/code\u003e. Clear this field if remote daemon access is not needed."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O3: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "label":  "Unless Stopped",
+                                           "value":  "unless-stopped"
+                                       },
+                                       {
+                                           "label":  "Always",
+                                           "value":  "always"
+                                       },
+                                       {
+                                           "label":  "On Failure",
+                                           "value":  "on-failure"
+                                       },
+                                       {
+                                           "label":  "No",
+                                           "value":  "no"
+                                       }
+                                   ],
+                       "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "DELUGE_NETWORK_MODE",
+                       "label":  "O4: Network",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "__create_bridge__",
+                       "data_type":  "docker_network",
+                       "options_source":  "docker_networks",
+                       "help":  "Choose \u003ccode\u003eCreate New Bridge\u003c/code\u003e for the default Compose network, \u003ccode\u003eHost Mode\u003c/code\u003e for host networking, or an existing named Docker network."
+                   },
+                   {
+                       "name":  "DELUGE_IMAGE",
+                       "label":  "A1: Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "lscr.io/linuxserver/deluge:latest",
+                       "docs_url":  "https://docs.linuxserver.io/images/docker-deluge/",
+                       "docs_label":  "Official help",
+                       "help":  "LinuxServer Deluge image. Change this only if you need a different tag or image source."
+                   },
+                   {
+                       "name":  "DELUGE_CONTAINER_NAME",
+                       "label":  "Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the container name from the project name."
+                   },
+                   {
+                       "name":  "DELUGE_WEBUI_INTERNAL_PORT",
+                       "label":  "Internal Web UI Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "8112",
+                       "editable":  false,
+                       "help":  "Recipe-managed Deluge Web UI port inside the container."
+                   },
+                   {
+                       "name":  "DELUGE_TORRENT_INTERNAL_PORT",
+                       "label":  "Internal Torrenting Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "6881",
+                       "editable":  false,
+                       "help":  "Recipe-managed incoming torrent port inside the container."
+                   },
+                   {
+                       "name":  "DELUGE_CONFIG_TARGET",
+                       "label":  "Config Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/config",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal configuration path."
+                   },
+                   {
+                       "name":  "DELUGE_DOWNLOADS_TARGET",
+                       "label":  "Downloads Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/downloads",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal downloads path."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/deluge/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "name":  "optional",
+                                    "label":  "Optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "advanced",
+                                    "label":  "Advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "readonly",
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "Deluge is a lightweight BitTorrent client managed through a browser-based interface.",
+               "what_happens":  [
+                                    "One Deluge container will be created using the LinuxServer image",
+                                    "Configuration and downloads will be stored in the bind-mounted folders you choose",
+                                    "The Web UI will be published on the selected host port",
+                                    "The torrenting port will be published over both TCP and UDP",
+                                    "For the first login, use username admin and password deluge, then change the password in the Web UI",
+                                    "Set Deluge\u0027s incoming port to 6881 under Preferences \u003e Network so it matches the container port mapping",
+                                    "Remote daemon access is available only when the optional daemon port mapping is provided",
+                                    "The container will use the selected Docker networking mode"
+                                ],
+               "data_location":  "Each storage field can be relative to this app\u0027s config folder or an absolute host path."
+           }
+}

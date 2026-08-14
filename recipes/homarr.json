@@ -1,75 +1,89 @@
 {
-    "name":  "metube",
-    "version":  1.01,
-    "description":  "Self-hosted web interface for downloading videos and audio with yt-dlp",
+    "name":  "homarr",
+    "version":  1.02,
+    "description":  "Customizable server dashboard with integrations and optional local Docker monitoring",
     "services":  {
-                     "metube":  {
-                                    "container_name":  "${METUBE_CONTAINER_NAME}",
-                                    "image":  "${METUBE_IMAGE}",
+                     "homarr":  {
+                                    "container_name":  "${HOMARR_CONTAINER_NAME}",
+                                    "image":  "${HOMARR_IMAGE}",
                                     "restart":  "${RESTART_POLICY}",
-                                    "ports":  [
-                                                  "${METUBE_PORT}:${METUBE_INTERNAL_PORT}"
-                                              ],
-                                    "environment":  {
-                                                        "PUID":  "${PUID}",
-                                                        "PGID":  "${PGID}"
-                                                    },
                                     "volumes":  [
-                                                    "${DOWNLOADS_LOCATION}:${METUBE_DOWNLOADS_TARGET}"
+                                                    "${DOCKER_SOCKET_MOUNT}",
+                                                    "${APPDATA_LOCATION}:${HOMARR_APPDATA_TARGET}"
                                                 ],
-                                    "network_mode":  "${METUBE_NETWORK_MODE_MODE}",
-                                    "networks":  "${METUBE_NETWORK_MODE_SERVICE_NETWORKS}"
+                                    "environment":  {
+                                                        "SECRET_ENCRYPTION_KEY":  "${SECRET_ENCRYPTION_KEY}"
+                                                    },
+                                    "ports":  [
+                                                  "${HOMARR_PORT}:${HOMARR_INTERNAL_PORT}"
+                                              ],
+                                    "network_mode":  "${HOMARR_NETWORK_MODE_MODE}",
+                                    "networks":  "${HOMARR_NETWORK_MODE_SERVICE_NETWORKS}"
                                 }
                  },
     "app_links":  [
                       {
-                          "label":  "Open MeTube",
-                          "service":  "metube",
-                          "port":  "${METUBE_PORT}",
+                          "label":  "Open Homarr",
+                          "service":  "homarr",
+                          "port":  "${HOMARR_PORT}",
                           "path":  "/",
                           "scheme":  "http"
                       }
                   ],
     "fields":  [
                    {
-                       "name":  "METUBE_PORT",
+                       "name":  "HOMARR_PORT",
                        "label":  "R1: App Port",
                        "section":  "required",
                        "input_type":  "text",
                        "required":  true,
-                       "default":  "8081",
-                       "help":  "Host port used to open MeTube."
+                       "default":  "7575",
+                       "help":  "Host port used to open Homarr."
                    },
                    {
-                       "name":  "DOWNLOADS_LOCATION",
-                       "label":  "R2: Downloads Folder",
+                       "name":  "SECRET_ENCRYPTION_KEY",
+                       "label":  "R2: Encryption Key",
+                       "section":  "required",
+                       "input_type":  "password",
+                       "required":  true,
+                       "default":  "",
+                       "generator":  {
+                                         "type":  "hex",
+                                         "bytes":  32
+                                     },
+                       "help":  "Required key used to encrypt secrets stored by Homarr.\u003cbr\u003eUse Generate to create the required 64-character hexadecimal key. Keep the same key for the lifetime of this installation and store a backup securely."
+                   },
+                   {
+                       "name":  "APPDATA_LOCATION",
+                       "label":  "R3: App Data Folder",
                        "section":  "required",
                        "input_type":  "text",
                        "required":  true,
-                       "default":  "./downloads",
-                       "help":  "Host path where downloaded media and MeTube state will be stored."
+                       "default":  "./data",
+                       "help":  "Host path for Homarr configuration, database, icons, and other persistent application data."
                    },
                    {
-                       "name":  "PUID",
-                       "label":  "O1: User ID (PUID)",
+                       "name":  "DOCKER_SOCKET_MOUNT",
+                       "label":  "O1: Local Docker App Monitoring",
                        "section":  "optional",
-                       "input_type":  "text",
+                       "input_type":  "select",
                        "required":  false,
                        "default":  "",
-                       "help":  "Optional user ID under which MeTube runs.\u003cbr\u003eLeave blank to use MeTube default \u003ccode\u003e1000\u003c/code\u003e. Set this only when downloaded files need to be owned by a specific NAS or Linux user."
-                   },
-                   {
-                       "name":  "PGID",
-                       "label":  "O2: Group ID (PGID)",
-                       "section":  "optional",
-                       "input_type":  "text",
-                       "required":  false,
-                       "default":  "",
-                       "help":  "Optional group ID under which MeTube runs.\u003cbr\u003eLeave blank to use MeTube default \u003ccode\u003e1000\u003c/code\u003e. Set this only when downloaded files need a specific NAS or Linux group."
+                       "options":  [
+                                       {
+                                           "value":  "",
+                                           "label":  "Disabled (Recommended)"
+                                       },
+                                       {
+                                           "value":  "/var/run/docker.sock:/var/run/docker.sock",
+                                           "label":  "Enabled for Local Docker Apps"
+                                       }
+                                   ],
+                       "help":  "Enable this if you want Homarr to automatically discover, monitor, and manage apps running as Docker containers on this same host. It is not required for ordinary dashboard links or non-Docker integrations.\u003cbr\u003e\u003cstrong\u003eSecurity warning:\u003c/strong\u003e mounting the Docker socket gives Homarr powerful control over Docker, including the ability to start, stop, restart, and remove containers. Enable it only on a trusted installation; consider a restricted Docker socket proxy for stronger isolation."
                    },
                    {
                        "name":  "RESTART_POLICY",
-                       "label":  "O3: Restart Policy",
+                       "label":  "O2: Restart Policy",
                        "section":  "optional",
                        "input_type":  "select",
                        "required":  true,
@@ -95,8 +109,8 @@
                        "help":  "Controls whether the container restarts automatically."
                    },
                    {
-                       "name":  "METUBE_NETWORK_MODE",
-                       "label":  "O4: Network",
+                       "name":  "HOMARR_NETWORK_MODE",
+                       "label":  "O3: Network",
                        "section":  "optional",
                        "input_type":  "select",
                        "required":  true,
@@ -106,18 +120,18 @@
                        "help":  "Choose \u003ccode\u003eCreate New Bridge\u003c/code\u003e for the default Compose network, \u003ccode\u003eHost Mode\u003c/code\u003e for host networking, or an existing named Docker network."
                    },
                    {
-                       "name":  "METUBE_IMAGE",
+                       "name":  "HOMARR_IMAGE",
                        "label":  "A1: Image",
                        "section":  "advanced",
                        "input_type":  "text",
                        "required":  true,
-                       "default":  "ghcr.io/alexta69/metube:latest",
-                       "docs_url":  "https://github.com/alexta69/metube",
+                       "default":  "ghcr.io/homarr-labs/homarr:latest",
+                       "docs_url":  "https://homarr.dev/docs/getting-started/installation/docker/",
                        "docs_label":  "Official help",
-                       "help":  "Docker image used for MeTube.\u003cbr\u003eChange this only if you want a different tag."
+                       "help":  "Docker image used for Homarr."
                    },
                    {
-                       "name":  "METUBE_CONTAINER_NAME",
+                       "name":  "HOMARR_CONTAINER_NAME",
                        "label":  "Container Name",
                        "section":  "readonly",
                        "input_type":  "text",
@@ -127,28 +141,28 @@
                        "help":  "EasyDocker sets the container name from the project name."
                    },
                    {
-                       "name":  "METUBE_INTERNAL_PORT",
+                       "name":  "HOMARR_INTERNAL_PORT",
                        "label":  "Internal App Port",
                        "section":  "readonly",
                        "input_type":  "text",
                        "required":  true,
-                       "default":  "8081",
+                       "default":  "7575",
                        "editable":  false,
-                       "help":  "Recipe-managed internal MeTube web port."
+                       "help":  "Recipe-managed internal Homarr web port."
                    },
                    {
-                       "name":  "METUBE_DOWNLOADS_TARGET",
-                       "label":  "Downloads Path Inside Container",
+                       "name":  "HOMARR_APPDATA_TARGET",
+                       "label":  "App Data Path Inside Container",
                        "section":  "readonly",
                        "input_type":  "text",
                        "required":  true,
-                       "default":  "/downloads",
+                       "default":  "/appdata",
                        "editable":  false,
-                       "help":  "Recipe-managed internal downloads path."
+                       "help":  "Recipe-managed internal Homarr data path."
                    }
                ],
     "ui":  {
-               "manual":  "https://tsg-easydocker.com/docs/recipes/metube/",
+               "manual":  "https://tsg-easydocker.com/docs/recipes/homarr/",
                "sections":  [
                                 {
                                     "name":  "required",
@@ -174,14 +188,16 @@
                             "Intel/AMD",
                             "ARM"
                         ],
-               "overview":  "MeTube provides a browser-based interface for downloading video and audio from YouTube and other sites supported by yt-dlp.",
+               "overview":  "Homarr is a customizable dashboard for organizing server applications, integrations, widgets, and optional local Docker container monitoring.",
                "what_happens":  [
-                                    "One MeTube container will be created",
-                                    "Downloaded media and persistent queue history will be stored in the folder you choose",
+                                    "One Homarr container will be created",
+                                    "Homarr configuration and database files will be stored in the app data folder you choose",
+                                    "A required 64-character encryption key can be generated securely from the recipe form",
                                     "The web interface will open on the port you choose",
-                                    "PUID and PGID are optional and will be omitted when left blank, allowing MeTube to use its defaults"
+                                    "Local Docker discovery and monitoring are disabled by default",
+                                    "Enabling local Docker monitoring mounts the powerful host Docker socket into Homarr"
                                 ],
                "data_location":  "Stored relative to this app\u0027s config folder unless you enter an absolute path."
            },
-    "networks":  "${METUBE_NETWORK_MODE_DEFINITIONS}"
+    "networks":  "${HOMARR_NETWORK_MODE_DEFINITIONS}"
 }

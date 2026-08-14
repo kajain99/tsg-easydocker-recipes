@@ -1,187 +1,246 @@
 {
-  "name": "pairdrop",
-  "version": 1,
-  "description": "Local file sharing between devices through a web browser",
-  "services": {
-    "pairdrop": {
-      "container_name": "${PAIRDROP_CONTAINER_NAME}",
-      "image": "${PAIRDROP_IMAGE}",
-      "environment": {
-        "PUID": "${PUID}",
-        "PGID": "${PGID}",
-        "TZ": "${TZ}",
-        "WS_FALLBACK": "${WS_FALLBACK}",
-        "RATE_LIMIT": "${RATE_LIMIT}",
-        "RTC_CONFIG": "${RTC_CONFIG}",
-        "DEBUG_MODE": "${DEBUG_MODE}"
-      },
-      "ports": [
-        "${PAIRDROP_PORT}:${PAIRDROP_INTERNAL_PORT}"
-      ],
-      "restart": "${RESTART_POLICY}"
-    }
-  },
-  "app_links": [
-    {
-      "label": "Open PairDrop",
-      "service": "pairdrop",
-      "port": "${PAIRDROP_PORT}",
-      "path": "/",
-      "scheme": "http"
-    }
-  ],
-  "fields": [
-    {
-      "name": "PAIRDROP_PORT",
-      "label": "R1: App Port",
-      "section": "required",
-      "input_type": "text",
-      "required": true,
-      "default": "3000",
-      "help": "Host port used to open PairDrop in your browser."
-    },
-    {
-      "name": "PUID",
-      "label": "R2: PUID",
-      "section": "required",
-      "input_type": "text",
-      "required": true,
-      "default": "1000",
-      "help": "Linux user ID used by the container.<br>Use the ID of the account that should own files created by PairDrop."
-    },
-    {
-      "name": "PGID",
-      "label": "R3: PGID",
-      "section": "required",
-      "input_type": "text",
-      "required": true,
-      "default": "1000",
-      "help": "Linux group ID used by the container.<br>Use the group ID associated with the selected PUID."
-    },
-    {
-      "name": "TZ",
-      "label": "R4: Timezone",
-      "section": "required",
-      "input_type": "text",
-      "required": true,
-      "default": "Asia/Dubai",
-      "help": "Timezone used by PairDrop logs.<br>Example: <code>Asia/Dubai</code> or <code>Etc/UTC</code>."
-    },
-    {
-      "name": "WS_FALLBACK",
-      "label": "O1: WebSocket Fallback",
-      "section": "optional",
-      "input_type": "select",
-      "required": true,
-      "default": "false",
-      "options": [
-        { "label": "Disabled", "value": "false" },
-        { "label": "Enabled", "value": "true" }
-      ],
-      "help": "Enable this when peer-to-peer WebRTC is unavailable, such as through some VPNs.<br>Fallback transfers pass through the server and use its bandwidth."
-    },
-    {
-      "name": "RATE_LIMIT",
-      "label": "O2: Rate Limit",
-      "section": "optional",
-      "input_type": "select",
-      "required": true,
-      "default": "false",
-      "options": [
-        { "label": "Disabled", "value": "false" },
-        { "label": "Enabled", "value": "true" }
-      ],
-      "help": "Enable to limit each client to 100 requests per five minutes."
-    },
-    {
-      "name": "RTC_CONFIG",
-      "label": "O3: Custom RTC Config Path",
-      "section": "optional",
-      "input_type": "text",
-      "required": false,
-      "default": "",
-      "help": "Optional path inside the container to a JSON file containing custom STUN or TURN server settings.<br>Leave blank to use PairDrop defaults."
-    },
-    {
-      "name": "DEBUG_MODE",
-      "label": "O4: Debug Mode",
-      "section": "optional",
-      "input_type": "select",
-      "required": true,
-      "default": "false",
-      "options": [
-        { "label": "Disabled", "value": "false" },
-        { "label": "Enabled", "value": "true" }
-      ],
-      "help": "Logs client IP addresses for HTTP server debugging.<br>Do not enable this in production."
-    },
-    {
-      "name": "RESTART_POLICY",
-      "label": "O5: Restart Policy",
-      "section": "optional",
-      "input_type": "select",
-      "required": true,
-      "default": "unless-stopped",
-      "options": [
-        { "label": "Unless Stopped", "value": "unless-stopped" },
-        { "label": "Always", "value": "always" },
-        { "label": "On Failure", "value": "on-failure" },
-        { "label": "No", "value": "no" }
-      ],
-      "help": "Controls whether the container restarts automatically."
-    },
-    {
-      "name": "PAIRDROP_IMAGE",
-      "label": "A1: Image",
-      "section": "advanced",
-      "input_type": "text",
-      "required": true,
-      "default": "lscr.io/linuxserver/pairdrop:latest",
-      "docs_url": "https://docs.linuxserver.io/images/docker-pairdrop/",
-      "docs_label": "Official help",
-      "help": "Docker image used for PairDrop.<br>Change this only if you want a different tag or image source."
-    },
-    {
-      "name": "PAIRDROP_CONTAINER_NAME",
-      "label": "Container Name",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "${PROJECT_NAME}",
-      "editable": false,
-      "help": "EasyDocker sets the container name from the project name."
-    },
-    {
-      "name": "PAIRDROP_INTERNAL_PORT",
-      "label": "Internal App Port",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "3000",
-      "editable": false,
-      "help": "Recipe-managed internal PairDrop web port."
-    }
-  ],
-  "ui": {
-    "manual": "https://tsg-easydocker.com/docs/recipes/pairdrop/",
-    "sections": [
-      { "name": "required", "label": "Minimum Required" },
-      { "name": "optional", "label": "Optional", "collapsed": true },
-      { "name": "advanced", "label": "Advanced", "collapsed": true },
-      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
-    ],
-    "tags": [
-      "Intel/AMD",
-      "ARM"
-    ],
-    "overview": "PairDrop lets devices send files and text to each other directly from a web browser, similar to AirDrop but across platforms.",
-    "what_happens": [
-      "A PairDrop container will be created using the LinuxServer image",
-      "The PairDrop web interface will be published on host port 3000 by default",
-      "PUID, PGID, and timezone will be passed into the container",
-      "WebSocket fallback, rate limiting, custom RTC configuration, and debug logging can be configured under Optional",
-      "No persistent volume is required for the standard PairDrop setup"
-    ],
-    "data_location": "PairDrop does not require persistent application storage for its standard configuration."
-  }
+    "name":  "pairdrop",
+    "version":  1.01,
+    "description":  "Local file sharing between devices through a web browser",
+    "services":  {
+                     "pairdrop":  {
+                                      "container_name":  "${PAIRDROP_CONTAINER_NAME}",
+                                      "image":  "${PAIRDROP_IMAGE}",
+                                      "environment":  {
+                                                          "PUID":  "${PUID}",
+                                                          "PGID":  "${PGID}",
+                                                          "TZ":  "${TZ}",
+                                                          "WS_FALLBACK":  "${WS_FALLBACK}",
+                                                          "RATE_LIMIT":  "${RATE_LIMIT}",
+                                                          "RTC_CONFIG":  "${RTC_CONFIG}",
+                                                          "DEBUG_MODE":  "${DEBUG_MODE}"
+                                                      },
+                                      "ports":  [
+                                                    "${PAIRDROP_PORT}:${PAIRDROP_INTERNAL_PORT}"
+                                                ],
+                                      "restart":  "${RESTART_POLICY}",
+                                      "network_mode":  "${PAIRDROP_NETWORK_MODE_MODE}",
+                                      "networks":  "${PAIRDROP_NETWORK_MODE_SERVICE_NETWORKS}"
+                                  }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open PairDrop",
+                          "service":  "pairdrop",
+                          "port":  "${PAIRDROP_PORT}",
+                          "path":  "/",
+                          "scheme":  "http"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "PAIRDROP_PORT",
+                       "label":  "R1: App Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "3000",
+                       "help":  "Host port used to open PairDrop in your browser."
+                   },
+                   {
+                       "name":  "PUID",
+                       "label":  "R2: PUID",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1000",
+                       "help":  "Linux user ID used by the container.\u003cbr\u003eUse the ID of the account that should own files created by PairDrop."
+                   },
+                   {
+                       "name":  "PGID",
+                       "label":  "R3: PGID",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "1000",
+                       "help":  "Linux group ID used by the container.\u003cbr\u003eUse the group ID associated with the selected PUID."
+                   },
+                   {
+                       "name":  "TZ",
+                       "label":  "R4: Timezone",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "Asia/Dubai",
+                       "help":  "Timezone used by PairDrop logs.\u003cbr\u003eExample: \u003ccode\u003eAsia/Dubai\u003c/code\u003e or \u003ccode\u003eEtc/UTC\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "WS_FALLBACK",
+                       "label":  "O1: WebSocket Fallback",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "false",
+                       "options":  [
+                                       {
+                                           "label":  "Disabled",
+                                           "value":  "false"
+                                       },
+                                       {
+                                           "label":  "Enabled",
+                                           "value":  "true"
+                                       }
+                                   ],
+                       "help":  "Enable this when peer-to-peer WebRTC is unavailable, such as through some VPNs.\u003cbr\u003eFallback transfers pass through the server and use its bandwidth."
+                   },
+                   {
+                       "name":  "RATE_LIMIT",
+                       "label":  "O2: Rate Limit",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "false",
+                       "options":  [
+                                       {
+                                           "label":  "Disabled",
+                                           "value":  "false"
+                                       },
+                                       {
+                                           "label":  "Enabled",
+                                           "value":  "true"
+                                       }
+                                   ],
+                       "help":  "Enable to limit each client to 100 requests per five minutes."
+                   },
+                   {
+                       "name":  "RTC_CONFIG",
+                       "label":  "O3: Custom RTC Config Path",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  false,
+                       "default":  "",
+                       "help":  "Optional path inside the container to a JSON file containing custom STUN or TURN server settings.\u003cbr\u003eLeave blank to use PairDrop defaults."
+                   },
+                   {
+                       "name":  "DEBUG_MODE",
+                       "label":  "O4: Debug Mode",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "false",
+                       "options":  [
+                                       {
+                                           "label":  "Disabled",
+                                           "value":  "false"
+                                       },
+                                       {
+                                           "label":  "Enabled",
+                                           "value":  "true"
+                                       }
+                                   ],
+                       "help":  "Logs client IP addresses for HTTP server debugging.\u003cbr\u003eDo not enable this in production."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O5: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "label":  "Unless Stopped",
+                                           "value":  "unless-stopped"
+                                       },
+                                       {
+                                           "label":  "Always",
+                                           "value":  "always"
+                                       },
+                                       {
+                                           "label":  "On Failure",
+                                           "value":  "on-failure"
+                                       },
+                                       {
+                                           "label":  "No",
+                                           "value":  "no"
+                                       }
+                                   ],
+                       "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "PAIRDROP_NETWORK_MODE",
+                       "label":  "O6: Network",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "__create_bridge__",
+                       "data_type":  "docker_network",
+                       "options_source":  "docker_networks",
+                       "help":  "Choose \u003ccode\u003eCreate New Bridge\u003c/code\u003e for the default Compose network, \u003ccode\u003eHost Mode\u003c/code\u003e for host networking, or an existing named Docker network."
+                   },
+                   {
+                       "name":  "PAIRDROP_IMAGE",
+                       "label":  "A1: Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "lscr.io/linuxserver/pairdrop:latest",
+                       "docs_url":  "https://docs.linuxserver.io/images/docker-pairdrop/",
+                       "docs_label":  "Official help",
+                       "help":  "Docker image used for PairDrop.\u003cbr\u003eChange this only if you want a different tag or image source."
+                   },
+                   {
+                       "name":  "PAIRDROP_CONTAINER_NAME",
+                       "label":  "Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the container name from the project name."
+                   },
+                   {
+                       "name":  "PAIRDROP_INTERNAL_PORT",
+                       "label":  "Internal App Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "3000",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal PairDrop web port."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/pairdrop/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "name":  "optional",
+                                    "label":  "Optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "advanced",
+                                    "label":  "Advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "readonly",
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "PairDrop lets devices send files and text to each other directly from a web browser, similar to AirDrop but across platforms.",
+               "what_happens":  [
+                                    "A PairDrop container will be created using the LinuxServer image",
+                                    "The PairDrop web interface will be published on host port 3000 by default",
+                                    "PUID, PGID, and timezone will be passed into the container",
+                                    "WebSocket fallback, rate limiting, custom RTC configuration, and debug logging can be configured under Optional",
+                                    "No persistent volume is required for the standard PairDrop setup"
+                                ],
+               "data_location":  "PairDrop does not require persistent application storage for its standard configuration."
+           },
+    "networks":  "${PAIRDROP_NETWORK_MODE_DEFINITIONS}"
 }

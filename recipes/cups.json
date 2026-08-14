@@ -1,198 +1,239 @@
 {
-  "name": "cups",
-  "version": 1.03,
-  "description": "CUPS print server with USB printer access and a browser-based admin interface",
-  "services": {
-    "cups": {
-      "container_name": "${CUPS_CONTAINER_NAME}",
-      "image": "${CUPS_IMAGE}",
-      "environment": {
-        "ADMIN_PASSWORD": "${CUPS_ADMIN_PASSWORD}",
-        "TZ": "${TZ}"
-      },
-      "ports": [
-        "${CUPS_PORT}:${CUPS_INTERNAL_PORT}"
-      ],
-      "volumes": [
-        "${CUPS_DBUS_LOCATION}:${CUPS_DBUS_TARGET}",
-        "${CUPS_USB_BUS_LOCATION}:${CUPS_USB_BUS_TARGET}",
-        "${CUPS_CONFIG_LOCATION}:${CUPS_CONFIG_TARGET}"
-      ],
-      "privileged": "${CUPS_PRIVILEGED}",
-      "restart": "${RESTART_POLICY}"
-    }
-  },
-  "app_links": [
-    {
-      "label": "Open CUPS",
-      "service": "cups",
-      "port": "${CUPS_PORT}",
-      "path": "/",
-      "scheme": "https"
-    }
-  ],
-  "fields": [
-    {
-      "name": "CUPS_PORT",
-      "label": "R1: App Port",
-      "section": "required",
-      "input_type": "text",
-      "required": true,
-      "default": "631",
-      "help": "Host port used to open the CUPS web interface in your browser."
-    },
-    {
-      "name": "CUPS_CONFIG_LOCATION",
-      "label": "R2: CUPS Config Folder",
-      "section": "required",
-      "input_type": "text",
-      "required": true,
-      "default": "./etc",
-      "help": "Stores CUPS configuration under this app's EasyDocker project folder."
-    },
-    {
-      "name": "CUPS_ADMIN_PASSWORD",
-      "label": "R3: Admin Password",
-      "section": "required",
-      "input_type": "password",
-      "required": true,
-      "default": "admin",
-      "help": "Password for the CUPS admin user. Change this from the default before exposing CUPS beyond a trusted local network."
-    },
-    {
-      "name": "TZ",
-      "label": "O1: Timezone",
-      "section": "optional",
-      "input_type": "text",
-      "required": true,
-      "default": "",
-      "help": "Timezone used by CUPS logs.<br>Example: <code>Asia/Dubai</code>."
-    },
-    {
-      "name": "RESTART_POLICY",
-      "label": "O2: Restart Policy",
-      "section": "optional",
-      "input_type": "select",
-      "required": true,
-      "default": "unless-stopped",
-      "options": [
-        { "label": "Unless Stopped", "value": "unless-stopped" },
-        { "label": "Always", "value": "always" },
-        { "label": "On Failure", "value": "on-failure" },
-        { "label": "No", "value": "no" }
-      ],
-      "help": "Controls whether the container restarts automatically."
-    },
-    {
-      "name": "CUPS_IMAGE",
-      "label": "A1: Image",
-      "section": "advanced",
-      "input_type": "text",
-      "required": true,
-      "default": "ydkn/cups:latest",
-      "help": "Docker image used for CUPS.<br>Change this only if you want a different tag or image source."
-    },
-    {
-      "name": "CUPS_CONTAINER_NAME",
-      "label": "Container Name",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "${PROJECT_NAME}",
-      "editable": false,
-      "help": "EasyDocker sets the container name from the project name."
-    },
-    {
-      "name": "CUPS_INTERNAL_PORT",
-      "label": "Internal App Port",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "631",
-      "editable": false,
-      "help": "Recipe-managed CUPS internal web interface port."
-    },
-    {
-      "name": "CUPS_DBUS_LOCATION",
-      "label": "Host D-Bus Socket Folder",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "/var/run/dbus",
-      "editable": false,
-      "help": "Recipe-managed host D-Bus path used by printer services."
-    },
-    {
-      "name": "CUPS_DBUS_TARGET",
-      "label": "D-Bus Path Inside Container",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "/var/run/dbus",
-      "editable": false,
-      "help": "Recipe-managed internal D-Bus path."
-    },
-    {
-      "name": "CUPS_USB_BUS_LOCATION",
-      "label": "Host USB Bus Folder",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "/dev/bus/usb",
-      "editable": false,
-      "help": "Recipe-managed host USB bus path used for USB printers."
-    },
-    {
-      "name": "CUPS_USB_BUS_TARGET",
-      "label": "USB Bus Path Inside Container",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "/dev/bus/usb",
-      "editable": false,
-      "help": "Recipe-managed internal USB bus path."
-    },
-    {
-      "name": "CUPS_CONFIG_TARGET",
-      "label": "Config Path Inside Container",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "/etc/cups",
-      "editable": false,
-      "help": "Recipe-managed internal CUPS config path."
-    },
-    {
-      "name": "CUPS_PRIVILEGED",
-      "label": "Privileged Mode",
-      "section": "readonly",
-      "input_type": "text",
-      "required": true,
-      "default": "true",
-      "editable": false,
-      "data_type": "yaml",
-      "help": "Recipe-managed privileged mode required for USB printer access."
-    }
-  ],
-  "ui": {
-    "manual": "https://tsg-easydocker.com/docs/recipes/cups/",
-    "sections": [
-      { "name": "required", "label": "Minimum Required" },
-      { "name": "optional", "label": "Optional", "collapsed": true },
-      { "name": "advanced", "label": "Advanced", "collapsed": true },
-      { "name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true }
-    ],
-    "tags": [
-      "Intel/AMD",
-      "ARM"
-    ],
-    "overview": "CUPS provides a local print server web interface and passes host USB printer access into Docker.",
-    "what_happens": [
-      "CUPS runs in privileged mode so it can access USB printers that may appear anywhere under /dev/bus/usb",
-      "The host USB bus and D-Bus paths are mounted into the container for printer discovery and communication",
-      "Access the CUPS web interface using HTTPS on the configured port",
-      "Administrative pages and printer configuration will not be accessible unless you use HTTPS"
-    ],
-    "data_location": "Relative paths are stored inside this app's project folder under the mounted EasyDocker base config path."
-  }
+    "name":  "cups",
+    "version":  1.04,
+    "description":  "CUPS print server with USB printer access and a browser-based admin interface",
+    "services":  {
+                     "cups":  {
+                                  "container_name":  "${CUPS_CONTAINER_NAME}",
+                                  "image":  "${CUPS_IMAGE}",
+                                  "environment":  {
+                                                      "ADMIN_PASSWORD":  "${CUPS_ADMIN_PASSWORD}",
+                                                      "TZ":  "${TZ}"
+                                                  },
+                                  "ports":  [
+                                                "${CUPS_PORT}:${CUPS_INTERNAL_PORT}"
+                                            ],
+                                  "volumes":  [
+                                                  "${CUPS_DBUS_LOCATION}:${CUPS_DBUS_TARGET}",
+                                                  "${CUPS_USB_BUS_LOCATION}:${CUPS_USB_BUS_TARGET}",
+                                                  "${CUPS_CONFIG_LOCATION}:${CUPS_CONFIG_TARGET}"
+                                              ],
+                                  "privileged":  "${CUPS_PRIVILEGED}",
+                                  "restart":  "${RESTART_POLICY}",
+                                  "network_mode":  "${CUPS_NETWORK_MODE_MODE}",
+                                  "networks":  "${CUPS_NETWORK_MODE_SERVICE_NETWORKS}"
+                              }
+                 },
+    "app_links":  [
+                      {
+                          "label":  "Open CUPS",
+                          "service":  "cups",
+                          "port":  "${CUPS_PORT}",
+                          "path":  "/",
+                          "scheme":  "https"
+                      }
+                  ],
+    "fields":  [
+                   {
+                       "name":  "CUPS_PORT",
+                       "label":  "R1: App Port",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "631",
+                       "help":  "Host port used to open the CUPS web interface in your browser."
+                   },
+                   {
+                       "name":  "CUPS_CONFIG_LOCATION",
+                       "label":  "R2: CUPS Config Folder",
+                       "section":  "required",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "./etc",
+                       "help":  "Stores CUPS configuration under this app\u0027s EasyDocker project folder."
+                   },
+                   {
+                       "name":  "CUPS_ADMIN_PASSWORD",
+                       "label":  "R3: Admin Password",
+                       "section":  "required",
+                       "input_type":  "password",
+                       "required":  true,
+                       "default":  "admin",
+                       "help":  "Password for the CUPS admin user. Change this from the default before exposing CUPS beyond a trusted local network."
+                   },
+                   {
+                       "name":  "TZ",
+                       "label":  "O1: Timezone",
+                       "section":  "optional",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "",
+                       "help":  "Timezone used by CUPS logs.\u003cbr\u003eExample: \u003ccode\u003eAsia/Dubai\u003c/code\u003e."
+                   },
+                   {
+                       "name":  "RESTART_POLICY",
+                       "label":  "O2: Restart Policy",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "unless-stopped",
+                       "options":  [
+                                       {
+                                           "label":  "Unless Stopped",
+                                           "value":  "unless-stopped"
+                                       },
+                                       {
+                                           "label":  "Always",
+                                           "value":  "always"
+                                       },
+                                       {
+                                           "label":  "On Failure",
+                                           "value":  "on-failure"
+                                       },
+                                       {
+                                           "label":  "No",
+                                           "value":  "no"
+                                       }
+                                   ],
+                       "help":  "Controls whether the container restarts automatically."
+                   },
+                   {
+                       "name":  "CUPS_NETWORK_MODE",
+                       "label":  "O3: Network",
+                       "section":  "optional",
+                       "input_type":  "select",
+                       "required":  true,
+                       "default":  "__create_bridge__",
+                       "data_type":  "docker_network",
+                       "options_source":  "docker_networks",
+                       "help":  "Choose \u003ccode\u003eCreate New Bridge\u003c/code\u003e for the default Compose network, \u003ccode\u003eHost Mode\u003c/code\u003e for host networking, or an existing named Docker network."
+                   },
+                   {
+                       "name":  "CUPS_IMAGE",
+                       "label":  "A1: Image",
+                       "section":  "advanced",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "ydkn/cups:latest",
+                       "help":  "Docker image used for CUPS.\u003cbr\u003eChange this only if you want a different tag or image source."
+                   },
+                   {
+                       "name":  "CUPS_CONTAINER_NAME",
+                       "label":  "Container Name",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "${PROJECT_NAME}",
+                       "editable":  false,
+                       "help":  "EasyDocker sets the container name from the project name."
+                   },
+                   {
+                       "name":  "CUPS_INTERNAL_PORT",
+                       "label":  "Internal App Port",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "631",
+                       "editable":  false,
+                       "help":  "Recipe-managed CUPS internal web interface port."
+                   },
+                   {
+                       "name":  "CUPS_DBUS_LOCATION",
+                       "label":  "Host D-Bus Socket Folder",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/var/run/dbus",
+                       "editable":  false,
+                       "help":  "Recipe-managed host D-Bus path used by printer services."
+                   },
+                   {
+                       "name":  "CUPS_DBUS_TARGET",
+                       "label":  "D-Bus Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/var/run/dbus",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal D-Bus path."
+                   },
+                   {
+                       "name":  "CUPS_USB_BUS_LOCATION",
+                       "label":  "Host USB Bus Folder",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/dev/bus/usb",
+                       "editable":  false,
+                       "help":  "Recipe-managed host USB bus path used for USB printers."
+                   },
+                   {
+                       "name":  "CUPS_USB_BUS_TARGET",
+                       "label":  "USB Bus Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/dev/bus/usb",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal USB bus path."
+                   },
+                   {
+                       "name":  "CUPS_CONFIG_TARGET",
+                       "label":  "Config Path Inside Container",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "/etc/cups",
+                       "editable":  false,
+                       "help":  "Recipe-managed internal CUPS config path."
+                   },
+                   {
+                       "name":  "CUPS_PRIVILEGED",
+                       "label":  "Privileged Mode",
+                       "section":  "readonly",
+                       "input_type":  "text",
+                       "required":  true,
+                       "default":  "true",
+                       "editable":  false,
+                       "data_type":  "yaml",
+                       "help":  "Recipe-managed privileged mode required for USB printer access."
+                   }
+               ],
+    "ui":  {
+               "manual":  "https://tsg-easydocker.com/docs/recipes/cups/",
+               "sections":  [
+                                {
+                                    "name":  "required",
+                                    "label":  "Minimum Required"
+                                },
+                                {
+                                    "name":  "optional",
+                                    "label":  "Optional",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "advanced",
+                                    "label":  "Advanced",
+                                    "collapsed":  true
+                                },
+                                {
+                                    "name":  "readonly",
+                                    "label":  "Read-Only (Recipe Managed)",
+                                    "collapsed":  true
+                                }
+                            ],
+               "tags":  [
+                            "Intel/AMD",
+                            "ARM"
+                        ],
+               "overview":  "CUPS provides a local print server web interface and passes host USB printer access into Docker.",
+               "what_happens":  [
+                                    "CUPS runs in privileged mode so it can access USB printers that may appear anywhere under /dev/bus/usb",
+                                    "The host USB bus and D-Bus paths are mounted into the container for printer discovery and communication",
+                                    "Access the CUPS web interface using HTTPS on the configured port",
+                                    "Administrative pages and printer configuration will not be accessible unless you use HTTPS"
+                                ],
+               "data_location":  "Relative paths are stored inside this app\u0027s project folder under the mounted EasyDocker base config path."
+           },
+    "networks":  "${CUPS_NETWORK_MODE_DEFINITIONS}"
 }
