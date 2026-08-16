@@ -1,0 +1,251 @@
+{
+  "name": "syncthing",
+  "version": 1,
+  "description": "Private peer-to-peer file synchronization with a browser-based interface",
+  "services": {
+    "syncthing": {
+      "container_name": "${SYNCTHING_CONTAINER_NAME}",
+      "hostname": "${SYNCTHING_HOSTNAME}",
+      "image": "${SYNCTHING_IMAGE}",
+      "environment": {
+        "PUID": "${PUID}",
+        "PGID": "${PGID}",
+        "TZ": "${TZ}"
+      },
+      "volumes": [
+        "${CONFIG_LOCATION}:${SYNCTHING_CONFIG_TARGET}",
+        "${DATA_1_LOCATION}:${SYNCTHING_DATA_1_TARGET}",
+        "${DATA_2_MOUNT}"
+      ],
+      "ports": [
+        "${SYNCTHING_WEBUI_PORT}:${SYNCTHING_WEBUI_INTERNAL_PORT}",
+        "${SYNCTHING_LISTEN_PORT}:${SYNCTHING_LISTEN_INTERNAL_PORT}/tcp",
+        "${SYNCTHING_LISTEN_PORT}:${SYNCTHING_LISTEN_INTERNAL_PORT}/udp",
+        "${SYNCTHING_DISCOVERY_PORT}:${SYNCTHING_DISCOVERY_INTERNAL_PORT}/udp"
+      ],
+      "restart": "${RESTART_POLICY}",
+      "network_mode": "${SYNCTHING_NETWORK_MODE_MODE}",
+      "networks": "${SYNCTHING_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${SYNCTHING_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Syncthing",
+      "service": "syncthing",
+      "port": "${SYNCTHING_WEBUI_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "SYNCTHING_WEBUI_PORT",
+      "label": "R1: Web UI Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "8384",
+      "help": "Host port used to open the Syncthing Web UI.<br><strong>Important:</strong> After first login, immediately open Actions &gt; Settings and configure a Web UI username and password. Syncthing initially listens on all interfaces without Web UI credentials."
+    },
+    {
+      "name": "SYNCTHING_LISTEN_PORT",
+      "label": "R2: Synchronization Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "22000",
+      "help": "Host port used for Syncthing device connections over both TCP and UDP. It maps to Syncthing's internal port 22000."
+    },
+    {
+      "name": "SYNCTHING_DISCOVERY_PORT",
+      "label": "R3: Local Discovery Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "21027",
+      "help": "UDP port used to discover other Syncthing devices on the local network. Keep the default unless you have a specific reason to change it."
+    },
+    {
+      "name": "CONFIG_LOCATION",
+      "label": "R4: Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./config",
+      "help": "Host folder for Syncthing configuration, device identity, certificates, and application state."
+    },
+    {
+      "name": "DATA_1_LOCATION",
+      "label": "R5: Primary Sync Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./data1",
+      "help": "Primary host folder made available to Syncthing at <code>/data1</code>.<br>Adding the mount does not automatically create a Syncthing folder; select <code>/data1</code> when configuring a shared folder in the Web UI."
+    },
+    {
+      "name": "PUID",
+      "label": "R6: PUID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "1000",
+      "help": "Linux user ID used by the container. This account must have permission to read and write the selected sync folders."
+    },
+    {
+      "name": "PGID",
+      "label": "R7: PGID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "1000",
+      "help": "Linux group ID used by the container for bind-mounted file permissions."
+    },
+    {
+      "name": "TZ",
+      "label": "R8: Timezone",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "Etc/UTC",
+      "help": "Timezone used by Syncthing, such as <code>Asia/Dubai</code> or <code>Etc/UTC</code>."
+    },
+    {
+      "name": "SYNCTHING_HOSTNAME",
+      "label": "O1: Device Hostname",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "syncthing",
+      "help": "Optional hostname used by the container. This can help identify the device in Syncthing. Clear it to let Docker assign the hostname."
+    },
+    {
+      "name": "DATA_2_MOUNT",
+      "label": "O2: Additional Sync Folder",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional second full bind mount.<br>Example: <code>/volume2/family:/data2</code>.<br>Syncthing will see this folder at <code>/data2</code>. Leave blank to omit it, then select <code>/data2</code> when configuring the folder in Syncthing."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O3: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "SYNCTHING_NETWORK_MODE",
+      "label": "O4: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the default Compose network, <code>Host Mode</code> for host networking, or an existing named Docker network.<br>Host mode can improve local discovery but exposes Syncthing directly on the NAS network, so secure the Web UI immediately."
+    },
+    {
+      "name": "SYNCTHING_IMAGE",
+      "label": "A1: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "lscr.io/linuxserver/syncthing:latest",
+      "docs_url": "https://docs.linuxserver.io/images/docker-syncthing/",
+      "docs_label": "Official help",
+      "help": "Official LinuxServer Syncthing image. Change this only if you need a different image tag."
+    },
+    {
+      "name": "SYNCTHING_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "SYNCTHING_WEBUI_INTERNAL_PORT",
+      "label": "Internal Web UI Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "8384",
+      "editable": false,
+      "help": "Recipe-managed internal Web UI port."
+    },
+    {
+      "name": "SYNCTHING_LISTEN_INTERNAL_PORT",
+      "label": "Internal Synchronization Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "22000",
+      "editable": false,
+      "help": "Recipe-managed internal TCP and UDP synchronization port."
+    },
+    {
+      "name": "SYNCTHING_DISCOVERY_INTERNAL_PORT",
+      "label": "Internal Discovery Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "21027",
+      "editable": false,
+      "help": "Recipe-managed internal UDP discovery port."
+    },
+    {
+      "name": "SYNCTHING_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal configuration path."
+    },
+    {
+      "name": "SYNCTHING_DATA_1_TARGET",
+      "label": "Primary Data Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data1",
+      "editable": false,
+      "help": "Recipe-managed internal primary sync path."
+    }
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/syncthing/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "Syncthing synchronizes folders directly between trusted devices without storing your data in a central cloud service.",
+    "what_happens": [
+      "One Syncthing container will be created using the LinuxServer image",
+      "Configuration and sync data will be stored in bind-mounted host folders",
+      "TCP and UDP synchronization traffic will use port 22000 by default",
+      "Local device discovery will use UDP port 21027",
+      "You must add the mounted data paths as folders inside the Syncthing Web UI",
+      "Set a Web UI username and password immediately after deployment because the initial interface has no credentials",
+      "The container will use the selected Docker networking mode"
+    ],
+    "data_location": "Each storage field can be relative to this app's config folder or an absolute host path. Ensure the selected PUID and PGID can read and write every synchronized folder."
+  }
+}

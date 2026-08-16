@@ -133,6 +133,10 @@
                         "version":  1.03
                     },
                     {
+                        "name":  "syncthing",
+                        "version":  1
+                    },
+                    {
                         "name":  "transmission",
                         "version":  1.02
                     },
