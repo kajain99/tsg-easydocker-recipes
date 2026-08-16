@@ -101,6 +101,10 @@
                         "version":  2.02
                     },
                     {
+                        "name":  "photoprism",
+                        "version":  1.02
+                    },
+                    {
                         "name":  "prowlarr",
                         "version":  1.02
                     },

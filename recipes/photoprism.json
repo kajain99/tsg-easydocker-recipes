@@ -1,0 +1,441 @@
+{
+  "name": "photoprism",
+  "version": 1.02,
+  "description": "AI-powered photo management with MariaDB and optional external Ollama integration",
+  "services": {
+    "photoprism": {
+      "container_name": "${PHOTOPRISM_CONTAINER_NAME}",
+      "image": "${PHOTOPRISM_IMAGE}",
+      "restart": "${PHOTOPRISM_RESTART_POLICY}",
+      "stop_grace_period": "${PHOTOPRISM_STOP_GRACE_PERIOD}",
+      "depends_on": ["${PHOTOPRISM_DATABASE_SERVICE}"],
+      "security_opt": [
+        "${PHOTOPRISM_SECCOMP_OPTION}",
+        "${PHOTOPRISM_APPARMOR_OPTION}"
+      ],
+      "ports": ["${PHOTOPRISM_PORT}:${PHOTOPRISM_INTERNAL_PORT}"],
+      "environment": {
+        "PHOTOPRISM_ADMIN_USER": "${PHOTOPRISM_ADMIN_USER}",
+        "PHOTOPRISM_ADMIN_PASSWORD": "${PHOTOPRISM_ADMIN_PASSWORD}",
+        "PHOTOPRISM_AUTH_MODE": "${PHOTOPRISM_AUTH_MODE}",
+        "PHOTOPRISM_DISABLE_TLS": "${PHOTOPRISM_DISABLE_TLS}",
+        "PHOTOPRISM_DEFAULT_TLS": "${PHOTOPRISM_DEFAULT_TLS}",
+        "PHOTOPRISM_DEFAULT_LOCALE": "${PHOTOPRISM_DEFAULT_LOCALE}",
+        "PHOTOPRISM_PLACES_LOCALE": "${PHOTOPRISM_PLACES_LOCALE}",
+        "PHOTOPRISM_SITE_URL": "${PHOTOPRISM_SITE_URL}",
+        "PHOTOPRISM_SITE_TITLE": "${PHOTOPRISM_SITE_TITLE}",
+        "PHOTOPRISM_SITE_CAPTION": "${PHOTOPRISM_SITE_CAPTION}",
+        "PHOTOPRISM_LOG_LEVEL": "${PHOTOPRISM_LOG_LEVEL}",
+        "PHOTOPRISM_READONLY": "${PHOTOPRISM_READONLY}",
+        "PHOTOPRISM_DISABLE_TENSORFLOW": "${PHOTOPRISM_DISABLE_TENSORFLOW}",
+        "PHOTOPRISM_DISABLE_FACES": "${PHOTOPRISM_DISABLE_FACES}",
+        "PHOTOPRISM_DISABLE_RAW": "${PHOTOPRISM_DISABLE_RAW}",
+        "PHOTOPRISM_SIDECAR_YAML": "${PHOTOPRISM_SIDECAR_YAML}",
+        "PHOTOPRISM_BACKUP_ALBUMS": "${PHOTOPRISM_BACKUP_ALBUMS}",
+        "PHOTOPRISM_BACKUP_DATABASE": "${PHOTOPRISM_BACKUP_DATABASE}",
+        "PHOTOPRISM_BACKUP_SCHEDULE": "${PHOTOPRISM_BACKUP_SCHEDULE}",
+        "PHOTOPRISM_DATABASE_DRIVER": "${PHOTOPRISM_DATABASE_DRIVER}",
+        "PHOTOPRISM_DATABASE_SERVER": "${PHOTOPRISM_DATABASE_SERVER}",
+        "PHOTOPRISM_DATABASE_NAME": "${PHOTOPRISM_DATABASE_NAME}",
+        "PHOTOPRISM_DATABASE_USER": "${PHOTOPRISM_DATABASE_USER}",
+        "PHOTOPRISM_DATABASE_PASSWORD": "${PHOTOPRISM_DATABASE_PASSWORD}",
+        "PHOTOPRISM_INIT": "${PHOTOPRISM_INIT}",
+        "OLLAMA_BASE_URL": "${OLLAMA_BASE_URL}",
+        "OLLAMA_API_KEY": "${OLLAMA_API_KEY}"
+      },
+      "working_dir": "${PHOTOPRISM_WORKING_DIR}",
+      "volumes": [
+        "${ORIGINALS_LOCATION}:${PHOTOPRISM_ORIGINALS_TARGET}",
+        "${ADDITIONAL_LIBRARY_2_MOUNT}",
+        "${ADDITIONAL_LIBRARY_3_MOUNT}",
+        "${IMPORT_MOUNT}",
+        "${STORAGE_LOCATION}:${PHOTOPRISM_STORAGE_TARGET}"
+      ]
+    },
+    "mariadb": {
+      "container_name": "${PHOTOPRISM_DATABASE_CONTAINER_NAME}",
+      "image": "${PHOTOPRISM_DATABASE_IMAGE}",
+      "restart": "${PHOTOPRISM_DATABASE_RESTART_POLICY}",
+      "stop_grace_period": "${PHOTOPRISM_DATABASE_STOP_GRACE_PERIOD}",
+      "security_opt": [
+        "${PHOTOPRISM_DATABASE_SECCOMP_OPTION}",
+        "${PHOTOPRISM_DATABASE_APPARMOR_OPTION}"
+      ],
+      "command": "${PHOTOPRISM_DATABASE_COMMAND}",
+      "volumes": ["${DATABASE_LOCATION}:${PHOTOPRISM_DATABASE_TARGET}"],
+      "environment": {
+        "MARIADB_AUTO_UPGRADE": "${MARIADB_AUTO_UPGRADE}",
+        "MARIADB_INITDB_SKIP_TZINFO": "${MARIADB_INITDB_SKIP_TZINFO}",
+        "MARIADB_DATABASE": "${PHOTOPRISM_DATABASE_NAME}",
+        "MARIADB_USER": "${PHOTOPRISM_DATABASE_USER}",
+        "MARIADB_PASSWORD": "${PHOTOPRISM_DATABASE_PASSWORD}",
+        "MARIADB_ROOT_PASSWORD": "${MARIADB_ROOT_PASSWORD}"
+      }
+    }
+  },
+  "app_links": [
+    {
+      "label": "Open PhotoPrism",
+      "service": "photoprism",
+      "port": "${PHOTOPRISM_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "PHOTOPRISM_PORT",
+      "label": "R1: Web UI Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "2342",
+      "help": "Host port used to open PhotoPrism."
+    },
+    {
+      "name": "PHOTOPRISM_ADMIN_USER",
+      "label": "R2: Admin Username",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "admin",
+      "help": "Initial PhotoPrism administrator username."
+    },
+    {
+      "name": "PHOTOPRISM_ADMIN_PASSWORD",
+      "label": "R3: Admin Password",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 24},
+      "help": "Initial administrator password. PhotoPrism requires 8 to 72 characters; Generate creates a strong 48-character value."
+    },
+    {
+      "name": "PHOTOPRISM_DATABASE_PASSWORD",
+      "label": "R4: Database Password",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 32},
+      "help": "Password shared by PhotoPrism and MariaDB."
+    },
+    {
+      "name": "MARIADB_ROOT_PASSWORD",
+      "label": "R5: MariaDB Root Password",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 32},
+      "help": "Administrative password for the bundled MariaDB server."
+    },
+    {
+      "name": "PHOTOPRISM_SITE_URL",
+      "label": "R6: Site URL",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "http://localhost:2342/",
+      "help": "Public URL used by PhotoPrism, including scheme, port, and trailing slash.<br>Use your NAS IP address and selected PhotoPrism port, for example <code>http://192.168.1.50:2342/</code>. If you use a reverse proxy, enter your domain instead, for example <code>https://photos.example.com/</code>. Do not leave this as localhost when accessing PhotoPrism from another device."
+    },
+    {
+      "name": "ORIGINALS_LOCATION",
+      "label": "R7: Originals Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./originals",
+      "help": "Primary host folder containing original photos and videos. It is mounted at <code>/photoprism/originals</code> and is required. Additional optional libraries can be mounted underneath it as <code>library2</code> and <code>library3</code>."
+    },
+    {
+      "name": "STORAGE_LOCATION",
+      "label": "R8: Storage Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./storage",
+      "help": "Writable host folder for cache, sidecars, thumbnails, and PhotoPrism state."
+    },
+    {
+      "name": "DATABASE_LOCATION",
+      "label": "R9: Database Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./database",
+      "help": "Host folder for MariaDB data.<br>Use reliable local storage, not a USB flash drive, SD card, or shared network folder."
+    },
+    {
+      "name": "ADDITIONAL_LIBRARY_2_MOUNT",
+      "label": "O1: Additional Photo Library 2",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional second photo-library bind mount. Enter the existing host folder followed by <code>:/photoprism/originals/library2</code>.<br>Example: <code>/volume2/family:/photoprism/originals/library2</code>.<br>PhotoPrism sees these files at <code>/photoprism/originals/library2</code>. Leave blank to omit this mount."
+    },
+    {
+      "name": "ADDITIONAL_LIBRARY_3_MOUNT",
+      "label": "O2: Additional Photo Library 3",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional third photo-library bind mount. Enter the existing host folder followed by <code>:/photoprism/originals/library3</code>.<br>Example: <code>/volume2/mobile-backups:/photoprism/originals/library3</code>.<br>PhotoPrism sees these files at <code>/photoprism/originals/library3</code>. Leave blank to omit this mount."
+    },
+    {
+      "name": "IMPORT_MOUNT",
+      "label": "O3: Import Folder Mount",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional full bind mount for importing files, for example <code>./import:/photoprism/import</code>. Leave blank to omit it."
+    },
+    {
+      "name": "PHOTOPRISM_AUTH_MODE",
+      "label": "O4: Authentication Mode",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "password",
+      "options": [
+        {"label": "Password", "value": "password"},
+        {"label": "Public", "value": "public"}
+      ],
+      "help": "Password mode is recommended. Public mode allows access without signing in."
+    },
+    {
+      "name": "PHOTOPRISM_DEFAULT_LOCALE",
+      "label": "O5: Interface Locale",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "en",
+      "help": "Default interface language, such as <code>en</code> or <code>de</code>."
+    },
+    {
+      "name": "PHOTOPRISM_PLACES_LOCALE",
+      "label": "O6: Places Locale",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "local",
+      "help": "Language used for location details."
+    },
+    {
+      "name": "PHOTOPRISM_SITE_TITLE",
+      "label": "O7: Site Title",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "PhotoPrism",
+      "help": "Main title displayed in the interface and page metadata."
+    },
+    {
+      "name": "PHOTOPRISM_SITE_CAPTION",
+      "label": "O8: Site Caption",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "AI-Powered Photos App",
+      "help": "Short caption shown with the site title."
+    },
+    {
+      "name": "PHOTOPRISM_LOG_LEVEL",
+      "label": "O9: Log Level",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "info",
+      "options": [
+        {"label": "Info", "value": "info"},
+        {"label": "Warning", "value": "warning"},
+        {"label": "Error", "value": "error"},
+        {"label": "Debug", "value": "debug"},
+        {"label": "Trace", "value": "trace"}
+      ],
+      "help": "Controls PhotoPrism log verbosity."
+    },
+    {
+      "name": "PHOTOPRISM_READONLY",
+      "label": "O10: Originals Read-Only",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "false",
+      "options": [
+        {"label": "No", "value": "false"},
+        {"label": "Yes", "value": "true"}
+      ],
+      "help": "Prevents PhotoPrism from modifying originals, with reduced functionality when enabled."
+    },
+    {
+      "name": "PHOTOPRISM_DISABLE_TENSORFLOW",
+      "label": "O11: Disable TensorFlow",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "false",
+      "options": [
+        {"label": "No", "value": "false"},
+        {"label": "Yes", "value": "true"}
+      ],
+      "help": "Disables TensorFlow-dependent features to reduce resource usage."
+    },
+    {
+      "name": "PHOTOPRISM_DISABLE_FACES",
+      "label": "O12: Disable Face Recognition",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "false",
+      "options": [
+        {"label": "No", "value": "false"},
+        {"label": "Yes", "value": "true"}
+      ],
+      "help": "Disables face detection and recognition."
+    },
+    {
+      "name": "PHOTOPRISM_DISABLE_RAW",
+      "label": "O13: Disable RAW Processing",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "false",
+      "options": [
+        {"label": "No", "value": "false"},
+        {"label": "Yes", "value": "true"}
+      ],
+      "help": "Disables indexing and conversion of RAW image files."
+    },
+    {
+      "name": "OLLAMA_BASE_URL",
+      "label": "O14: Existing Ollama URL",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional URL of an existing Ollama server reachable from this container, for example <code>http://192.168.1.10:11434</code>.<br>This recipe does not install Ollama or Open WebUI."
+    },
+    {
+      "name": "OLLAMA_API_KEY",
+      "label": "O15: Ollama API Key",
+      "section": "optional",
+      "input_type": "password",
+      "required": false,
+      "default": "",
+      "help": "Optional API key required by the configured Ollama service. Leave blank for a local server without authentication."
+    },
+    {
+      "name": "PHOTOPRISM_RESTART_POLICY",
+      "label": "O16: PhotoPrism Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "no",
+      "options": [
+        {"label": "No", "value": "no"},
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"}
+      ],
+      "help": "The official configuration recommends testing PhotoPrism before enabling automatic restarts. Change to Unless Stopped after setup is stable."
+    },
+    {
+      "name": "PHOTOPRISM_DATABASE_RESTART_POLICY",
+      "label": "O17: MariaDB Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether the MariaDB container restarts automatically."
+    },
+    {
+      "name": "PHOTOPRISM_IMAGE",
+      "label": "A1: PhotoPrism Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "photoprism/photoprism:latest",
+      "docs_url": "https://docs.photoprism.app/getting-started/docker-compose/",
+      "docs_label": "Official help",
+      "help": "Official stable PhotoPrism image."
+    },
+    {
+      "name": "PHOTOPRISM_DATABASE_IMAGE",
+      "label": "A2: MariaDB Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "mariadb:12.3",
+      "help": "MariaDB version used by the official PhotoPrism Compose configuration."
+    },
+    {
+      "name": "PHOTOPRISM_DATABASE_COMMAND",
+      "label": "A3: MariaDB Performance Options",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "--innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120",
+      "help": "Official MariaDB performance and compatibility options."
+    },
+    {"name": "PHOTOPRISM_CONTAINER_NAME", "label": "PhotoPrism Container Name", "section": "readonly", "input_type": "text", "required": true, "default": "${PROJECT_NAME}_photoprism", "editable": false, "help": "Recipe-managed container name."},
+    {"name": "PHOTOPRISM_DATABASE_CONTAINER_NAME", "label": "MariaDB Container Name", "section": "readonly", "input_type": "text", "required": true, "default": "${PROJECT_NAME}_mariadb", "editable": false, "help": "Recipe-managed database container name."},
+    {"name": "PHOTOPRISM_INTERNAL_PORT", "label": "Internal Web UI Port", "section": "readonly", "input_type": "text", "required": true, "default": "2342", "editable": false, "help": "Recipe-managed internal port."},
+    {"name": "PHOTOPRISM_DATABASE_SERVICE", "label": "Database Service", "section": "readonly", "input_type": "text", "required": true, "default": "mariadb", "editable": false, "help": "Internal Compose service dependency."},
+    {"name": "PHOTOPRISM_DATABASE_DRIVER", "label": "Database Driver", "section": "readonly", "input_type": "text", "required": true, "default": "mysql", "editable": false, "help": "Recipe-managed database driver."},
+    {"name": "PHOTOPRISM_DATABASE_SERVER", "label": "Database Server", "section": "readonly", "input_type": "text", "required": true, "default": "mariadb:3306", "editable": false, "help": "Internal MariaDB endpoint."},
+    {"name": "PHOTOPRISM_DATABASE_NAME", "label": "Database Name", "section": "readonly", "input_type": "text", "required": true, "default": "photoprism", "editable": false, "help": "Recipe-managed database name."},
+    {"name": "PHOTOPRISM_DATABASE_USER", "label": "Database User", "section": "readonly", "input_type": "text", "required": true, "default": "photoprism", "editable": false, "help": "Recipe-managed database user."},
+    {"name": "PHOTOPRISM_DISABLE_TLS", "label": "Disable TLS", "section": "readonly", "input_type": "text", "required": true, "default": "false", "editable": false, "help": "Official TLS setting."},
+    {"name": "PHOTOPRISM_DEFAULT_TLS", "label": "Default TLS", "section": "readonly", "input_type": "text", "required": true, "default": "true", "editable": false, "help": "Enables the official self-signed TLS default when applicable."},
+    {"name": "PHOTOPRISM_SIDECAR_YAML", "label": "YAML Sidecars", "section": "readonly", "input_type": "text", "required": true, "default": "true", "editable": false, "help": "Creates metadata sidecar backups."},
+    {"name": "PHOTOPRISM_BACKUP_ALBUMS", "label": "Album Backups", "section": "readonly", "input_type": "text", "required": true, "default": "true", "editable": false, "help": "Creates album metadata backups."},
+    {"name": "PHOTOPRISM_BACKUP_DATABASE", "label": "Database Backups", "section": "readonly", "input_type": "text", "required": true, "default": "true", "editable": false, "help": "Enables scheduled database backups."},
+    {"name": "PHOTOPRISM_BACKUP_SCHEDULE", "label": "Backup Schedule", "section": "readonly", "input_type": "text", "required": true, "default": "daily", "editable": false, "help": "Official daily backup schedule."},
+    {"name": "PHOTOPRISM_INIT", "label": "Initialization Options", "section": "readonly", "input_type": "text", "required": true, "default": "https tensorflow", "editable": false, "help": "Installs HTTPS and TensorFlow support on first startup."},
+    {"name": "PHOTOPRISM_WORKING_DIR", "label": "Working Directory", "section": "readonly", "input_type": "text", "required": true, "default": "/photoprism", "editable": false, "help": "Required PhotoPrism working directory."},
+    {"name": "PHOTOPRISM_ORIGINALS_TARGET", "label": "Originals Path Inside Container", "section": "readonly", "input_type": "text", "required": true, "default": "/photoprism/originals", "editable": false, "help": "Recipe-managed internal originals path."},
+    {"name": "PHOTOPRISM_STORAGE_TARGET", "label": "Storage Path Inside Container", "section": "readonly", "input_type": "text", "required": true, "default": "/photoprism/storage", "editable": false, "help": "Recipe-managed internal storage path."},
+    {"name": "PHOTOPRISM_DATABASE_TARGET", "label": "Database Path Inside Container", "section": "readonly", "input_type": "text", "required": true, "default": "/var/lib/mysql", "editable": false, "help": "Recipe-managed MariaDB data path."},
+    {"name": "PHOTOPRISM_STOP_GRACE_PERIOD", "label": "PhotoPrism Stop Grace Period", "section": "readonly", "input_type": "text", "required": true, "default": "15s", "editable": false, "help": "Official graceful shutdown period."},
+    {"name": "PHOTOPRISM_DATABASE_STOP_GRACE_PERIOD", "label": "MariaDB Stop Grace Period", "section": "readonly", "input_type": "text", "required": true, "default": "15s", "editable": false, "help": "Official graceful shutdown period."},
+    {"name": "PHOTOPRISM_SECCOMP_OPTION", "label": "PhotoPrism Seccomp Option", "section": "readonly", "input_type": "text", "required": true, "default": "seccomp:unconfined", "editable": false, "help": "Official security compatibility option."},
+    {"name": "PHOTOPRISM_APPARMOR_OPTION", "label": "PhotoPrism AppArmor Option", "section": "readonly", "input_type": "text", "required": true, "default": "apparmor:unconfined", "editable": false, "help": "Official security compatibility option."},
+    {"name": "PHOTOPRISM_DATABASE_SECCOMP_OPTION", "label": "MariaDB Seccomp Option", "section": "readonly", "input_type": "text", "required": true, "default": "seccomp:unconfined", "editable": false, "help": "Official MariaDB compatibility option."},
+    {"name": "PHOTOPRISM_DATABASE_APPARMOR_OPTION", "label": "MariaDB AppArmor Option", "section": "readonly", "input_type": "text", "required": true, "default": "apparmor:unconfined", "editable": false, "help": "Official MariaDB compatibility option."},
+    {"name": "MARIADB_AUTO_UPGRADE", "label": "MariaDB Auto Upgrade", "section": "readonly", "input_type": "text", "required": true, "default": "1", "editable": false, "help": "Official MariaDB upgrade setting."},
+    {"name": "MARIADB_INITDB_SKIP_TZINFO", "label": "Skip MariaDB Timezone Initialization", "section": "readonly", "input_type": "text", "required": true, "default": "1", "editable": false, "help": "Official MariaDB initialization setting."}
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/photoprism/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "PhotoPrism organizes and searches photo and video libraries with machine-learning features and a dedicated MariaDB database.",
+    "what_happens": [
+      "PhotoPrism and MariaDB will be created as one Compose project",
+      "Original media, PhotoPrism storage, and MariaDB data will use bind-mounted host folders",
+      "Two additional photo-library mounts can optionally appear as library2 and library3 under PhotoPrism Originals",
+      "Three strong credentials can be generated by EasyDocker",
+      "An existing Ollama server can optionally be configured; Ollama and Open WebUI are not installed",
+      "The stack uses its private Compose network so PhotoPrism can reach MariaDB by service name",
+      "PhotoPrism may require significant memory during indexing and should have at least 4 GB of swap available",
+      "The default PhotoPrism restart policy is disabled until configuration has been tested"
+    ],
+    "data_location": "Each storage field can be relative to this app's config folder or an absolute host path. Never store the MariaDB folder on unreliable removable or network storage."
+  }
+}
