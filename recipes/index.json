@@ -53,6 +53,10 @@
                         "version":  1.01
                     },
                     {
+                        "name":  "home-assistant",
+                        "version":  1.03
+                    },
+                    {
                         "name":  "homarr",
                         "version":  1.02
                     },

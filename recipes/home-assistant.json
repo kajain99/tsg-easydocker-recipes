@@ -1,0 +1,211 @@
+{
+  "name": "home-assistant",
+  "version": 1.03,
+  "description": "Home automation platform with host networking recommended for IoT discovery",
+  "services": {
+    "homeassistant": {
+      "container_name": "${HOME_ASSISTANT_CONTAINER_NAME}",
+      "image": "${HOME_ASSISTANT_IMAGE}",
+      "volumes": [
+        "${CONFIG_LOCATION}:${HOME_ASSISTANT_CONFIG_TARGET}",
+        "${DBUS_MOUNT}"
+      ],
+      "ports": ["${HOME_ASSISTANT_PORT_MAPPING}"],
+      "devices": ["${HOME_ASSISTANT_DEVICE_MAPPING}"],
+      "restart": "${RESTART_POLICY}",
+      "privileged": "${HOME_ASSISTANT_PRIVILEGED}",
+      "network_mode": "${HOME_ASSISTANT_NETWORK_MODE_MODE}",
+      "networks": "${HOME_ASSISTANT_NETWORK_MODE_SERVICE_NETWORKS}",
+      "environment": {
+        "TZ": "${TZ}",
+        "DISABLE_JEMALLOC": "${DISABLE_JEMALLOC}"
+      }
+    }
+  },
+  "networks": "${HOME_ASSISTANT_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Home Assistant",
+      "service": "homeassistant",
+      "port": "${HOME_ASSISTANT_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "CONFIG_LOCATION",
+      "label": "R1: Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./config",
+      "help": "Host folder for Home Assistant configuration, integrations, automations, and application state."
+    },
+    {
+      "name": "TZ",
+      "label": "R2: Timezone",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "Etc/UTC",
+      "help": "Timezone used by Home Assistant, such as <code>Asia/Dubai</code> or <code>Europe/Amsterdam</code>."
+    },
+    {
+      "name": "HOME_ASSISTANT_NETWORK_MODE",
+      "label": "O1: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__host__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "<strong>Host Mode is recommended</strong> and is the official Home Assistant configuration. It makes discovery of IoT devices and integrations using mDNS, SSDP, UPnP, HomeKit, and similar local-network protocols much easier.<br>You may instead create a bridge or select an existing Docker network, but automatic device discovery may be limited."
+    },
+    {
+      "name": "HOME_ASSISTANT_PORT",
+      "label": "O2: Bridge Web UI Port",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "8123",
+      "help": "Host port used only with bridge or an existing Docker network.<br>In Host Mode, port mapping is not used and Home Assistant is available directly on NAS port <code>8123</code>."
+    },
+    {
+      "name": "HOME_ASSISTANT_PRIVILEGED",
+      "label": "A1: Privileged Mode",
+      "section": "advanced",
+      "input_type": "select",
+      "required": true,
+      "default": "true",
+      "options": [
+        {"label": "Enabled (Recommended)", "value": "true"},
+        {"label": "Disabled", "value": "false"}
+      ],
+      "help": "The official Home Assistant Container configuration enables privileged mode, which gives Home Assistant broad access to host devices for hardware integrations.<br>Disable it only if you want a more restricted setup and understand that required USB devices must then be mapped explicitly below."
+    },
+    {
+      "name": "HOME_ASSISTANT_DEVICE_MAPPING",
+      "label": "A2: USB Device Mapping (If Privileged Is Disabled)",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Normally unnecessary while Privileged Mode is enabled.<br>If you disable Privileged Mode, explicitly map the Zigbee, Z-Wave, or other USB adapter Home Assistant needs. Example: <code>/dev/ttyUSB0:/dev/ttyUSB0</code>. A stable <code>/dev/serial/by-id/...</code> host path is preferable when available. Leave blank when no explicit mapping is needed."
+    },
+    {
+      "name": "DBUS_MOUNT",
+      "label": "A3: D-Bus Mount for Bluetooth",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Only needed for Home Assistant's local Bluetooth integration when the NAS has a Bluetooth adapter and its operating system provides a working Bluetooth service such as BlueZ.<br>Enter <code>/run/dbus:/run/dbus:ro</code> to enable access to the host D-Bus socket. Leave blank when the NAS has no supported Bluetooth hardware, when the host does not provide D-Bus/BlueZ, or when using network Bluetooth proxies such as ESPHome Bluetooth Proxy."
+    },
+    {
+      "name": "DISABLE_JEMALLOC",
+      "label": "O3: Disable jemalloc",
+      "section": "optional",
+      "input_type": "select",
+      "required": false,
+      "default": "",
+      "options": [
+        {"label": "Use Default", "value": ""},
+        {"label": "Disable jemalloc", "value": "true"}
+      ],
+      "help": "Leave at Use Default normally. Select Disable only when logs report <code>jemalloc: Unsupported system page size</code>, which can occur on some ARM64 systems."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O4: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "HOME_ASSISTANT_IMAGE",
+      "label": "A4: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "ghcr.io/home-assistant/home-assistant:stable",
+      "docs_url": "https://www.home-assistant.io/installation/linux/#install-home-assistant-container",
+      "docs_label": "Official help",
+      "help": "Official stable Home Assistant Container image. This installation type provides Home Assistant Core without Supervisor or apps."
+    },
+    {
+      "name": "HOME_ASSISTANT_PORT_MAPPING",
+      "label": "A5: Bridge Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${HOME_ASSISTANT_PORT}:${HOME_ASSISTANT_INTERNAL_PORT}",
+      "editable": false,
+      "hidden_when": {
+        "HOME_ASSISTANT_NETWORK_MODE": ["__host__"]
+      },
+      "omit_when_inactive": true,
+      "help": "Automatically generated port mapping for bridge or an existing Docker network. It is removed in Host Mode."
+    },
+    {
+      "name": "HOME_ASSISTANT_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "HOME_ASSISTANT_INTERNAL_PORT",
+      "label": "Internal Web UI Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "8123",
+      "editable": false,
+      "help": "Recipe-managed internal Home Assistant port."
+    },
+    {
+      "name": "HOME_ASSISTANT_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal configuration path."
+    }
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/home-assistant/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "Home Assistant connects local devices and services so you can monitor and automate your home from one interface.",
+    "what_happens": [
+      "One Home Assistant Container will be created using the official stable image",
+      "Home Assistant configuration and application state will be stored in a bind-mounted host folder",
+      "Host networking is selected by default so IoT devices and discovery protocols work more reliably",
+      "When Host Mode is selected, Home Assistant opens directly on NAS port 8123 and no Docker port mapping is generated",
+      "Bridge and existing Docker networks remain available, but some automatic device discovery may not work",
+      "The optional advanced D-Bus mount enables local Bluetooth only when the NAS has a supported adapter and a working host Bluetooth service",
+      "An optional USB device mapping can expose a Zigbee, Z-Wave, or similar adapter",
+      "This is Home Assistant Container and does not include Supervisor or Home Assistant apps"
+    ],
+    "data_location": "The configuration folder can be relative to this app's config folder or an absolute host path. Back it up before major Home Assistant upgrades."
+  }
+}
