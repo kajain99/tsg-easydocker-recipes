@@ -1,0 +1,250 @@
+{
+  "name": "duplicati",
+  "version": 1.01,
+  "description": "Encrypted backup software with multiple read-only sources and writable destinations",
+  "services": {
+    "duplicati": {
+      "container_name": "${DUPLICATI_CONTAINER_NAME}",
+      "image": "${DUPLICATI_IMAGE}",
+      "restart": "${RESTART_POLICY}",
+      "ports": ["${DUPLICATI_PORT}:${DUPLICATI_INTERNAL_PORT}"],
+      "environment": {
+        "TZ": "${TZ}",
+        "DUPLICATI__WEBSERVICE_PASSWORD": "${WEB_PASSWORD}",
+        "SETTINGS_ENCRYPTION_KEY": "${ENCRYPTION_KEY}",
+        "DUPLICATI__WEBSERVICE_ALLOWED_HOSTNAMES": "${ALLOWED_HOSTNAMES}"
+      },
+      "volumes": [
+        "${DATA_LOCATION}:${DUPLICATI_DATA_TARGET}:rw",
+        "${SOURCE_1_LOCATION}:${DUPLICATI_SOURCE_1_TARGET}:ro",
+        "${SOURCE_2_MOUNT}",
+        "${SOURCE_3_MOUNT}",
+        "${DESTINATION_1_MOUNT}",
+        "${DESTINATION_2_MOUNT}",
+        "${DESTINATION_3_MOUNT}"
+      ],
+      "network_mode": "${DUPLICATI_NETWORK_MODE_MODE}",
+      "networks": "${DUPLICATI_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${DUPLICATI_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Duplicati",
+      "service": "duplicati",
+      "port": "${DUPLICATI_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "DUPLICATI_PORT",
+      "label": "R1: Web UI Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "8200",
+      "help": "Host port used to open the Duplicati Web UI."
+    },
+    {
+      "name": "WEB_PASSWORD",
+      "label": "R2: Web UI Password",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 24},
+      "help": "Password required to sign in to Duplicati. Use Generate to create a strong 48-character value."
+    },
+    {
+      "name": "ENCRYPTION_KEY",
+      "label": "R3: Settings Encryption Key",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 32},
+      "help": "Protects sensitive values stored in Duplicati's settings database.<br>Keep a secure copy of this key. Duplicati may be unable to read encrypted settings if it is lost or changed."
+    },
+    {
+      "name": "DATA_LOCATION",
+      "label": "R4: Duplicati Data Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./data",
+      "help": "Writable host folder for Duplicati configuration and databases."
+    },
+    {
+      "name": "SOURCE_1_LOCATION",
+      "label": "R5: Backup Source 1",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./source1",
+      "help": "Primary host folder containing files to back up. It is mounted read-only at <code>/source/source1</code>, so Duplicati cannot modify the originals."
+    },
+    {
+      "name": "TZ",
+      "label": "R6: Timezone",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "Etc/UTC",
+      "help": "Timezone used for backup schedules, such as <code>Asia/Dubai</code> or <code>Etc/UTC</code>."
+    },
+    {
+      "name": "DESTINATION_1_MOUNT",
+      "label": "O1: Local Destination 1",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional first writable local destination as a complete bind mount.<br>Example: <code>/volume2/backups:/backups/destination1:rw</code>.<br>Duplicati must be able to create, change, and delete backup files here. Always keep the <code>:rw</code> suffix. Leave blank when using only a cloud or other remote destination. For meaningful protection, keep backups on different storage from the source data."
+    },
+    {
+      "name": "SOURCE_2_MOUNT",
+      "label": "O2: Backup Source 2",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional second source as a complete read-only bind mount.<br>Example: <code>/volume2/family:/source/source2:ro</code>.<br>The left side is the NAS folder; Duplicati sees it at <code>/source/source2</code>. Always keep the <code>:ro</code> suffix. Leave blank to omit it."
+    },
+    {
+      "name": "SOURCE_3_MOUNT",
+      "label": "O3: Backup Source 3",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional third source as a complete read-only bind mount.<br>Example: <code>/volume2/mobile-backups:/source/source3:ro</code>.<br>The left side is the NAS folder; Duplicati sees it at <code>/source/source3</code>. Always keep the <code>:ro</code> suffix. Leave blank to omit it."
+    },
+    {
+      "name": "DESTINATION_2_MOUNT",
+      "label": "O4: Local Destination 2",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional second writable local destination as a complete bind mount.<br>Example: <code>/volume2/backups:/backups/destination2:rw</code>.<br>Duplicati must be able to create, change, and delete backup files here. Always keep the <code>:rw</code> suffix. Leave blank to omit it."
+    },
+    {
+      "name": "DESTINATION_3_MOUNT",
+      "label": "O5: Local Destination 3",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional third writable local destination as a complete bind mount.<br>Example: <code>/volume3/archive:/backups/destination3:rw</code>.<br>Duplicati must be able to create, change, and delete backup files here. Always keep the <code>:rw</code> suffix. Leave blank to omit it."
+    },
+    {
+      "name": "ALLOWED_HOSTNAMES",
+      "label": "O6: Allowed Hostnames",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional semicolon-separated hostnames used to access Duplicati through DNS or a reverse proxy, for example <code>backup.example.com;duplicati.local</code>.<br>IP-address access works without this field. Avoid using <code>*</code>, as it disables hostname protection."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O7: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "DUPLICATI_NETWORK_MODE",
+      "label": "O8: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the default Compose network, <code>Host Mode</code> for host networking, or an existing named Docker network."
+    },
+    {
+      "name": "DUPLICATI_IMAGE",
+      "label": "A1: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "duplicati/duplicati:latest",
+      "docs_url": "https://docs.duplicati.com/detailed-descriptions/using-duplicati-from-docker",
+      "docs_label": "Official help",
+      "help": "Official Duplicati Docker image. Change this only if you need a different tag or image source."
+    },
+    {
+      "name": "DUPLICATI_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "DUPLICATI_INTERNAL_PORT",
+      "label": "Internal Web UI Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "8200",
+      "editable": false,
+      "help": "Recipe-managed Duplicati Web UI port inside the container."
+    },
+    {
+      "name": "DUPLICATI_DATA_TARGET",
+      "label": "Data Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data",
+      "editable": false,
+      "help": "Recipe-managed internal configuration path."
+    },
+    {
+      "name": "DUPLICATI_SOURCE_1_TARGET",
+      "label": "Primary Source Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/source/source1",
+      "editable": false,
+      "help": "Recipe-managed internal primary source path."
+    }
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/duplicati/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "Duplicati creates encrypted, scheduled backups to local storage and supported remote services.",
+    "what_happens": [
+      "One Duplicati container will be created using the official image",
+      "EasyDocker can generate the Web UI password and settings-encryption key",
+      "The Duplicati configuration database will be stored in a writable bind-mounted folder",
+      "Backup source folders are mounted read-only so Duplicati cannot modify the original files",
+      "Optional local backup destinations are mounted read-write so Duplicati can create and maintain backup archives",
+      "Additional source and destination mounts are omitted completely when left blank",
+      "The container will use the selected Docker networking mode"
+    ],
+    "data_location": "Source folders contain the files being protected and should be read-only. Optional local destination folders contain Duplicati backup archives and must be writable; they may all be left blank when using a cloud or other remote destination. Keep the settings encryption key somewhere safe outside this deployment."
+  }
+}

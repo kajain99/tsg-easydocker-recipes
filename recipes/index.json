@@ -33,6 +33,10 @@
                         "version":  1
                     },
                     {
+                        "name":  "duplicati",
+                        "version":  1.01
+                    },
+                    {
                         "name":  "flaresolverr",
                         "version":  1.02
                     },
