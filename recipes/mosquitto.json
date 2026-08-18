@@ -1,0 +1,237 @@
+{
+  "name": "mosquitto",
+  "version": 1.03,
+  "description": "Lightweight MQTT broker with authenticated access and persistent configuration",
+  "services": {
+    "mosquitto": {
+      "container_name": "${MOSQUITTO_CONTAINER_NAME}",
+      "image": "${MOSQUITTO_IMAGE}",
+      "restart": "${RESTART_POLICY}",
+      "environment": {
+        "MQTT_USER": "${MQTT_USER}",
+        "MQTT_PASSWORD": "${MQTT_PASSWORD}"
+      },
+      "ports": ["${MOSQUITTO_PORT_MAPPING}"],
+      "volumes": [
+        "${CONFIG_LOCATION}:${MOSQUITTO_CONFIG_TARGET}",
+        "${DATA_LOCATION}:${MOSQUITTO_DATA_TARGET}",
+        "${LOG_LOCATION}:${MOSQUITTO_LOG_TARGET}"
+      ],
+      "entrypoint": "${MOSQUITTO_SHELL}",
+      "command": ["${MOSQUITTO_SHELL_FLAG}", "${MOSQUITTO_START_SCRIPT}"],
+      "network_mode": "${MOSQUITTO_NETWORK_MODE_MODE}",
+      "networks": "${MOSQUITTO_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${MOSQUITTO_NETWORK_MODE_DEFINITIONS}",
+  "fields": [
+    {
+      "name": "MQTT_USER",
+      "label": "R1: MQTT Username",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "admin",
+      "help": "Username created for authenticated MQTT connections when the password file is first generated."
+    },
+    {
+      "name": "MQTT_PASSWORD",
+      "label": "R2: MQTT Password",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 24},
+      "help": "Password created when Mosquitto starts for the first time. Save it securely.<br><strong>Important:</strong> Changing this field later does not replace credentials in an existing <code>password.txt</code> file."
+    },
+    {
+      "name": "CONFIG_LOCATION",
+      "label": "R3: Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./config",
+      "help": "Host folder for <code>mosquitto.conf</code> and the generated password file. Existing files are preserved on restart."
+    },
+    {
+      "name": "DATA_LOCATION",
+      "label": "R4: Data Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./data",
+      "help": "Host folder for Mosquitto's persistent message database."
+    },
+    {
+      "name": "LOG_LOCATION",
+      "label": "R5: Log Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./log",
+      "help": "Host folder for the persistent Mosquitto log file. Broker messages are also sent to the container log."
+    },
+    {
+      "name": "MQTT_PORT",
+      "label": "R6: MQTT Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "1883",
+      "help": "Host port MQTT clients use in bridge mode. In Host Mode, Mosquitto listens directly on NAS port <code>1883</code>."
+    },
+    {
+      "name": "MOSQUITTO_NETWORK_MODE",
+      "label": "O1: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Bridge mode is recommended because MQTT clients can connect using the NAS IP and published port. Host Mode is available but normally does not improve device discovery because Mosquitto itself does not discover devices."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O2: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether the broker restarts automatically."
+    },
+    {
+      "name": "MOSQUITTO_IMAGE",
+      "label": "A1: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "eclipse-mosquitto:latest",
+      "docs_url": "https://hub.docker.com/_/eclipse-mosquitto",
+      "docs_label": "Official help",
+      "help": "Official Eclipse Mosquitto image. Change this only if you need a pinned version or another image source."
+    },
+    {
+      "name": "MOSQUITTO_PORT_MAPPING",
+      "label": "A2: Bridge Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${MQTT_PORT}:${MOSQUITTO_INTERNAL_PORT}",
+      "editable": false,
+      "hidden_when": {"MOSQUITTO_NETWORK_MODE": ["__host__"]},
+      "omit_when_inactive": true,
+      "help": "Automatically generated in bridge or existing-network mode and removed in Host Mode."
+    },
+    {
+      "name": "MOSQUITTO_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "MOSQUITTO_INTERNAL_PORT",
+      "label": "Internal MQTT Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "1883",
+      "editable": false,
+      "help": "Recipe-managed MQTT listener port inside the container."
+    },
+    {
+      "name": "MOSQUITTO_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/mosquitto/config",
+      "editable": false,
+      "help": "Recipe-managed internal configuration path."
+    },
+    {
+      "name": "MOSQUITTO_DATA_TARGET",
+      "label": "Data Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/mosquitto/data",
+      "editable": false,
+      "help": "Recipe-managed internal persistence path."
+    },
+    {
+      "name": "MOSQUITTO_LOG_TARGET",
+      "label": "Log Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/mosquitto/log",
+      "editable": false,
+      "help": "Recipe-managed internal log path."
+    },
+    {
+      "name": "MOSQUITTO_SHELL",
+      "label": "Startup Shell",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/bin/sh",
+      "editable": false,
+      "help": "Recipe-managed shell used for first-run initialization."
+    },
+    {
+      "name": "MOSQUITTO_SHELL_FLAG",
+      "label": "Startup Shell Flag",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "-c",
+      "editable": false,
+      "help": "Recipe-managed shell command flag."
+    },
+    {
+      "name": "MOSQUITTO_START_SCRIPT",
+      "label": "First-Run Startup Script",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "set -e; mkdir -p /mosquitto/config /mosquitto/data /mosquitto/log; if [ ! -f /mosquitto/config/mosquitto.conf ]; then printf '%s\\n' 'listener 1883' 'allow_anonymous false' 'password_file /mosquitto/config/password.txt' 'persistence true' 'persistence_location /mosquitto/data/' 'log_dest stdout' 'log_dest file /mosquitto/log/mosquitto.log' > /mosquitto/config/mosquitto.conf; fi; if [ ! -s /mosquitto/config/password.txt ] || ! grep -q '^[^:][^:]*:' /mosquitto/config/password.txt; then mosquitto_passwd -b -c /mosquitto/config/password.txt \"$$MQTT_USER\" \"$$MQTT_PASSWORD\"; fi; chown -R 1883:1883 /mosquitto/config /mosquitto/data /mosquitto/log; chmod 600 /mosquitto/config/password.txt; chmod 644 /mosquitto/config/mosquitto.conf; chmod 755 /mosquitto/config /mosquitto/data /mosquitto/log; exec /docker-entrypoint.sh mosquitto -c /mosquitto/config/mosquitto.conf",
+      "editable": false,
+      "help": "Creates the configuration and password file when missing, automatically replaces an invalid empty-username password file, assigns the bind-mounted folders and files to Mosquitto UID/GID 1883, applies secure file modes, and then starts Mosquitto through the image's official entrypoint."
+    }
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/mosquitto/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "Eclipse Mosquitto is a lightweight MQTT message broker commonly used by Home Assistant, IoT devices, sensors, and automation services.",
+    "what_happens": [
+      "One Eclipse Mosquitto container will be created",
+      "Anonymous MQTT access will be disabled",
+      "The selected MQTT username and generated password will be written to a password file on first startup",
+      "A secure basic mosquitto.conf will be generated only when one does not already exist",
+      "Configuration, broker data, and logs will be stored in bind-mounted host folders",
+      "Existing configuration and password files will be preserved during restarts and image upgrades",
+      "Config, data, and log ownership will be corrected for the Mosquitto service account on every startup",
+      "An invalid password file containing an empty username from an earlier recipe version will be regenerated automatically",
+      "Bridge networking is selected by default, with Host Mode and existing Docker networks also available",
+      "Changing the username or password fields after first deployment does not update the existing password file"
+    ],
+    "data_location": "The config, data, and log folders can be relative to this app's config folder or absolute host paths. Back up the config folder because it contains the MQTT password file."
+  }
+}

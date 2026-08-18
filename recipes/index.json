@@ -77,6 +77,14 @@
                         "version":  1.01
                     },
                     {
+                        "name":  "mosquitto",
+                        "version":  1.03
+                    },
+                    {
+                        "name":  "navidrome",
+                        "version":  1.01
+                    },
+                    {
                         "name":  "tailscale",
                         "version":  1.02
                     },
@@ -87,6 +95,10 @@
                     {
                         "name":  "jellyfin",
                         "version":  1.03
+                    },
+                    {
+                        "name":  "jdownloader-2",
+                        "version":  1
                     },
                     {
                         "name":  "nginx-proxy-manager",

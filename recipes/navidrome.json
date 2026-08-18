@@ -1,0 +1,179 @@
+{
+  "name": "navidrome",
+  "version": 1.01,
+  "description": "Personal music streaming server with a modern browser interface and Subsonic-compatible apps",
+  "services": {
+    "navidrome": {
+      "container_name": "${NAVIDROME_CONTAINER_NAME}",
+      "image": "${NAVIDROME_IMAGE}",
+      "user": "${NAVIDROME_RUNTIME_USER}",
+      "ports": ["${NAVIDROME_PORT_MAPPING}"],
+      "restart": "${RESTART_POLICY}",
+      "volumes": [
+        "${DATA_LOCATION}:${NAVIDROME_DATA_TARGET}",
+        "${MUSIC_LOCATION}:${NAVIDROME_MUSIC_TARGET}:ro"
+      ],
+      "network_mode": "${NAVIDROME_NETWORK_MODE_MODE}",
+      "networks": "${NAVIDROME_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${NAVIDROME_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Navidrome",
+      "service": "navidrome",
+      "port": "${WEB_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "WEB_PORT",
+      "label": "R1: Web Interface Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "4533",
+      "help": "Host port used to open Navidrome in bridge mode. In Host Mode, Navidrome listens directly on NAS port <code>4533</code>."
+    },
+    {
+      "name": "DATA_LOCATION",
+      "label": "R2: Data Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./data",
+      "help": "Writable host folder for Navidrome's database, cache, settings, artwork, and application state. EasyDocker creates this folder when needed."
+    },
+    {
+      "name": "MUSIC_LOCATION",
+      "label": "R3: Music Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "/path/to/music",
+      "help": "Existing NAS folder containing your music library. Replace the example with the real host path.<br>The folder is mounted read-only, so Navidrome can scan and stream music without modifying the original files."
+    },
+    {
+      "name": "NAVIDROME_NETWORK_MODE",
+      "label": "O1: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the recommended default, <code>Host Mode</code>, or an existing named Docker network. Bridge mode is normally sufficient for browsers and Subsonic-compatible music apps."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O2: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "NAVIDROME_IMAGE",
+      "label": "A1: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "deluan/navidrome:latest",
+      "docs_url": "https://www.navidrome.org/docs/installation/docker/",
+      "docs_label": "Official help",
+      "help": "Official Navidrome container image. Change this only if you need a pinned version or another image source."
+    },
+    {
+      "name": "NAVIDROME_RUNTIME_USER",
+      "label": "A2: Runtime User (UID:GID)",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Leave blank for the recommended EasyDocker default so automatically created folders work without a UID/GID ownership mismatch.<br>Advanced users may enter a value such as <code>1000:10</code> after confirming that this user and group can write to the data folder and read the music folder. Setting the wrong IDs causes <code>Database could not be opened</code> errors."
+    },
+    {
+      "name": "NAVIDROME_PORT_MAPPING",
+      "label": "A3: Bridge Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${WEB_PORT}:${NAVIDROME_INTERNAL_PORT}",
+      "editable": false,
+      "hidden_when": {"NAVIDROME_NETWORK_MODE": ["__host__"]},
+      "omit_when_inactive": true,
+      "help": "Automatically generated for bridge or an existing Docker network and removed in Host Mode."
+    },
+    {
+      "name": "NAVIDROME_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "NAVIDROME_INTERNAL_PORT",
+      "label": "Internal Web Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "4533",
+      "editable": false,
+      "help": "Recipe-managed Navidrome port inside the container."
+    },
+    {
+      "name": "NAVIDROME_DATA_TARGET",
+      "label": "Data Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data",
+      "editable": false,
+      "help": "Recipe-managed internal data path."
+    },
+    {
+      "name": "NAVIDROME_MUSIC_TARGET",
+      "label": "Music Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/music",
+      "editable": false,
+      "help": "Recipe-managed internal music-library path."
+    }
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/navidrome/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "Navidrome scans your existing music collection and makes it available through a browser and Subsonic-compatible mobile or desktop clients.",
+    "what_happens": [
+      "One Navidrome container will be created using the official image",
+      "Navidrome's database, cache, and application state will be stored in the writable data folder",
+      "Your existing music library will be mounted read-only so Navidrome cannot alter the original files",
+      "No runtime UID or GID is forced by default, preventing ownership failures with automatically created folders",
+      "Advanced users can optionally set a runtime UID:GID after preparing matching NAS folder permissions",
+      "Bridge networking is selected by default, with Host Mode and existing Docker networks also available",
+      "On first access, Navidrome will guide you through creation of its administrator account",
+      "Large music libraries can take time to complete their initial scan"
+    ],
+    "data_location": "The data folder can be relative to this app's config folder or an absolute host path. The music folder should be the absolute path to your existing library and is mounted read-only. If you set the advanced runtime UID:GID, ensure it has write access to data and read access to music."
+  }
+}

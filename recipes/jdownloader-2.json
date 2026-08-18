@@ -1,0 +1,277 @@
+{
+  "name": "jdownloader-2",
+  "version": 1,
+  "description": "JDownloader 2 download manager with a browser-based desktop interface",
+  "services": {
+    "jdownloader": {
+      "container_name": "${JDOWNLOADER_CONTAINER_NAME}",
+      "image": "${JDOWNLOADER_IMAGE}",
+      "restart": "${RESTART_POLICY}",
+      "ports": ["${JDOWNLOADER_PORT_MAPPING}"],
+      "environment": {
+        "USER_ID": "${USER_ID}",
+        "GROUP_ID": "${GROUP_ID}",
+        "TZ": "${TZ}",
+        "WEB_AUTHENTICATION": "${WEB_AUTHENTICATION}",
+        "WEB_AUTHENTICATION_USERNAME": "${WEB_AUTHENTICATION_USERNAME}",
+        "WEB_AUTHENTICATION_PASSWORD": "${WEB_AUTHENTICATION_PASSWORD}",
+        "DARK_MODE": "${DARK_MODE}",
+        "SECURE_CONNECTION": "${SECURE_CONNECTION}"
+      },
+      "volumes": [
+        "${CONFIG_LOCATION}:${JDOWNLOADER_CONFIG_TARGET}",
+        "${OUTPUT_LOCATION}:${JDOWNLOADER_OUTPUT_TARGET}"
+      ],
+      "network_mode": "${JDOWNLOADER_NETWORK_MODE_MODE}",
+      "networks": "${JDOWNLOADER_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${JDOWNLOADER_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open JDownloader 2",
+      "service": "jdownloader",
+      "port": "${WEB_PORT}",
+      "path": "/",
+      "scheme": "${WEB_SCHEME}"
+    }
+  ],
+  "fields": [
+    {
+      "name": "WEB_PORT",
+      "label": "R1: Web Interface Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "5800",
+      "help": "Host port used to open the JDownloader browser interface. In Host Mode, JDownloader listens directly on NAS port <code>5800</code>."
+    },
+    {
+      "name": "WEB_AUTHENTICATION_USERNAME",
+      "label": "R2: Web Username",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "admin",
+      "help": "Username required to open the protected browser interface. This protects the container's web desktop and is separate from a MyJDownloader account."
+    },
+    {
+      "name": "WEB_AUTHENTICATION_PASSWORD",
+      "label": "R3: Web Password",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 24},
+      "help": "Generated password for the protected browser interface. Save it securely before deployment."
+    },
+    {
+      "name": "CONFIG_LOCATION",
+      "label": "R4: Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./config",
+      "help": "Host folder for JDownloader settings, application state, and container configuration."
+    },
+    {
+      "name": "OUTPUT_LOCATION",
+      "label": "R5: Downloads Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./output",
+      "help": "Host folder where completed and in-progress downloads are stored. Inside JDownloader, select a destination under <code>/output</code>."
+    },
+    {
+      "name": "USER_ID",
+      "label": "R6: User ID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "1000",
+      "help": "Numeric ID of the NAS user that should own downloaded files. Check the owner of your selected folders; do not assume every NAS uses <code>1000</code>."
+    },
+    {
+      "name": "GROUP_ID",
+      "label": "R7: Group ID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "1000",
+      "help": "Numeric ID of the NAS group that should own downloaded files. The example value <code>10</code> is not suitable for every NAS, so this recipe uses the image default of <code>1000</code>."
+    },
+    {
+      "name": "TZ",
+      "label": "R8: Timezone",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "Etc/UTC",
+      "help": "Container timezone, such as <code>Asia/Dubai</code> or <code>Etc/UTC</code>."
+    },
+    {
+      "name": "JDOWNLOADER_NETWORK_MODE",
+      "label": "O1: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the recommended default, <code>Host Mode</code>, or an existing named Docker network. Host Mode normally offers no advantage for JDownloader's web interface."
+    },
+    {
+      "name": "DARK_MODE",
+      "label": "O2: Dark Mode",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "1",
+      "options": [
+        {"label": "Enabled", "value": "1"},
+        {"label": "Disabled", "value": "0"}
+      ],
+      "help": "Controls the dark visual theme for the container's browser interface."
+    },
+    {
+      "name": "WEB_AUTHENTICATION",
+      "label": "O3: Web Authentication",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "1",
+      "options": [
+        {"label": "Enabled (Recommended)", "value": "1"},
+        {"label": "Disabled", "value": "0"}
+      ],
+      "help": "Protects the browser interface with the username and password above. The image requires Secure Connection to be enabled when web authentication is enabled."
+    },
+    {
+      "name": "SECURE_CONNECTION",
+      "label": "O4: Secure Connection",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "1",
+      "options": [
+        {"label": "HTTPS Enabled (Recommended)", "value": "1"},
+        {"label": "HTTP Only", "value": "0"}
+      ],
+      "help": "Enables HTTPS for the browser interface. Keep this enabled while Web Authentication is enabled. The included certificate may be self-signed, so your browser can display a warning on first access."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O5: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "JDOWNLOADER_IMAGE",
+      "label": "A1: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "jlesage/jdownloader-2:latest",
+      "docs_url": "https://github.com/jlesage/docker-jdownloader-2",
+      "docs_label": "Official help",
+      "help": "JDownloader 2 container image maintained by Jocelyn Le Sage. Change this only if you need a pinned tag or another image source."
+    },
+    {
+      "name": "WEB_SCHEME",
+      "label": "A2: Web Link Protocol",
+      "section": "advanced",
+      "input_type": "select",
+      "required": true,
+      "default": "https",
+      "options": [
+        {"label": "HTTPS", "value": "https"},
+        {"label": "HTTP", "value": "http"}
+      ],
+      "help": "Protocol EasyDocker uses for the Open JDownloader link. Keep HTTPS when Secure Connection is enabled; change this to HTTP only if Secure Connection is disabled."
+    },
+    {
+      "name": "JDOWNLOADER_PORT_MAPPING",
+      "label": "A3: Bridge Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${WEB_PORT}:${JDOWNLOADER_INTERNAL_PORT}",
+      "editable": false,
+      "hidden_when": {"JDOWNLOADER_NETWORK_MODE": ["__host__"]},
+      "omit_when_inactive": true,
+      "help": "Automatically generated for bridge or an existing Docker network and removed in Host Mode."
+    },
+    {
+      "name": "JDOWNLOADER_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "JDOWNLOADER_INTERNAL_PORT",
+      "label": "Internal Web Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "5800",
+      "editable": false,
+      "help": "Recipe-managed browser interface port inside the container."
+    },
+    {
+      "name": "JDOWNLOADER_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config",
+      "editable": false,
+      "help": "Recipe-managed internal configuration path."
+    },
+    {
+      "name": "JDOWNLOADER_OUTPUT_TARGET",
+      "label": "Downloads Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/output",
+      "editable": false,
+      "help": "Recipe-managed internal downloads path."
+    }
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/jdownloader-2/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "JDownloader 2 manages downloads through a full desktop interface available securely from a web browser.",
+    "what_happens": [
+      "One JDownloader 2 container will be created",
+      "Application configuration and downloads will be stored in bind-mounted host folders",
+      "The browser interface will be protected with the selected username and generated password",
+      "HTTPS is enabled by default because the image requires it for web authentication",
+      "A browser warning can appear because the container's default HTTPS certificate may be self-signed",
+      "The selected NAS user and group IDs will control ownership of files created in the downloads folder",
+      "Bridge networking is selected by default, with Host Mode and existing Docker networks also available",
+      "Inside JDownloader, download destinations should be selected under /output"
+    ],
+    "data_location": "The config and downloads folders can be relative to this app's config folder or absolute host paths. Make sure the selected user and group IDs can write to both folders."
+  }
+}
