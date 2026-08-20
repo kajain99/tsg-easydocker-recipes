@@ -1,0 +1,350 @@
+{
+  "name": "rclone",
+  "version": 1.01,
+  "description": "Rclone cloud-storage manager with a browser-based GUI and remote-control API",
+  "services": {
+    "rclone": {
+      "container_name": "${RCLONE_CONTAINER_NAME}",
+      "image": "${RCLONE_IMAGE}",
+      "restart": "${RESTART_POLICY}",
+      "ports": [
+        "${RCLONE_GUI_PORT_MAPPING}",
+        "${RCLONE_API_PORT_MAPPING}"
+      ],
+      "volumes": [
+        "${CONFIG_LOCATION}:${RCLONE_CONFIG_TARGET}",
+        "${DATA_LOCATION}:${RCLONE_DATA_TARGET}",
+        "${RCLONE_MOUNTS_MAPPING}"
+      ],
+      "devices": ["${RCLONE_FUSE_DEVICE}"],
+      "cap_add": ["${RCLONE_FUSE_CAPABILITY}"],
+      "security_opt": ["${RCLONE_FUSE_SECURITY_OPTION}"],
+      "command": [
+        "${RCLONE_GUI_COMMAND}",
+        "${RCLONE_GUI_ADDRESS}",
+        "${RCLONE_API_ADDRESS}",
+        "${RCLONE_GUI_USER_ARGUMENT}",
+        "${RCLONE_GUI_PASSWORD_ARGUMENT}",
+        "${RCLONE_NO_BROWSER_ARGUMENT}"
+      ],
+      "network_mode": "${RCLONE_NETWORK_MODE_MODE}",
+      "networks": "${RCLONE_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${RCLONE_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Rclone GUI",
+      "service": "rclone",
+      "port": "${GUI_PORT}",
+      "path": "/login?pass=${GUI_PASSWORD}&url=http%3A%2F%2F${RCLONE_HOST}%3A${API_PORT}%2F&user=${GUI_USERNAME}",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "RCLONE_HOST",
+      "label": "R1: NAS IP Address or Hostname",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "10.30.30.195",
+      "help": "IP address or hostname your browser uses to reach this NAS, without <code>http://</code> or a port. It is inserted into Rclone's special login URL so the browser can connect to both the GUI and API.<br>Example: <code>10.30.30.195</code>. Replace the example with your own NAS address.<br><strong>Important:</strong> Rclone does not use a normal GUI address alone. After deployment, use EasyDocker's <strong>Open Rclone GUI</strong> button, which constructs the required URL in this format:<br><code>http://NAS-IP:5522/login?pass=PASSWORD&amp;url=http%3A%2F%2FNAS-IP%3A5533%2F&amp;user=USERNAME</code>"
+    },
+    {
+      "name": "GUI_PORT",
+      "label": "R2: GUI Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "5522",
+      "help": "Host port for Rclone's browser interface in bridge mode. In Host Mode, the GUI listens directly on NAS port <code>5522</code>.<br>Do not treat <code>http://NAS-IP:5522/</code> like an ordinary application URL. Use EasyDocker's <strong>Open Rclone GUI</strong> button so the login URL also includes the authenticated API address."
+    },
+    {
+      "name": "API_PORT",
+      "label": "R3: API Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "5533",
+      "help": "Host port for Rclone's authenticated remote-control API in bridge mode. The browser GUI needs this connection.<br><strong>Security:</strong> Do not expose this port to the internet. Restrict access to your trusted local network or VPN."
+    },
+    {
+      "name": "GUI_USERNAME",
+      "label": "R4: GUI Username",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "admin",
+      "help": "Username used by both the Rclone GUI and remote-control API."
+    },
+    {
+      "name": "GUI_PASSWORD",
+      "label": "R5: GUI Password",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 24},
+      "help": "Generated password used by the Rclone GUI and API. Save it securely.<br>The automatic login URL includes this password in its query string, as required by Rclone, so avoid sharing the URL or exposing it in screenshots and browser history on untrusted devices."
+    },
+    {
+      "name": "CONFIG_LOCATION",
+      "label": "R6: Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./config",
+      "help": "Host folder containing <code>rclone.conf</code>.<br><strong>Recommended headless setup:</strong> Download Rclone on a Windows PC, run <code>rclone config</code>, and complete the cloud-provider login there. Run <code>rclone config file</code> to display the exact configuration-file location. Copy that <code>rclone.conf</code> file into this NAS folder, then restart the container."
+    },
+    {
+      "name": "DATA_LOCATION",
+      "label": "R7: Data Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./data",
+      "help": "Host folder exposed inside the container as <code>/data</code> for local uploads, downloads, copies, and synchronization jobs."
+    },
+    {
+      "name": "RCLONE_NETWORK_MODE",
+      "label": "O1: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the recommended default, <code>Host Mode</code>, or an existing named Docker network. Bridge mode isolates Rclone while publishing only the selected GUI and API ports."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O2: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "RCLONE_IMAGE",
+      "label": "A1: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "rclone/rclone:latest",
+      "docs_url": "https://rclone.org/gui/",
+      "docs_label": "Official help",
+      "help": "Official Rclone image. Change this only if you need a pinned version or another image source."
+    },
+    {
+      "name": "RCLONE_MOUNTS_MAPPING",
+      "label": "A2: Shared Cloud-Mount Folder",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Only needed when testing FUSE cloud-drive mounts that must propagate back to the NAS. Enter a full mapping such as <code>./mounts:/mounts:rshared</code>.<br>Leave blank for normal GUI, copy, sync, and transfer use. Shared propagation support varies by NAS and host filesystem."
+    },
+    {
+      "name": "RCLONE_FUSE_DEVICE",
+      "label": "A3: FUSE Device",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Only enable for cloud-drive mounting. Enter <code>/dev/fuse:/dev/fuse</code> after confirming that <code>/dev/fuse</code> exists on the NAS. Leave blank otherwise."
+    },
+    {
+      "name": "RCLONE_FUSE_CAPABILITY",
+      "label": "A4: FUSE SYS_ADMIN Capability",
+      "section": "advanced",
+      "input_type": "select",
+      "required": false,
+      "default": "",
+      "options": [
+        {"label": "Disabled (Recommended)", "value": ""},
+        {"label": "Enable SYS_ADMIN", "value": "SYS_ADMIN"}
+      ],
+      "help": "Enable only for Rclone FUSE mounts. <code>SYS_ADMIN</code> is a powerful capability and is unnecessary for ordinary GUI transfers, copies, or synchronization."
+    },
+    {
+      "name": "RCLONE_FUSE_SECURITY_OPTION",
+      "label": "A5: FUSE AppArmor Relaxation",
+      "section": "advanced",
+      "input_type": "select",
+      "required": false,
+      "default": "",
+      "options": [
+        {"label": "Disabled (Recommended)", "value": ""},
+        {"label": "AppArmor Unconfined", "value": "apparmor:unconfined"}
+      ],
+      "help": "Enable only when FUSE mounting requires it on your NAS. This disables AppArmor confinement for the container and reduces isolation. Some NAS systems do not use AppArmor and may reject this option."
+    },
+    {
+      "name": "RCLONE_GUI_PORT_MAPPING",
+      "label": "A6: Bridge GUI Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${GUI_PORT}:${RCLONE_GUI_INTERNAL_PORT}",
+      "editable": false,
+      "hidden_when": {"RCLONE_NETWORK_MODE": ["__host__"]},
+      "omit_when_inactive": true,
+      "help": "Automatically generated for bridge or an existing Docker network and removed in Host Mode."
+    },
+    {
+      "name": "RCLONE_API_PORT_MAPPING",
+      "label": "A7: Bridge API Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${API_PORT}:${RCLONE_API_INTERNAL_PORT}",
+      "editable": false,
+      "hidden_when": {"RCLONE_NETWORK_MODE": ["__host__"]},
+      "omit_when_inactive": true,
+      "help": "Automatically generated for bridge or an existing Docker network and removed in Host Mode."
+    },
+    {
+      "name": "RCLONE_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "RCLONE_GUI_INTERNAL_PORT",
+      "label": "Internal GUI Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "5522",
+      "editable": false,
+      "help": "Recipe-managed Rclone GUI port inside the container."
+    },
+    {
+      "name": "RCLONE_API_INTERNAL_PORT",
+      "label": "Internal API Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "5533",
+      "editable": false,
+      "help": "Recipe-managed Rclone API port inside the container."
+    },
+    {
+      "name": "RCLONE_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/config/rclone",
+      "editable": false,
+      "help": "Recipe-managed internal configuration path."
+    },
+    {
+      "name": "RCLONE_DATA_TARGET",
+      "label": "Data Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data",
+      "editable": false,
+      "help": "Recipe-managed internal local-data path."
+    },
+    {
+      "name": "RCLONE_GUI_COMMAND",
+      "label": "GUI Command",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "gui",
+      "editable": false,
+      "help": "Recipe-managed command that starts Rclone's official GUI."
+    },
+    {
+      "name": "RCLONE_GUI_ADDRESS",
+      "label": "GUI Listen Address",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "--addr=0.0.0.0:${RCLONE_GUI_INTERNAL_PORT}",
+      "editable": false,
+      "help": "Recipe-managed GUI listen address."
+    },
+    {
+      "name": "RCLONE_API_ADDRESS",
+      "label": "API Listen Address",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "--api-addr=0.0.0.0:${RCLONE_API_INTERNAL_PORT}",
+      "editable": false,
+      "help": "Recipe-managed API listen address."
+    },
+    {
+      "name": "RCLONE_GUI_USER_ARGUMENT",
+      "label": "GUI Username Argument",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "--user=${GUI_USERNAME}",
+      "editable": false,
+      "help": "Recipe-managed authenticated GUI username argument."
+    },
+    {
+      "name": "RCLONE_GUI_PASSWORD_ARGUMENT",
+      "label": "GUI Password Argument",
+      "section": "readonly",
+      "input_type": "password",
+      "required": true,
+      "default": "--pass=${GUI_PASSWORD}",
+      "editable": false,
+      "help": "Recipe-managed authenticated GUI password argument."
+    },
+    {
+      "name": "RCLONE_NO_BROWSER_ARGUMENT",
+      "label": "Headless Browser Argument",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "--no-open-browser",
+      "editable": false,
+      "help": "Prevents the headless container from attempting to open a local browser."
+    }
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/rclone/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "Rclone connects to many cloud-storage providers and manages transfers, synchronization, browsing, and optional FUSE mounts through its official web GUI.",
+    "what_happens": [
+      "One official Rclone container will be created in headless GUI mode",
+      "The GUI will listen on port 5522 and its authenticated API will listen on port 5533 by default",
+      "Rclone requires a special login URL containing the GUI credentials and the separate API address; opening only the base GUI port is not sufficient",
+      "EasyDocker's Open Rclone GUI link will include the selected username, password, NAS address, and API URL in Rclone's required login format",
+      "After deployment, use the Open Rclone GUI button rather than manually opening http://NAS-IP:5522/",
+      "The API port should remain accessible only from a trusted local network or VPN and must not be exposed directly to the internet",
+      "Rclone configuration will be stored in the selected bind-mounted config folder",
+      "For provider authentication, configure Rclone on a Windows PC, locate rclone.conf with rclone config file, and copy it into the NAS config folder",
+      "The local data folder will be available inside Rclone as /data",
+      "FUSE device access, SYS_ADMIN, shared propagation, and AppArmor relaxation are disabled by default and are only needed for experimental cloud-drive mounting",
+      "Bridge networking is selected by default, with Host Mode and existing Docker networks also available"
+    ],
+    "data_location": "The config and data folders can be relative to this app's config folder or absolute host paths. Copy the Windows-generated rclone.conf directly into the selected config folder."
+  }
+}

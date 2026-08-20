@@ -133,6 +133,10 @@
                         "version":  1.02
                     },
                     {
+                        "name":  "rclone",
+                        "version":  1.01
+                    },
+                    {
                         "name":  "radarr",
                         "version":  1.02
                     },
