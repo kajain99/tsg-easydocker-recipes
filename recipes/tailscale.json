@@ -1,8 +1,6 @@
 {
   "name": "tailscale",
   "version": 1.02,
-  "category": "networking",
-  "icon": "tailscale.svg",
   "description": "Secure remote access to your NAS",
   "services": {
     "tailscale": {
@@ -290,6 +288,8 @@
     }
   ],
   "ui": {
+    "category": "networking",
+    "icon": "tailscale.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/tailscale/",
     "sections": [
       {

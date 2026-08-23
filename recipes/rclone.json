@@ -1,8 +1,6 @@
 {
   "name": "rclone",
   "version": 1.01,
-  "category": "backup-storage",
-  "icon": "rclone.svg",
   "description": "Rclone cloud-storage manager with a browser-based GUI and remote-control API",
   "services": {
     "rclone": {
@@ -325,6 +323,8 @@
     }
   ],
   "ui": {
+    "category": "backup-storage",
+    "icon": "rclone.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/rclone/",
     "sections": [
       {"name": "required", "label": "Minimum Required"},

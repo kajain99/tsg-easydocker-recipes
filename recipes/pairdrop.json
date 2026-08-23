@@ -1,8 +1,6 @@
 {
     "name":  "pairdrop",
     "version":  1.01,
-    "category":  "utilities",
-    "icon":  "pairdrop.png",
     "description":  "Local file sharing between devices through a web browser",
     "services":  {
                      "pairdrop":  {
@@ -208,6 +206,8 @@
                    }
                ],
     "ui":  {
+        "category":  "utilities",
+        "icon":  "pairdrop.png",
                "manual":  "https://tsg-easydocker.com/docs/recipes/pairdrop/",
                "sections":  [
                                 {

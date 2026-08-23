@@ -1,8 +1,6 @@
 {
     "name":  "vaultwarden",
     "version":  1.03,
-    "category":  "security",
-    "icon":  "vaultwarden.svg",
     "description":  "Lightweight self-hosted password manager compatible with Bitwarden clients",
     "services":  {
                      "vaultwarden":  {
@@ -170,6 +168,8 @@
                    }
                ],
     "ui":  {
+        "category":  "security",
+        "icon":  "vaultwarden.svg",
                "manual":  "https://tsg-easydocker.com/docs/recipes/vaultwarden/",
                "sections":  [
                                 {

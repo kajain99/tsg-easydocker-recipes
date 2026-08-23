@@ -1,8 +1,6 @@
 {
     "name":  "bentopdf",
     "version":  1.01,
-    "category":  "productivity",
-    "icon":  "bentopdf.svg",
     "description":  "Privacy-focused browser-based PDF tools for editing, converting, signing, OCR, and organizing documents",
     "services":  {
                      "bentopdf":  {
@@ -106,6 +104,8 @@
                    }
                ],
     "ui":  {
+        "category":  "productivity",
+        "icon":  "bentopdf.svg",
                "manual":  "https://tsg-easydocker.com/docs/recipes/bentopdf/",
                "sections":  [
                                 {

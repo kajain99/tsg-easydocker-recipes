@@ -1,8 +1,6 @@
 {
   "name": "transmission-through-gluetun",
   "version": 1.02,
-  "category": "downloads",
-  "icon": "transmission.svg",
   "description": "Transmission routed through an existing Gluetun container network stack",
   "services": {
     "transmission": {
@@ -144,6 +142,8 @@
     }
   ],
   "ui": {
+    "category": "downloads",
+    "icon": "transmission.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/transmission-through-gluetun/",
     "sections": [
       { "name": "required", "label": "Minimum Required" },

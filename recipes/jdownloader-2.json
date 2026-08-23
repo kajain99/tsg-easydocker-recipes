@@ -1,8 +1,6 @@
 {
   "name": "jdownloader-2",
   "version": 1,
-  "category": "downloads",
-  "icon": "jdownloader-2.svg",
   "description": "JDownloader 2 download manager with a browser-based desktop interface",
   "services": {
     "jdownloader": {
@@ -255,6 +253,8 @@
     }
   ],
   "ui": {
+    "category": "downloads",
+    "icon": "jdownloader-2.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/jdownloader-2/",
     "sections": [
       {"name": "required", "label": "Minimum Required"},

@@ -1,8 +1,6 @@
 {
   "name": "home-assistant",
   "version": 1.03,
-  "category": "home-automation",
-  "icon": "home-assistant.svg",
   "description": "Home automation platform with host networking recommended for IoT discovery",
   "services": {
     "homeassistant": {
@@ -189,6 +187,8 @@
     }
   ],
   "ui": {
+    "category": "home-automation",
+    "icon": "home-assistant.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/home-assistant/",
     "sections": [
       {"name": "required", "label": "Minimum Required"},

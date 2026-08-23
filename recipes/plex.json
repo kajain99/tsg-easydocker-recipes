@@ -1,8 +1,6 @@
 {
   "name": "plex",
   "version": 2.02,
-  "category": "media",
-  "icon": "plex.svg",
   "description": "Media server for streaming your movies and TV library with Plex",
   "services": {
     "plex": {
@@ -451,6 +449,8 @@
     }
   ],
   "ui": {
+    "category": "media",
+    "icon": "plex.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/plex/",
     "sections": [
       { "name": "required", "label": "Minimum Required" },

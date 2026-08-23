@@ -1,8 +1,6 @@
 {
   "name": "transmission",
   "version": 1.02,
-  "category": "downloads",
-  "icon": "transmission.svg",
   "description": "BitTorrent client with a web UI and persistent config",
   "services": {
     "transmission": {
@@ -190,6 +188,8 @@
     }
   ],
   "ui": {
+    "category": "downloads",
+    "icon": "transmission.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/transmission/",
     "sections": [
       { "name": "required", "label": "Minimum Required" },

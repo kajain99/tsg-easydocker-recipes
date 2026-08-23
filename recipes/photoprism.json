@@ -1,8 +1,6 @@
 {
   "name": "photoprism",
   "version": 1.02,
-  "category": "media",
-  "icon": "photoprism.svg",
   "description": "AI-powered photo management with MariaDB and optional external Ollama integration",
   "services": {
     "photoprism": {
@@ -419,6 +417,8 @@
     {"name": "MARIADB_INITDB_SKIP_TZINFO", "label": "Skip MariaDB Timezone Initialization", "section": "readonly", "input_type": "text", "required": true, "default": "1", "editable": false, "help": "Official MariaDB initialization setting."}
   ],
   "ui": {
+    "category": "media",
+    "icon": "photoprism.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/photoprism/",
     "sections": [
       {"name": "required", "label": "Minimum Required"},

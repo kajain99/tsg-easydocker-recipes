@@ -1,8 +1,6 @@
 {
   "name": "immich",
   "version": 1.03,
-  "category": "media",
-  "icon": "immich.svg",
   "description": "Photo and video backup with search, AI features, and a built-in database stack",
   "services": {
     "immich-server": {
@@ -524,6 +522,8 @@
     }
   ],
   "ui": {
+    "category": "media",
+    "icon": "immich.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/immich/",
     "sections": [
       {

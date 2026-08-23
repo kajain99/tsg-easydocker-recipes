@@ -1,8 +1,6 @@
 {
     "name":  "uptime-kuma",
     "version":  1.01,
-    "category":  "monitoring",
-    "icon":  "uptime-kuma.svg",
     "description":  "Self-hosted uptime monitoring with status pages and notifications",
     "services":  {
                      "uptime-kuma":  {
@@ -148,6 +146,8 @@
                    }
                ],
     "ui":  {
+        "category":  "monitoring",
+        "icon":  "uptime-kuma.svg",
                "manual":  "https://tsg-easydocker.com/docs/recipes/uptime-kuma/",
                "sections":  [
                                 {

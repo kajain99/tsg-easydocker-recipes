@@ -1,8 +1,6 @@
 {
     "name":  "cups",
     "version":  1.04,
-    "category":  "utilities",
-    "icon":  "cups.svg",
     "description":  "CUPS print server with USB printer access and a browser-based admin interface",
     "services":  {
                      "cups":  {
@@ -202,6 +200,8 @@
                    }
                ],
     "ui":  {
+        "category":  "utilities",
+        "icon":  "cups.svg",
                "manual":  "https://tsg-easydocker.com/docs/recipes/cups/",
                "sections":  [
                                 {

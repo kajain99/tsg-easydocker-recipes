@@ -1,8 +1,6 @@
 {
     "name":  "linkwarden",
     "version":  1,
-    "category":  "productivity",
-    "icon":  "linkwarden.png",
     "description":  "Collaborative bookmark manager with webpage archiving and full-text search",
     "services":  {
                      "postgres":  {
@@ -324,6 +322,8 @@
                    }
                ],
     "ui":  {
+        "category":  "productivity",
+        "icon":  "linkwarden.png",
                "manual":  "https://tsg-easydocker.com/docs/recipes/linkwarden/",
                "sections":  [
                                 {

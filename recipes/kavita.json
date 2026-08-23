@@ -1,8 +1,6 @@
 {
   "name": "kavita",
   "version": 1.04,
-  "category": "media",
-  "icon": "kavita.svg",
   "description": "Self-hosted reading server for manga, comics, and ebooks",
   "services": {
     "kavita": {
@@ -183,6 +181,8 @@
     }
   ],
   "ui": {
+    "category": "media",
+    "icon": "kavita.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/kavita/",
     "sections": [
       { "name": "required", "label": "Minimum Required" },

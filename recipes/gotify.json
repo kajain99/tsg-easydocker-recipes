@@ -1,8 +1,6 @@
 {
     "name":  "gotify",
     "version":  1.01,
-    "category":  "monitoring",
-    "icon":  "gotify.svg",
     "description":  "Self-hosted notification server for sending and receiving messages",
     "services":  {
                      "gotify":  {
@@ -154,6 +152,8 @@
                    }
                ],
     "ui":  {
+        "category":  "monitoring",
+        "icon":  "gotify.svg",
                "manual":  "https://tsg-easydocker.com/docs/recipes/gotify/",
                "sections":  [
                                 {

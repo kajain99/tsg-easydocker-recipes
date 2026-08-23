@@ -1,8 +1,6 @@
 {
     "name":  "paperless-ngx-tika",
     "version":  1.01,
-    "category":  "productivity",
-    "icon":  "paperless-ngx.svg",
     "description":  "Document management with OCR, Office document support, PostgreSQL, Valkey, Apache Tika, and Gotenberg",
     "services":  {
                      "broker":  {
@@ -557,6 +555,8 @@
                    }
                ],
     "ui":  {
+        "category":  "productivity",
+        "icon":  "paperless-ngx.svg",
                "manual":  "https://tsg-easydocker.com/docs/recipes/paperless-ngx-tika/",
                "sections":  [
                                 {

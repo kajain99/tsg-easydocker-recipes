@@ -1,8 +1,6 @@
 {
   "name": "komga",
   "version": 1.03,
-  "category": "media",
-  "icon": "komga.svg",
   "description": "Self-hosted comics, manga, and ebook server with a browser-based reader",
   "services": {
     "komga": {
@@ -182,6 +180,8 @@
     }
   ],
   "ui": {
+    "category": "media",
+    "icon": "komga.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/komga/",
     "sections": [
       { "name": "required", "label": "Minimum Required" },

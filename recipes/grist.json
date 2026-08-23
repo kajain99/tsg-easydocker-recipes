@@ -1,8 +1,6 @@
 {
   "name": "grist",
   "version": 1,
-  "category": "productivity",
-  "icon": "grist.svg",
   "description": "Self-hosted relational spreadsheet and lightweight database platform",
   "services": {
     "grist": {
@@ -271,6 +269,8 @@
     }
   ],
   "ui": {
+    "category": "productivity",
+    "icon": "grist.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/grist/",
     "sections": [
       {"name": "required", "label": "Minimum Required"},

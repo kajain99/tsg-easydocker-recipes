@@ -1,8 +1,6 @@
 {
   "name": "seerr",
   "version": 1.02,
-  "category": "media",
-  "icon": "seerr.svg",
   "description": "Media request management for Jellyfin and Plex libraries",
   "services": {
     "seerr": {
@@ -188,6 +186,8 @@
     }
   ],
   "ui": {
+    "category": "media",
+    "icon": "seerr.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/seerr/",
     "sections": [
       {

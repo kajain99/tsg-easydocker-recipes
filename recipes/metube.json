@@ -1,8 +1,6 @@
 {
     "name":  "metube",
     "version":  1.01,
-    "category":  "downloads",
-    "icon":  "metube.svg",
     "description":  "Self-hosted web interface for downloading videos and audio with yt-dlp",
     "services":  {
                      "metube":  {
@@ -150,6 +148,8 @@
                    }
                ],
     "ui":  {
+        "category":  "downloads",
+        "icon":  "metube.svg",
                "manual":  "https://tsg-easydocker.com/docs/recipes/metube/",
                "sections":  [
                                 {

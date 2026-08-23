@@ -1,8 +1,6 @@
 {
     "name":  "homarr",
     "version":  1.02,
-    "category":  "utilities",
-    "icon":  "homarr.svg",
     "description":  "Customizable server dashboard with integrations and optional local Docker monitoring",
     "services":  {
                      "homarr":  {
@@ -164,6 +162,8 @@
                    }
                ],
     "ui":  {
+        "category":  "utilities",
+        "icon":  "homarr.svg",
                "manual":  "https://tsg-easydocker.com/docs/recipes/homarr/",
                "sections":  [
                                 {

@@ -1,8 +1,6 @@
 {
     "name":  "qbittorrent",
     "version":  1.02,
-    "category":  "downloads",
-    "icon":  "qbittorrent.svg",
     "description":  "BitTorrent client with a web interface and persistent configuration",
     "services":  {
                      "qbittorrent":  {
@@ -183,6 +181,8 @@
                    }
                ],
     "ui":  {
+        "category":  "downloads",
+        "icon":  "qbittorrent.svg",
                "manual":  "https://tsg-easydocker.com/docs/recipes/qbittorrent/",
                "sections":  [
                                 {

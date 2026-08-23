@@ -1,8 +1,6 @@
 {
   "name": "flaresolverr",
   "version": 1.02,
-  "category": "networking",
-  "icon": "flaresolverr.svg",
   "description": "Proxy companion that helps apps bypass Cloudflare and anti-bot checks",
   "services": {
     "flaresolverr": {
@@ -123,6 +121,8 @@
     }
   ],
   "ui": {
+    "category": "networking",
+    "icon": "flaresolverr.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/flaresolverr/",
     "sections": [
       { "name": "required", "label": "Minimum Required" },

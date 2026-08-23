@@ -1,8 +1,6 @@
 {
   "name": "navidrome",
   "version": 1.01,
-  "category": "media",
-  "icon": "navidrome.svg",
   "description": "Personal music streaming server with a modern browser interface and Subsonic-compatible apps",
   "services": {
     "navidrome": {
@@ -157,6 +155,8 @@
     }
   ],
   "ui": {
+    "category": "media",
+    "icon": "navidrome.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/navidrome/",
     "sections": [
       {"name": "required", "label": "Minimum Required"},

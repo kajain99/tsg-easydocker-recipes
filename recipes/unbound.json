@@ -1,8 +1,6 @@
 {
   "name": "unbound",
   "version": 1,
-  "category": "networking",
-  "icon": "unbound.svg",
   "description": "Validating, recursive, and caching DNS resolver",
   "services": {
     "unbound": {
@@ -94,6 +92,8 @@
     }
   ],
   "ui": {
+    "category": "networking",
+    "icon": "unbound.svg",
     "manual": "https://tsg-easydocker.com/docs/recipes/unbound/",
     "sections": [
       { "name": "required", "label": "Minimum Required" },
