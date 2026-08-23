@@ -1,0 +1,528 @@
+{
+  "name": "romm",
+  "version": 1,
+  "description": "ROM library manager with metadata, artwork, saves, achievements, and browser-based play support",
+  "services": {
+    "romm": {
+      "container_name": "${ROMM_CONTAINER_NAME}",
+      "image": "${ROMM_IMAGE}",
+      "restart": "${RESTART_POLICY}",
+      "environment": {
+        "ROMM_DB_DRIVER": "${ROMM_DB_DRIVER}",
+        "DB_HOST": "${ROMM_DB_HOST}",
+        "DB_NAME": "${ROMM_DB_NAME}",
+        "DB_USER": "${ROMM_DB_USER}",
+        "DB_PASSWD": "${ROMM_DB_PASSWORD}",
+        "ROMM_AUTH_SECRET_KEY": "${ROMM_AUTH_SECRET_KEY}",
+        "SCREENSCRAPER_USER": "${SCREENSCRAPER_USER}",
+        "SCREENSCRAPER_PASSWORD": "${SCREENSCRAPER_PASSWORD}",
+        "RETROACHIEVEMENTS_API_KEY": "${RETROACHIEVEMENTS_API_KEY}",
+        "STEAMGRIDDB_API_KEY": "${STEAMGRIDDB_API_KEY}",
+        "HASHEOUS_API_ENABLED": "${HASHEOUS_API_ENABLED}"
+      },
+      "volumes": [
+        "${RESOURCES_LOCATION}:${ROMM_RESOURCES_TARGET}",
+        "${REDIS_DATA_LOCATION}:${ROMM_REDIS_DATA_TARGET}",
+        "${LIBRARY_LOCATION}:${ROMM_LIBRARY_TARGET}",
+        "${ASSETS_LOCATION}:${ROMM_ASSETS_TARGET}",
+        "${CONFIG_LOCATION}:${ROMM_CONFIG_TARGET}"
+      ],
+      "ports": ["${WEB_PORT}:${ROMM_INTERNAL_PORT}"],
+      "depends_on": {
+        "romm-db": {
+          "condition": "${ROMM_DB_DEPENDENCY_CONDITION}",
+          "restart": "${ROMM_DB_DEPENDENCY_RESTART}"
+        }
+      }
+    },
+    "romm-db": {
+      "container_name": "${ROMM_DB_CONTAINER_NAME}",
+      "image": "${ROMM_DB_IMAGE}",
+      "restart": "${RESTART_POLICY}",
+      "environment": {
+        "MARIADB_ROOT_PASSWORD": "${MARIADB_ROOT_PASSWORD}",
+        "MARIADB_DATABASE": "${ROMM_DB_NAME}",
+        "MARIADB_USER": "${ROMM_DB_USER}",
+        "MARIADB_PASSWORD": "${ROMM_DB_PASSWORD}"
+      },
+      "volumes": ["${DATABASE_LOCATION}:${ROMM_DB_DATA_TARGET}"],
+      "healthcheck": {
+        "test": [
+          "${ROMM_DB_HEALTHCHECK_MODE}",
+          "${ROMM_DB_HEALTHCHECK_COMMAND}",
+          "${ROMM_DB_HEALTHCHECK_CONNECT}",
+          "${ROMM_DB_HEALTHCHECK_INNODB}"
+        ],
+        "start_period": "${ROMM_DB_HEALTHCHECK_START_PERIOD}",
+        "start_interval": "${ROMM_DB_HEALTHCHECK_START_INTERVAL}",
+        "interval": "${ROMM_DB_HEALTHCHECK_INTERVAL}",
+        "timeout": "${ROMM_DB_HEALTHCHECK_TIMEOUT}",
+        "retries": "${ROMM_DB_HEALTHCHECK_RETRIES}"
+      }
+    }
+  },
+  "app_links": [
+    {
+      "label": "Open RomM",
+      "service": "romm",
+      "port": "${WEB_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "WEB_PORT",
+      "label": "R1: Web Interface Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "7676",
+      "help": "Host port used to open the RomM web interface. It maps to the recipe-managed internal port <code>8080</code>."
+    },
+    {
+      "name": "ROMM_DB_PASSWORD",
+      "label": "R2: Database Password",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 32},
+      "help": "Generated password shared by RomM and its MariaDB user. Keep it stable; changing it after database initialization does not automatically change the existing MariaDB account password."
+    },
+    {
+      "name": "MARIADB_ROOT_PASSWORD",
+      "label": "R3: MariaDB Root Password",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 32},
+      "help": "Separate generated password for MariaDB's administrative root account. Save it securely for database maintenance and restores."
+    },
+    {
+      "name": "ROMM_AUTH_SECRET_KEY",
+      "label": "R4: RomM Authentication Secret",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 32},
+      "help": "Generated 64-character hexadecimal secret used to protect RomM authentication, sessions, and invite links. Keep it unchanged across upgrades and restores."
+    },
+    {
+      "name": "LIBRARY_LOCATION",
+      "label": "R5: Game Library Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "/path/to/games/library",
+      "help": "Existing host folder containing your ROM library. Replace the example with the actual NAS path.<br>Your games must follow RomM's supported folder structure so platforms and ROMs can be detected correctly."
+    },
+    {
+      "name": "DATABASE_LOCATION",
+      "label": "R6: Database Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./database",
+      "help": "Host folder for MariaDB database files. Do not copy this folder while MariaDB is running; use a consistent NAS snapshot or <code>mariadb-dump</code> for reliable backups."
+    },
+    {
+      "name": "RESOURCES_LOCATION",
+      "label": "R7: Resources Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./resources",
+      "help": "Host folder for downloaded game metadata resources such as covers and screenshots. This data can usually be rebuilt by rescanning, but retaining it speeds recovery."
+    },
+    {
+      "name": "REDIS_DATA_LOCATION",
+      "label": "R8: Task Cache Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./redis-data",
+      "help": "Host folder for RomM's internal task-queue cache. This is lower-priority state; interrupted tasks can normally be run again."
+    },
+    {
+      "name": "ASSETS_LOCATION",
+      "label": "R9: Assets Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./assets",
+      "help": "Host folder for uploaded saves, save states, screenshots, and other user-managed RomM assets. Include it in regular backups."
+    },
+    {
+      "name": "CONFIG_LOCATION",
+      "label": "R10: Config Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./config",
+      "help": "Host folder for an optional RomM <code>config.yml</code> and persistent configuration files. Include it in backups."
+    },
+    {
+      "name": "SCREENSCRAPER_USER",
+      "label": "O1: ScreenScraper Username",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "docs_url": "https://docs.romm.app/latest/Getting-Started/Metadata-Providers/#screenscraper",
+      "docs_label": "Provider setup",
+      "help": "Optional ScreenScraper account username used for game metadata matching. Configure both the username and password together."
+    },
+    {
+      "name": "SCREENSCRAPER_PASSWORD",
+      "label": "O2: ScreenScraper Password",
+      "section": "optional",
+      "input_type": "password",
+      "required": false,
+      "default": "",
+      "help": "Optional ScreenScraper account password. Leave blank when ScreenScraper is not configured."
+    },
+    {
+      "name": "RETROACHIEVEMENTS_API_KEY",
+      "label": "O3: RetroAchievements API Key",
+      "section": "optional",
+      "input_type": "password",
+      "required": false,
+      "default": "",
+      "docs_url": "https://docs.romm.app/latest/Getting-Started/Metadata-Providers/#retroachievements",
+      "docs_label": "Provider setup",
+      "help": "Optional API key for RetroAchievements integration and achievement metadata."
+    },
+    {
+      "name": "STEAMGRIDDB_API_KEY",
+      "label": "O4: SteamGridDB API Key",
+      "section": "optional",
+      "input_type": "password",
+      "required": false,
+      "default": "",
+      "docs_url": "https://docs.romm.app/latest/Getting-Started/Metadata-Providers/#steamgriddb",
+      "docs_label": "Provider setup",
+      "help": "Optional SteamGridDB API key used to improve artwork and metadata results."
+    },
+    {
+      "name": "HASHEOUS_API_ENABLED",
+      "label": "O5: Hasheous Metadata",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "true",
+      "options": [
+        {"label": "Enabled", "value": "true"},
+        {"label": "Disabled", "value": "false"}
+      ],
+      "docs_url": "https://docs.romm.app/latest/Getting-Started/Metadata-Providers/#hasheous",
+      "docs_label": "Provider setup",
+      "help": "Allows RomM to query Hasheous for metadata using ROM hashes. No account key is required."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O6: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether both RomM and MariaDB restart automatically."
+    },
+    {
+      "name": "ROMM_IMAGE",
+      "label": "A1: RomM Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "rommapp/romm:latest",
+      "docs_url": "https://docs.romm.app/latest/Getting-Started/Quick-Start-Guide/",
+      "docs_label": "Official help",
+      "help": "Official RomM image. Change this only if you need a pinned version or another image source."
+    },
+    {
+      "name": "ROMM_DB_IMAGE",
+      "label": "A2: MariaDB Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "mariadb:11",
+      "docs_url": "https://docs.romm.app/latest/Getting-Started/Database-Setup/",
+      "docs_label": "Official database help",
+      "help": "MariaDB 11 is the documented recommended database major version. Pin a more specific compatible tag here if you require fully repeatable deployments."
+    },
+    {
+      "name": "ROMM_CONTAINER_NAME",
+      "label": "RomM Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker names the main RomM container from the project name."
+    },
+    {
+      "name": "ROMM_DB_CONTAINER_NAME",
+      "label": "MariaDB Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}_db",
+      "editable": false,
+      "help": "EasyDocker names the MariaDB container from the project name."
+    },
+    {
+      "name": "ROMM_INTERNAL_PORT",
+      "label": "Internal RomM Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "8080",
+      "editable": false,
+      "help": "Recipe-managed RomM web port inside the container."
+    },
+    {
+      "name": "ROMM_DB_DRIVER",
+      "label": "Database Driver",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "mariadb",
+      "editable": false,
+      "help": "Recipe-managed RomM database driver."
+    },
+    {
+      "name": "ROMM_DB_HOST",
+      "label": "Database Host",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "romm-db",
+      "editable": false,
+      "help": "Internal Compose service name used by RomM to reach MariaDB."
+    },
+    {
+      "name": "ROMM_DB_NAME",
+      "label": "Database Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "romm",
+      "editable": false,
+      "help": "Recipe-managed MariaDB database name shared by both services."
+    },
+    {
+      "name": "ROMM_DB_USER",
+      "label": "Database User",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "romm-user",
+      "editable": false,
+      "help": "Recipe-managed MariaDB username shared by both services."
+    },
+    {
+      "name": "ROMM_RESOURCES_TARGET",
+      "label": "Resources Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/romm/resources",
+      "editable": false,
+      "help": "Recipe-managed internal metadata resources path."
+    },
+    {
+      "name": "ROMM_REDIS_DATA_TARGET",
+      "label": "Task Cache Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/redis-data",
+      "editable": false,
+      "help": "Recipe-managed internal task-cache path."
+    },
+    {
+      "name": "ROMM_LIBRARY_TARGET",
+      "label": "Library Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/romm/library",
+      "editable": false,
+      "help": "Recipe-managed internal ROM-library path."
+    },
+    {
+      "name": "ROMM_ASSETS_TARGET",
+      "label": "Assets Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/romm/assets",
+      "editable": false,
+      "help": "Recipe-managed internal user-assets path."
+    },
+    {
+      "name": "ROMM_CONFIG_TARGET",
+      "label": "Config Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/romm/config",
+      "editable": false,
+      "help": "Recipe-managed internal configuration path."
+    },
+    {
+      "name": "ROMM_DB_DATA_TARGET",
+      "label": "Database Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/var/lib/mysql",
+      "editable": false,
+      "help": "Recipe-managed MariaDB data path."
+    },
+    {
+      "name": "ROMM_DB_DEPENDENCY_CONDITION",
+      "label": "Database Startup Condition",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "service_healthy",
+      "editable": false,
+      "help": "Keeps RomM from starting until MariaDB reports healthy."
+    },
+    {
+      "name": "ROMM_DB_DEPENDENCY_RESTART",
+      "label": "Database Dependency Restart",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "true",
+      "data_type": "yaml",
+      "editable": false,
+      "help": "Restarts RomM when Compose explicitly restarts the MariaDB dependency."
+    },
+    {
+      "name": "ROMM_DB_HEALTHCHECK_MODE",
+      "label": "Healthcheck Mode",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "CMD",
+      "editable": false,
+      "help": "Recipe-managed MariaDB healthcheck execution mode."
+    },
+    {
+      "name": "ROMM_DB_HEALTHCHECK_COMMAND",
+      "label": "Healthcheck Command",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "healthcheck.sh",
+      "editable": false,
+      "help": "Recipe-managed MariaDB healthcheck command."
+    },
+    {
+      "name": "ROMM_DB_HEALTHCHECK_CONNECT",
+      "label": "Healthcheck Connect Argument",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "--connect",
+      "editable": false,
+      "help": "Checks that MariaDB accepts connections."
+    },
+    {
+      "name": "ROMM_DB_HEALTHCHECK_INNODB",
+      "label": "Healthcheck InnoDB Argument",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "--innodb_initialized",
+      "editable": false,
+      "help": "Checks that MariaDB's InnoDB engine finished initialization."
+    },
+    {
+      "name": "ROMM_DB_HEALTHCHECK_START_PERIOD",
+      "label": "Healthcheck Start Period",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "30s",
+      "editable": false,
+      "help": "Recipe-managed MariaDB healthcheck grace period."
+    },
+    {
+      "name": "ROMM_DB_HEALTHCHECK_START_INTERVAL",
+      "label": "Healthcheck Start Interval",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "10s",
+      "editable": false,
+      "help": "Recipe-managed check interval during MariaDB startup."
+    },
+    {
+      "name": "ROMM_DB_HEALTHCHECK_INTERVAL",
+      "label": "Healthcheck Interval",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "10s",
+      "editable": false,
+      "help": "Recipe-managed regular MariaDB healthcheck interval."
+    },
+    {
+      "name": "ROMM_DB_HEALTHCHECK_TIMEOUT",
+      "label": "Healthcheck Timeout",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "5s",
+      "editable": false,
+      "help": "Recipe-managed MariaDB healthcheck timeout."
+    },
+    {
+      "name": "ROMM_DB_HEALTHCHECK_RETRIES",
+      "label": "Healthcheck Retries",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "5",
+      "data_type": "yaml",
+      "editable": false,
+      "help": "Recipe-managed number of failed checks before MariaDB is marked unhealthy."
+    }
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/romm/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional Metadata Providers", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "RomM scans and organizes your game library, enriches it with metadata and artwork, manages saves and states, and supports browser-based access and play.",
+    "what_happens": [
+      "Two containers will be created as one Compose project: RomM and a private MariaDB database",
+      "EasyDocker will generate separate database-user, database-root, and RomM authentication secrets",
+      "MariaDB will not publish a host port; only RomM can reach it through the project's internal Compose network",
+      "RomM waits for MariaDB's connection and InnoDB health checks before starting",
+      "The existing game library and all persistent RomM folders will use bind mounts",
+      "ScreenScraper, RetroAchievements, and SteamGridDB credentials are optional metadata enhancements",
+      "Hasheous metadata lookup is enabled by default and requires no account key",
+      "On first access, RomM will guide you through creation of its administrator account",
+      "Initial database migrations and large library scans may take several minutes",
+      "This multi-container recipe intentionally uses its private internal Compose network rather than exposing a network selector"
+    ],
+    "data_location": "All storage uses bind mounts. The game library should point to your existing NAS collection. Back up the database consistently along with assets, config, and the authentication secret; resources and task-cache data are lower priority."
+  }
+}

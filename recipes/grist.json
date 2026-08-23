@@ -1,0 +1,295 @@
+{
+  "name": "grist",
+  "version": 1,
+  "description": "Self-hosted relational spreadsheet and lightweight database platform",
+  "services": {
+    "grist": {
+      "container_name": "${GRIST_CONTAINER_NAME}",
+      "image": "${GRIST_IMAGE}",
+      "restart": "${RESTART_POLICY}",
+      "ports": ["${GRIST_PORT_MAPPING}"],
+      "environment": {
+        "GRIST_SESSION_SECRET": "${GRIST_SESSION_SECRET}",
+        "GRIST_BOOT_KEY": "${GRIST_BOOT_KEY}",
+        "GRIST_DEFAULT_EMAIL": "${GRIST_DEFAULT_EMAIL}",
+        "GRIST_ADMIN_EMAIL": "${GRIST_DEFAULT_EMAIL}",
+        "GRIST_FORCE_LOGIN": "${GRIST_FORCE_LOGIN}",
+        "GRIST_SANDBOX_FLAVOR": "${GRIST_SANDBOX_FLAVOR}",
+        "COOKIE_MAX_AGE": "${COOKIE_MAX_AGE}",
+        "GRIST_TELEMETRY_LEVEL": "${GRIST_TELEMETRY_LEVEL}",
+        "GRIST_ALLOW_AUTOMATIC_VERSION_CHECKING": "${GRIST_ALLOW_AUTOMATIC_VERSION_CHECKING}",
+        "GRIST_SINGLE_ORG": "${GRIST_SINGLE_ORG}",
+        "GRIST_WIDGET_LIST_URL": "${GRIST_WIDGET_LIST_URL}",
+        "APP_HOME_URL": "${APP_HOME_URL}"
+      },
+      "cap_add": ["${GRIST_SYS_PTRACE_CAPABILITY}"],
+      "volumes": ["${DATA_LOCATION}:${GRIST_PERSIST_TARGET}"],
+      "network_mode": "${GRIST_NETWORK_MODE_MODE}",
+      "networks": "${GRIST_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${GRIST_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Grist",
+      "service": "grist",
+      "port": "${WEB_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "WEB_PORT",
+      "label": "R1: Web Interface Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "8484",
+      "help": "Host port used to open Grist in bridge mode. In Host Mode, Grist listens directly on NAS port <code>8484</code>."
+    },
+    {
+      "name": "GRIST_SESSION_SECRET",
+      "label": "R2: Session Secret",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 32},
+      "help": "Generated secret used to protect Grist browser sessions. Keep this value stable and private; changing it invalidates existing sessions."
+    },
+    {
+      "name": "GRIST_BOOT_KEY",
+      "label": "R3: First-Run Boot Key",
+      "section": "required",
+      "input_type": "password",
+      "required": true,
+      "default": "",
+      "generator": {"type": "hex", "bytes": 24},
+      "help": "Generated key proving that you control this Grist installation.<br>On first access, Grist opens its boot login page. Paste this value there, or open <code>http://NAS-IP:8484/boot</code>. Save it securely because it can also provide emergency access to the Admin Panel later."
+    },
+    {
+      "name": "GRIST_DEFAULT_EMAIL",
+      "label": "R4: Administrator Email",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "admin@example.com",
+      "help": "Email address assigned ownership of the installation and initial organization. Replace the example with the email you will use for authentication.<br><strong>This is not a username/password login by itself.</strong> After entering the boot key, configure an authentication method in Grist's Quick Setup wizard. Changing this email later can transfer administrative ownership and affect access to the single organization."
+    },
+    {
+      "name": "GRIST_SINGLE_ORG",
+      "label": "R5: Organization Name",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "my-company",
+      "help": "Name of the single Grist organization created for this installation. Use only lowercase letters, numbers, and hyphens, such as <code>my-company</code>. Avoid changing it after users and documents have been created."
+    },
+    {
+      "name": "DATA_LOCATION",
+      "label": "R6: Data Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./data",
+      "help": "Host folder for Grist documents, the home database, sessions, configuration, and other persistent application data. Back up this folder regularly."
+    },
+    {
+      "name": "GRIST_NETWORK_MODE",
+      "label": "O1: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the recommended default, <code>Host Mode</code>, or an existing named Docker network. Bridge mode is normally sufficient for direct access and reverse proxies."
+    },
+    {
+      "name": "APP_HOME_URL",
+      "label": "O2: Public Application URL",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Set this only when Grist is accessed through a domain or reverse proxy. Enter the complete public URL, such as <code>https://grist.example.com</code>, without a trailing slash.<br>Leave blank for direct NAS-IP access. Grist uses this URL for authentication callbacks, sharing links, and notifications."
+    },
+    {
+      "name": "GRIST_FORCE_LOGIN",
+      "label": "O3: Require Login",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "true",
+      "options": [
+        {"label": "Required (Recommended)", "value": "true"},
+        {"label": "Allow Anonymous Access", "value": "false"}
+      ],
+      "help": "Blocks anonymous access when enabled. You must select and configure an authentication method during Grist's first-run Quick Setup wizard, especially before exposing Grist beyond a trusted private network."
+    },
+    {
+      "name": "GRIST_SANDBOX_FLAVOR",
+      "label": "O4: Formula Sandbox",
+      "section": "optional",
+      "input_type": "select",
+      "required": false,
+      "default": "gvisor",
+      "options": [
+        {"label": "gVisor (Recommended)", "value": "gvisor"},
+        {"label": "Unsandboxed (Unsafe)", "value": "unsandboxed"}
+      ],
+      "help": "gVisor isolates Python formulas from other documents, the container, and the network. It is strongly recommended whenever documents may contain formulas from other users.<br>Some older processors or restricted NAS environments may not support it. Unsandboxed formulas can access anything available to the Grist process and should only be used temporarily for diagnosis."
+    },
+    {
+      "name": "COOKIE_MAX_AGE",
+      "label": "O5: Login Session Duration",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "604800000",
+      "help": "Maximum session-cookie age in milliseconds. The default is seven days. Enter <code>none</code> to use a browser-session cookie that should expire when the browser closes."
+    },
+    {
+      "name": "GRIST_TELEMETRY_LEVEL",
+      "label": "O6: Telemetry",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "off",
+      "options": [
+        {"label": "Off", "value": "off"},
+        {"label": "Limited", "value": "limited"},
+        {"label": "Full", "value": "full"}
+      ],
+      "help": "Controls Grist usage telemetry. This recipe disables telemetry by default."
+    },
+    {
+      "name": "GRIST_ALLOW_AUTOMATIC_VERSION_CHECKING",
+      "label": "O7: Automatic Version Checks",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "true",
+      "options": [
+        {"label": "Enabled", "value": "true"},
+        {"label": "Disabled", "value": "false"}
+      ],
+      "help": "Checks weekly for newer Grist versions. For the OSS image this is normally disabled unless explicitly enabled.<br>When enabled, the check sends Grist Labs the installed version, edition, and an anonymized installation identifier. It does not update the container automatically."
+    },
+    {
+      "name": "GRIST_WIDGET_LIST_URL",
+      "label": "O8: Widget Gallery Manifest",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "https://github.com/gristlabs/grist-widget/releases/download/latest/manifest.json",
+      "help": "Manifest used to display the official Grist custom-widget gallery. Replace it with your own compatible manifest URL if required."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O9: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "GRIST_IMAGE",
+      "label": "A1: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "gristlabs/grist-oss:latest",
+      "docs_url": "https://support.getgrist.com/self-managed/",
+      "docs_label": "Official help",
+      "help": "Official image containing only Grist's free and open-source Community edition. Change this only if you need a pinned tag or another Grist edition."
+    },
+    {
+      "name": "GRIST_SYS_PTRACE_CAPABILITY",
+      "label": "A2: SYS_PTRACE for gVisor",
+      "section": "advanced",
+      "input_type": "select",
+      "required": false,
+      "default": "",
+      "options": [
+        {"label": "Disabled (Recommended Initially)", "value": ""},
+        {"label": "Enable SYS_PTRACE", "value": "SYS_PTRACE"}
+      ],
+      "help": "Most regular Docker installations can run Grist's gVisor sandbox without this extra capability. If Grist reports that PTRACE is unavailable, enable <code>SYS_PTRACE</code> here and redeploy.<br>This capability increases container privileges, so leave it disabled unless sandbox diagnostics show it is required."
+    },
+    {
+      "name": "GRIST_PORT_MAPPING",
+      "label": "A3: Bridge Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${WEB_PORT}:${GRIST_INTERNAL_PORT}",
+      "editable": false,
+      "hidden_when": {"GRIST_NETWORK_MODE": ["__host__"]},
+      "omit_when_inactive": true,
+      "help": "Automatically generated for bridge or an existing Docker network and removed in Host Mode."
+    },
+    {
+      "name": "GRIST_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "GRIST_INTERNAL_PORT",
+      "label": "Internal Web Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "8484",
+      "editable": false,
+      "help": "Recipe-managed Grist port inside the container."
+    },
+    {
+      "name": "GRIST_PERSIST_TARGET",
+      "label": "Persistent Path Inside Container",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/persist",
+      "editable": false,
+      "help": "Recipe-managed internal path for all persistent Grist data."
+    }
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/grist/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "Grist combines spreadsheet editing with relational data, Python formulas, forms, APIs, and collaborative workspaces.",
+    "what_happens": [
+      "One Grist Community edition container will be created using the free and open-source image",
+      "Documents, databases, sessions, and installation settings will be stored in the bind-mounted data folder",
+      "EasyDocker will generate both the session secret and first-run boot key",
+      "On first access, paste the displayed boot key into Grist's boot login page and complete the Quick Setup wizard",
+      "The administrator email identifies the installation owner but does not create a password; configure an authentication method during Quick Setup",
+      "Anonymous access is disabled by default, but authentication must still be configured before exposing Grist publicly",
+      "Python formulas will use the recommended gVisor sandbox by default; SYS_PTRACE can be enabled from Advanced settings if sandbox diagnostics require it",
+      "Telemetry is disabled by default while automatic version notifications remain enabled",
+      "The official custom-widget gallery is enabled by default",
+      "Bridge networking is selected by default, with Host Mode and existing Docker networks also available"
+    ],
+    "data_location": "The data folder can be relative to this app's config folder or an absolute host path. It contains documents and databases, so include it in regular backups before upgrades or migrations."
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "name": "omni-tools",
+  "version": 1,
+  "description": "Privacy-friendly collection of browser-based tools for files, media, PDFs, text, data, and calculations",
+  "services": {
+    "omni-tools": {
+      "container_name": "${OMNI_TOOLS_CONTAINER_NAME}",
+      "image": "${OMNI_TOOLS_IMAGE}",
+      "restart": "${RESTART_POLICY}",
+      "ports": ["${OMNI_TOOLS_PORT_MAPPING}"],
+      "network_mode": "${OMNI_TOOLS_NETWORK_MODE_MODE}",
+      "networks": "${OMNI_TOOLS_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${OMNI_TOOLS_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open OmniTools",
+      "service": "omni-tools",
+      "port": "${WEB_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "WEB_PORT",
+      "label": "R1: Web Interface Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "8080",
+      "help": "Host port used to open OmniTools in bridge mode. In Host Mode, OmniTools listens directly on NAS port <code>80</code>."
+    },
+    {
+      "name": "OMNI_TOOLS_NETWORK_MODE",
+      "label": "O1: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the recommended default, <code>Host Mode</code>, or an existing named Docker network. Bridge mode is normally sufficient and avoids occupying NAS port 80 directly."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O2: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "OMNI_TOOLS_IMAGE",
+      "label": "A1: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "iib0011/omni-tools:latest",
+      "docs_url": "https://github.com/iib0011/omni-tools",
+      "docs_label": "Official help",
+      "help": "Official OmniTools image. Change this only if you need a pinned version or another image source."
+    },
+    {
+      "name": "OMNI_TOOLS_PORT_MAPPING",
+      "label": "A2: Bridge Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${WEB_PORT}:${OMNI_TOOLS_INTERNAL_PORT}",
+      "editable": false,
+      "hidden_when": {"OMNI_TOOLS_NETWORK_MODE": ["__host__"]},
+      "omit_when_inactive": true,
+      "help": "Automatically generated for bridge or an existing Docker network and removed in Host Mode."
+    },
+    {
+      "name": "OMNI_TOOLS_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "OMNI_TOOLS_INTERNAL_PORT",
+      "label": "Internal Web Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "80",
+      "editable": false,
+      "help": "Recipe-managed OmniTools web port inside the container."
+    }
+  ],
+  "ui": {
+    "manual": "https://tsg-easydocker.com/docs/recipes/omni-tools/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "OmniTools provides self-hosted utilities for images, video, audio, PDFs, text, JSON, CSV, dates, mathematics, and other everyday tasks.",
+    "what_happens": [
+      "One lightweight OmniTools container will be created",
+      "The application will open on the selected host port",
+      "Files and other input are processed locally in the user's browser rather than uploaded to the OmniTools container",
+      "No persistent storage folder, database, account, or generated secret is required",
+      "Browser bookmarks and similar interface preferences may remain in that browser's local storage rather than on the NAS",
+      "Bridge networking is selected by default, with Host Mode and existing Docker networks also available"
+    ],
+    "data_location": "OmniTools is a stateless browser application and does not require a bind-mounted data folder. Keep original files backed up normally before performing any conversion or editing task."
+  }
+}

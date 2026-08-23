@@ -53,6 +53,10 @@
                         "version":  1.01
                     },
                     {
+                        "name":  "grist",
+                        "version":  1
+                    },
+                    {
                         "name":  "home-assistant",
                         "version":  1.03
                     },
@@ -105,6 +109,10 @@
                         "version":  1.03
                     },
                     {
+                        "name":  "omni-tools",
+                        "version":  1
+                    },
+                    {
                         "name":  "pairdrop",
                         "version":  1.01
                     },
@@ -135,6 +143,10 @@
                     {
                         "name":  "rclone",
                         "version":  1.01
+                    },
+                    {
+                        "name":  "romm",
+                        "version":  1
                     },
                     {
                         "name":  "radarr",
