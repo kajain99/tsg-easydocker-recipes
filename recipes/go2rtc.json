@@ -1,6 +1,8 @@
 {
     "name":  "go2rtc",
     "version":  1.04,
+    "category":  "home-automation",
+    "icon":  "go2rtc.png",
     "description":  "USB camera gateway for creating go2rtc streams through the web UI and config file",
     "services":  {
                      "go2rtc":  {

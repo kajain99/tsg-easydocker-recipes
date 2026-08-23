@@ -1,6 +1,8 @@
 {
     "name":  "audiobookshelf",
     "version":  5.01,
+    "category":  "media",
+    "icon":  "audiobookshelf.svg",
     "description":  "Self-hosted audiobook and podcast server with progress syncing",
     "services":  {
                      "audiobookshelf":  {

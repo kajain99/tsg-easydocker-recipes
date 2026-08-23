@@ -1,6 +1,8 @@
 {
   "name": "komga",
   "version": 1.03,
+  "category": "media",
+  "icon": "komga.svg",
   "description": "Self-hosted comics, manga, and ebook server with a browser-based reader",
   "services": {
     "komga": {

@@ -1,6 +1,8 @@
 {
   "name": "seerr",
   "version": 1.02,
+  "category": "media",
+  "icon": "seerr.svg",
   "description": "Media request management for Jellyfin and Plex libraries",
   "services": {
     "seerr": {

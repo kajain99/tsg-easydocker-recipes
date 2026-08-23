@@ -1,6 +1,8 @@
 {
   "name": "omni-tools",
   "version": 1,
+  "category": "utilities",
+  "icon": "omni-tools.svg",
   "description": "Privacy-friendly collection of browser-based tools for files, media, PDFs, text, data, and calculations",
   "services": {
     "omni-tools": {

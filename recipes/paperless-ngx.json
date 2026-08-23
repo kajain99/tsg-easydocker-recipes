@@ -1,6 +1,8 @@
 {
     "name":  "paperless-ngx",
     "version":  1,
+    "category":  "productivity",
+    "icon":  "paperless-ngx.svg",
     "description":  "Document management with OCR, full-text search, PostgreSQL, and Valkey",
     "services":  {
                      "broker":  {

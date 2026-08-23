@@ -1,6 +1,8 @@
 {
   "name": "romm",
   "version": 1,
+  "category": "media",
+  "icon": "romm.svg",
   "description": "ROM library manager with metadata, artwork, saves, achievements, and browser-based play support",
   "services": {
     "romm": {

@@ -1,6 +1,8 @@
 {
   "name": "rclone",
   "version": 1.01,
+  "category": "backup-storage",
+  "icon": "rclone.svg",
   "description": "Rclone cloud-storage manager with a browser-based GUI and remote-control API",
   "services": {
     "rclone": {

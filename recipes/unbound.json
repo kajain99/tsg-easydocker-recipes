@@ -1,6 +1,8 @@
 {
   "name": "unbound",
   "version": 1,
+  "category": "networking",
+  "icon": "unbound.svg",
   "description": "Validating, recursive, and caching DNS resolver",
   "services": {
     "unbound": {

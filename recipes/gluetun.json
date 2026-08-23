@@ -1,6 +1,8 @@
 {
   "name": "gluetun",
   "version": 1.03,
+  "category": "networking",
+  "icon": "gluetun.svg",
   "description": "VPN gateway container for routing other apps through OpenVPN or WireGuard",
   "services": {
     "gluetun": {

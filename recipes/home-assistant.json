@@ -1,6 +1,8 @@
 {
   "name": "home-assistant",
   "version": 1.03,
+  "category": "home-automation",
+  "icon": "home-assistant.svg",
   "description": "Home automation platform with host networking recommended for IoT discovery",
   "services": {
     "homeassistant": {

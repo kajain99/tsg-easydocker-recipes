@@ -1,6 +1,8 @@
 {
   "name": "mosquitto",
   "version": 1.03,
+  "category": "home-automation",
+  "icon": "mosquitto.svg",
   "description": "Lightweight MQTT broker with authenticated access and persistent configuration",
   "services": {
     "mosquitto": {

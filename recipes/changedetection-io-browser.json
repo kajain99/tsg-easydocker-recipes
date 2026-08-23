@@ -1,6 +1,8 @@
 {
     "name":  "changedetection-io-browser",
     "version":  1.01,
+    "category":  "monitoring",
+    "icon":  "changedetection.svg",
     "description":  "Website change monitoring with a dedicated browser for JavaScript-enabled pages",
     "services":  {
                      "changedetection":  {

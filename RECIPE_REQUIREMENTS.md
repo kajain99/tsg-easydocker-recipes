@@ -252,7 +252,28 @@ Good uses:
 
 ## Hardware-Dependent Fields
 
-If a device path depends on host hardware, use `availability_path`.
+For new recipes, prefer `availability_from` with an allowlisted detected variable:
+
+```json
+{
+  "name": "APP_DRI_DEVICE",
+  "label": "Hardware Acceleration Device",
+  "section": "advanced",
+  "input_type": "text",
+  "required": false,
+  "default": "",
+  "availability_from": "detected.HAS_DRI",
+  "help": "Optional hardware acceleration device."
+}
+```
+
+Use `default_from` when a detected scalar should provide a field's initial value, for example `"default_from": "detected.CPU_THREADS"`. User-submitted values take precedence. Supported references are maintained by EasyDocker; recipes cannot execute detectors.
+
+For a select field, `options_from` can use a detected list of strings such as `detected.SERIAL_DEVICES`, `detected.VIDEO_DEVICES`, or `detected.DRI_DEVICES`. EasyDocker turns each detected path into a label/value option without allowing recipe-defined detection commands.
+
+Use `input_type: "detected"` when the recipe must consume a typed detected array. Detected fields must declare an allowlisted `detected_source`, a supported mode (`all`, `select_one`, or `select_many`), and a supported value type. Values are resolved or validated again on the server during Compose generation. A full-array placeholder must occupy the complete Compose value so it remains a YAML list rather than becoming a string.
+
+Existing recipes may continue using `availability_path` when a device path depends on host hardware.
 
 Example:
 

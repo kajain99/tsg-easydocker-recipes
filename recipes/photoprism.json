@@ -1,6 +1,8 @@
 {
   "name": "photoprism",
   "version": 1.02,
+  "category": "media",
+  "icon": "photoprism.svg",
   "description": "AI-powered photo management with MariaDB and optional external Ollama integration",
   "services": {
     "photoprism": {

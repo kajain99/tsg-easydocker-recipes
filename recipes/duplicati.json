@@ -1,6 +1,8 @@
 {
   "name": "duplicati",
   "version": 1.01,
+  "category": "backup-storage",
+  "icon": "duplicati.svg",
   "description": "Encrypted backup software with multiple read-only sources and writable destinations",
   "services": {
     "duplicati": {

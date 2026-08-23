@@ -126,7 +126,41 @@ Common optional field keys:
 | `visible_when` / `hidden_when` | Conditional field visibility. |
 | `omit_when_inactive` | Remove conditional field value from Compose when hidden. |
 | `availability_path` | Disable or annotate hardware-dependent fields when a device was not detected. |
+| `default_from` | Use an allowlisted detected variable as the field default. |
+| `availability_from` | Disable or annotate a field from an allowlisted boolean detected variable. |
+| `options_from` | Populate select options from an allowlisted detected list of strings, such as serial device paths. |
+| `input_type: detected` | Render a system-detected field instead of a free-form input. |
+| `detected_source` | Allowlisted detected array consumed by a detected field. |
+| `detector_status` / `detector_error` | Variables that distinguish never-run, failed, empty, and populated detection. |
+| `detected_mode` | `all`, `select_one`, or `select_many`. |
+| `detected_value_type` | `string_list`, `device_paths`, `device_mappings`, or `object_list`. |
+| `value_key` / `label_key` | Project values and labels from detected objects. |
 | `detection_required_message` | Custom message for unavailable hardware fields. |
+
+Detected-variable references use the `detected.NAME` namespace. The Detection page shows the complete current registry, including platform, Docker, device, storage, and network facts. Common references include `detected.CPU_THREADS`, `detected.RAM_BYTES`, `detected.HAS_DRI`, `detected.HAS_TUN`, `detected.HAS_KVM`, and `detected.SERIAL_DEVICES`. A submitted form value always takes precedence over a detected default. Recipes cannot define detectors or reference arbitrary system values.
+
+For an array inserted directly into Compose, use a detected field and an exact placeholder:
+
+```json
+{
+  "name": "SMART_DEVICES",
+  "label": "Detected SMART devices",
+  "section": "advanced",
+  "input_type": "detected",
+  "detected_source": "detected.SMART_DEVICE_MAPPINGS",
+  "detector_status": "detected.SMART_SCAN_STATUS",
+  "detector_error": "detected.SMART_SCAN_ERROR",
+  "detected_mode": "all",
+  "detected_value_type": "device_mappings",
+  "required": true
+}
+```
+
+```json
+"devices": "${SMART_DEVICES}"
+```
+
+`all` values are always resolved on the server and browser submissions are ignored. `select_one` and `select_many` submissions are accepted only when every value is present in the saved detected array.
 
 Use uppercase snake case for field names, for example `PLEX_PORT` or `GLUETUN_IMAGE`.
 

@@ -1,6 +1,8 @@
 {
   "name": "syncthing",
   "version": 1,
+  "category": "backup-storage",
+  "icon": "syncthing.svg",
   "description": "Private peer-to-peer file synchronization with a browser-based interface",
   "services": {
     "syncthing": {

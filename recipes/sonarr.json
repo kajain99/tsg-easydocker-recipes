@@ -1,6 +1,8 @@
 {
   "name": "sonarr",
   "version": 1.02,
+  "category": "media",
+  "icon": "sonarr.svg",
   "description": "TV series manager for automated downloads and library organization",
   "services": {
     "sonarr": {

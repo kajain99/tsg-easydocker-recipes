@@ -1,6 +1,8 @@
 {
   "name": "radarr",
   "version": 1.02,
+  "category": "media",
+  "icon": "radarr.svg",
   "description": "Movie manager for automated downloads and library organization",
   "services": {
     "radarr": {

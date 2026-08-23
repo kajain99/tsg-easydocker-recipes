@@ -1,6 +1,8 @@
 {
   "name": "sabnzbd",
   "version": 1,
+  "category": "downloads",
+  "icon": "sabnzbd.svg",
   "description": "Automated Usenet downloader with a browser-based interface",
   "services": {
     "sabnzbd": {

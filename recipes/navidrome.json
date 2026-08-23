@@ -1,6 +1,8 @@
 {
   "name": "navidrome",
   "version": 1.01,
+  "category": "media",
+  "icon": "navidrome.svg",
   "description": "Personal music streaming server with a modern browser interface and Subsonic-compatible apps",
   "services": {
     "navidrome": {

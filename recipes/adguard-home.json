@@ -1,6 +1,8 @@
 {
     "name":  "adguard-home",
     "version":  3,
+    "category":  "networking",
+    "icon":  "adguard-home.svg",
     "description":  "Network-wide DNS server that blocks ads, trackers, and malicious domains",
     "services":  {
                      "adguard-home":  {

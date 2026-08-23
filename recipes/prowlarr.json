@@ -1,6 +1,8 @@
 {
   "name": "prowlarr",
   "version": 1.02,
+  "category": "downloads",
+  "icon": "prowlarr.svg",
   "description": "Indexer manager for Sonarr, Radarr, and other arr apps",
   "services": {
     "prowlarr": {

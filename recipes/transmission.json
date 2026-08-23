@@ -1,6 +1,8 @@
 {
   "name": "transmission",
   "version": 1.02,
+  "category": "downloads",
+  "icon": "transmission.svg",
   "description": "BitTorrent client with a web UI and persistent config",
   "services": {
     "transmission": {

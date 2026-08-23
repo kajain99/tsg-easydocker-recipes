@@ -1,6 +1,8 @@
 {
     "name":  "bentopdf",
     "version":  1.01,
+    "category":  "productivity",
+    "icon":  "bentopdf.svg",
     "description":  "Privacy-focused browser-based PDF tools for editing, converting, signing, OCR, and organizing documents",
     "services":  {
                      "bentopdf":  {

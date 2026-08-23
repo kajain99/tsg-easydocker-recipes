@@ -1,6 +1,8 @@
 {
     "name":  "deluge",
     "version":  1,
+    "category":  "downloads",
+    "icon":  "deluge.svg",
     "description":  "BitTorrent client with a browser-based interface and persistent downloads",
     "services":  {
                      "deluge":  {

@@ -1,6 +1,8 @@
 {
     "name":  "nginx-proxy-manager",
     "version":  1.03,
+    "category":  "networking",
+    "icon":  "nginx-proxy-manager.svg",
     "description":  "Reverse proxy manager with a web UI, SSL certificates, and proxy host management",
     "services":  {
                      "nginx-proxy-manager":  {

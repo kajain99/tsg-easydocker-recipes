@@ -1,6 +1,8 @@
 {
     "name":  "changedetection-io",
     "version":  1.01,
+    "category":  "monitoring",
+    "icon":  "changedetection.svg",
     "description":  "Website change monitoring with notifications and persistent history",
     "services":  {
                      "changedetection":  {

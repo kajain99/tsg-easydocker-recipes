@@ -1,0 +1,40 @@
+{
+  "categories": [
+    {
+      "id": "backup-storage",
+      "label": "Backup & Storage"
+    },
+    {
+      "id": "downloads",
+      "label": "Downloads"
+    },
+    {
+      "id": "home-automation",
+      "label": "Home Automation"
+    },
+    {
+      "id": "media",
+      "label": "Media"
+    },
+    {
+      "id": "monitoring",
+      "label": "Monitoring"
+    },
+    {
+      "id": "networking",
+      "label": "Networking"
+    },
+    {
+      "id": "productivity",
+      "label": "Productivity"
+    },
+    {
+      "id": "security",
+      "label": "Security"
+    },
+    {
+      "id": "utilities",
+      "label": "Utilities"
+    }
+  ]
+}
