@@ -1,0 +1,171 @@
+{
+  "name": "memos",
+  "version": 1,
+  "description": "Lightweight, self-hosted note-taking service for quickly capturing Markdown notes",
+  "services": {
+    "memos": {
+      "container_name": "${MEMOS_CONTAINER_NAME}",
+      "image": "${MEMOS_IMAGE}",
+      "restart": "${RESTART_POLICY}",
+      "ports": ["${MEMOS_PORT_MAPPING}"],
+      "volumes": ["${DATA_LOCATION}:${MEMOS_DATA_TARGET}"],
+      "environment": {
+        "MEMOS_PORT": "${MEMOS_INTERNAL_PORT}",
+        "MEMOS_DRIVER": "${MEMOS_DRIVER}",
+        "MEMOS_INSTANCE_URL": "${MEMOS_INSTANCE_URL}"
+      },
+      "network_mode": "${MEMOS_NETWORK_MODE_MODE}",
+      "networks": "${MEMOS_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${MEMOS_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Memos",
+      "service": "memos",
+      "port": "${WEB_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "WEB_PORT",
+      "label": "R1: Web Interface Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "5230",
+      "help": "Host port used to open Memos in bridge mode. In Host Mode, Memos listens directly on NAS port <code>5230</code>."
+    },
+    {
+      "name": "DATA_LOCATION",
+      "label": "R2: Data Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./data",
+      "help": "Bind-mounted folder that stores the SQLite database and uploaded files. Keep this folder backed up."
+    },
+    {
+      "name": "MEMOS_INSTANCE_URL",
+      "label": "O1: Instance / Public URL",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Leave blank for a private Memos instance where anonymous visitors are sent to sign in. Set this only when you want public-facing features such as Explore, RSS, and public memo pages. Use the complete canonical address including the scheme, for example <code>https://memos.example.com</code> or <code>http://192.168.1.20:5230</code>. When using a reverse proxy, enter its public HTTPS URL."
+    },
+    {
+      "name": "MEMOS_NETWORK_MODE",
+      "label": "O2: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the recommended default, <code>Host Mode</code>, or an existing named Docker network. Bridge mode is normally sufficient."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O3: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "MEMOS_IMAGE",
+      "label": "A1: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "neosmemo/memos:stable",
+      "docs_url": "https://usememos.com/docs/deploy/docker",
+      "docs_label": "Official help",
+      "help": "Official stable Memos image. Change this only if you need to pin a specific release."
+    },
+    {
+      "name": "MEMOS_PORT_MAPPING",
+      "label": "A2: Bridge Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${WEB_PORT}:${MEMOS_INTERNAL_PORT}",
+      "editable": false,
+      "hidden_when": {"MEMOS_NETWORK_MODE": ["__host__"]},
+      "omit_when_inactive": true,
+      "help": "Automatically generated for bridge or an existing Docker network and removed in Host Mode."
+    },
+    {
+      "name": "MEMOS_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "MEMOS_INTERNAL_PORT",
+      "label": "Internal Web Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "5230",
+      "editable": false,
+      "help": "Recipe-managed Memos port inside the container."
+    },
+    {
+      "name": "MEMOS_DATA_TARGET",
+      "label": "Internal Data Folder",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/var/opt/memos",
+      "editable": false,
+      "help": "Official persistent data location inside the Memos container."
+    },
+    {
+      "name": "MEMOS_DRIVER",
+      "label": "Database Driver",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "sqlite",
+      "editable": false,
+      "help": "This single-container recipe uses Memos' built-in SQLite database."
+    }
+  ],
+  "ui": {
+    "category": "productivity",
+    "icon": "memos.png",
+    "manual": "https://tsg-easydocker.com/docs/recipes/memos/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "Memos is a lightweight, Markdown-native note-taking service for quickly recording and organizing ideas while keeping the data on your own NAS.",
+    "what_happens": [
+      "One Memos container will be created using the stable image",
+      "The SQLite database and uploaded files will be stored in the selected bind-mounted data folder",
+      "Bridge networking is selected by default, with Host Mode and existing Docker networks also available",
+      "Leaving the Instance / Public URL blank keeps anonymous visitors behind the sign-in page",
+      "Setting the Instance / Public URL enables public-facing features and must use the real canonical address",
+      "The first account created after deployment becomes the instance administrator"
+    ],
+    "data_location": "The selected data folder contains the Memos SQLite database and local uploaded assets. Back up this entire folder before upgrades or migrations."
+  }
+}
