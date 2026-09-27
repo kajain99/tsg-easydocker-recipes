@@ -1,0 +1,224 @@
+{
+  "name": "gitea",
+  "version": 1.01,
+  "description": "Self-hosted Git service with repositories, issues, pull requests, packages, and team collaboration",
+  "services": {
+    "gitea": {
+      "container_name": "${GITEA_CONTAINER_NAME}",
+      "image": "${GITEA_IMAGE}",
+      "restart": "${RESTART_POLICY}",
+      "environment": {
+        "USER_UID": "${PUID}",
+        "USER_GID": "${PGID}",
+        "TZ": "${TZ}",
+        "GITEA__server__SSH_PORT": "${SSH_PORT}",
+        "GITEA__server__ROOT_URL": "${GITEA_ROOT_URL}"
+      },
+      "volumes": ["${DATA_LOCATION}:${GITEA_DATA_TARGET}"],
+      "ports": [
+        "${GITEA_WEB_PORT_MAPPING}",
+        "${GITEA_SSH_PORT_MAPPING}"
+      ],
+      "network_mode": "${GITEA_NETWORK_MODE_MODE}",
+      "networks": "${GITEA_NETWORK_MODE_SERVICE_NETWORKS}"
+    }
+  },
+  "networks": "${GITEA_NETWORK_MODE_DEFINITIONS}",
+  "app_links": [
+    {
+      "label": "Open Gitea",
+      "service": "gitea",
+      "port": "${WEB_PORT}",
+      "path": "/",
+      "scheme": "http"
+    }
+  ],
+  "fields": [
+    {
+      "name": "WEB_PORT",
+      "label": "R1: Web Interface Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "3000",
+      "help": "Host port used to open Gitea in bridge mode. In Host Mode, Gitea listens directly on NAS port <code>3000</code>."
+    },
+    {
+      "name": "SSH_PORT",
+      "label": "R2: Git SSH Port",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "222",
+      "help": "Host port used for Git-over-SSH clone and push operations. This value is also advertised in Gitea's SSH clone URLs. If you select Host Mode, use <code>22</code> unless Gitea's internal SSH listener is separately reconfigured."
+    },
+    {
+      "name": "DATA_LOCATION",
+      "label": "R3: Data Folder",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "./data",
+      "help": "Bind-mounted folder containing Gitea's configuration, repositories, SQLite database, packages, logs, and other persistent data. The selected UID and GID must be able to write here."
+    },
+    {
+      "name": "PUID",
+      "label": "R4: PUID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "User ID used by Gitea for bind-mounted file permissions. EasyDocker fills this from your saved PUID persistent variable; it should match the owner of the data folder on your NAS."
+    },
+    {
+      "name": "PGID",
+      "label": "R5: PGID",
+      "section": "required",
+      "input_type": "text",
+      "required": true,
+      "default": "",
+      "help": "Group ID used by Gitea for bind-mounted file permissions. EasyDocker fills this from your saved PGID persistent variable; it should match the group that owns the data folder on your NAS."
+    },
+    {
+      "name": "TZ",
+      "label": "O1: Time Zone",
+      "section": "optional",
+      "input_type": "text",
+      "required": true,
+      "default": "Asia/Dubai",
+      "help": "IANA time zone used for container timestamps, for example <code>Asia/Dubai</code>, <code>Europe/London</code>, or <code>America/New_York</code>."
+    },
+    {
+      "name": "GITEA_ROOT_URL",
+      "label": "O2: Site URL",
+      "section": "optional",
+      "input_type": "text",
+      "required": false,
+      "default": "",
+      "help": "Optional canonical URL used in links and redirects. Leave blank for initial local setup. If Gitea is accessed through a reverse proxy, enter the complete public address, such as <code>https://git.example.com/</code>. For direct NAS access you may use <code>http://NAS-IP:3000/</code>."
+    },
+    {
+      "name": "GITEA_NETWORK_MODE",
+      "label": "O3: Network",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "__create_bridge__",
+      "data_type": "docker_network",
+      "options_source": "docker_networks",
+      "help": "Choose <code>Create New Bridge</code> for the recommended default, <code>Host Mode</code>, or an existing named Docker network. Bridge mode keeps the configurable web and SSH port mappings."
+    },
+    {
+      "name": "RESTART_POLICY",
+      "label": "O4: Restart Policy",
+      "section": "optional",
+      "input_type": "select",
+      "required": true,
+      "default": "unless-stopped",
+      "options": [
+        {"label": "Unless Stopped", "value": "unless-stopped"},
+        {"label": "Always", "value": "always"},
+        {"label": "On Failure", "value": "on-failure"},
+        {"label": "No", "value": "no"}
+      ],
+      "help": "Controls whether the container restarts automatically."
+    },
+    {
+      "name": "GITEA_IMAGE",
+      "label": "A1: Image",
+      "section": "advanced",
+      "input_type": "text",
+      "required": true,
+      "default": "docker.gitea.com/gitea:latest",
+      "docs_url": "https://docs.gitea.com/installation/install-with-docker/",
+      "docs_label": "Official help",
+      "help": "Official stable Gitea image. For predictable upgrades, advanced users may replace <code>latest</code> with a specific release tag."
+    },
+    {
+      "name": "GITEA_WEB_PORT_MAPPING",
+      "label": "A2: Bridge Web Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${WEB_PORT}:${GITEA_INTERNAL_WEB_PORT}",
+      "editable": false,
+      "hidden_when": {"GITEA_NETWORK_MODE": ["__host__"]},
+      "omit_when_inactive": true,
+      "help": "Automatically generated for bridge or an existing Docker network and removed in Host Mode."
+    },
+    {
+      "name": "GITEA_SSH_PORT_MAPPING",
+      "label": "A3: Bridge SSH Port Mapping",
+      "section": "advanced",
+      "input_type": "text",
+      "required": false,
+      "default": "${SSH_PORT}:${GITEA_INTERNAL_SSH_PORT}",
+      "editable": false,
+      "hidden_when": {"GITEA_NETWORK_MODE": ["__host__"]},
+      "omit_when_inactive": true,
+      "help": "Automatically generated Git SSH mapping for bridge or an existing Docker network and removed in Host Mode."
+    },
+    {
+      "name": "GITEA_CONTAINER_NAME",
+      "label": "Container Name",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "${PROJECT_NAME}",
+      "editable": false,
+      "help": "EasyDocker sets the container name from the project name."
+    },
+    {
+      "name": "GITEA_DATA_TARGET",
+      "label": "Internal Data Folder",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "/data",
+      "editable": false,
+      "help": "Official persistent data location inside the Gitea container."
+    },
+    {
+      "name": "GITEA_INTERNAL_WEB_PORT",
+      "label": "Internal Web Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "3000",
+      "editable": false,
+      "help": "Recipe-managed Gitea web port inside the container."
+    },
+    {
+      "name": "GITEA_INTERNAL_SSH_PORT",
+      "label": "Internal SSH Port",
+      "section": "readonly",
+      "input_type": "text",
+      "required": true,
+      "default": "22",
+      "editable": false,
+      "help": "Recipe-managed Gitea SSH port inside the container."
+    }
+  ],
+  "ui": {
+    "category": "productivity",
+    "icon": "gitea.svg",
+    "manual": "https://tsg-easydocker.com/docs/recipes/gitea/",
+    "sections": [
+      {"name": "required", "label": "Minimum Required"},
+      {"name": "optional", "label": "Optional", "collapsed": true},
+      {"name": "advanced", "label": "Advanced", "collapsed": true},
+      {"name": "readonly", "label": "Read-Only (Recipe Managed)", "collapsed": true}
+    ],
+    "tags": ["Intel/AMD", "ARM"],
+    "overview": "Gitea is a lightweight self-hosted Git platform with repository hosting, issues, pull requests, releases, packages, and collaboration features.",
+    "what_happens": [
+      "One Gitea container will be created using its built-in SQLite database",
+      "Configuration, repositories, database files, packages, and logs will persist in the selected bind-mounted data folder",
+      "The web interface will be available on the selected web port",
+      "Git-over-SSH will be available on the selected SSH port and that port will appear in SSH clone URLs",
+      "Bridge networking is selected by default, with Host Mode and existing Docker networks also available",
+      "On first launch, open the web interface and complete Gitea's installation wizard to create the administrator account"
+    ],
+    "data_location": "The selected data folder contains the complete Gitea installation, including its SQLite database, configuration, repositories, attachments, packages, and logs. Back up the entire folder before upgrades or migrations."
+  }
+}

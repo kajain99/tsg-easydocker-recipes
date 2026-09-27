@@ -41,6 +41,10 @@
                         "version":  1.02
                     },
                     {
+                        "name":  "gitea",
+                        "version":  1.01
+                    },
+                    {
                         "name":  "gluetun",
                         "version":  1.03
                     },
