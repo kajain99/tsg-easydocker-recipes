@@ -1,6 +1,6 @@
 {
   "name": "immich",
-  "version": 1.03,
+  "version": 1.04,
   "description": "Photo and video backup with search, AI features, and a built-in database stack",
   "services": {
     "immich-server": {
@@ -119,7 +119,11 @@
       "input_type": "password",
       "required": true,
       "default": "",
-      "help": "Choose a strong database password.<br>This stack will use it for the built-in Postgres service."
+      "generator": {
+        "type": "hex",
+        "bytes": 32
+      },
+      "help": "Choose a strong database password or click Generate for a 64-character hexadecimal password.<br>Immich and Postgres use this same value. Set it during initial setup; changing it later does not change credentials in an already initialized database."
     },
     {
       "name": "DB_DATABASE_NAME",
