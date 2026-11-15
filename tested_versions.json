@@ -1,5 +1,13 @@
 {
   "adguard-home": "v0.107.80",
+  "audiobookshelf": "2.37.2",
+  "bazarr": "1.6.2",
+  "bentopdf": "2.8.11",
+  "changedetection-io": "0.60.3",
+  "changedetection-io-browser": {
+    "CHANGEDETECTION_IMAGE": "0.60.3",
+    "CHANGEDETECTION_BROWSER_IMAGE": "dgtlmoon/sockpuppetbrowser@sha256:453381bb697b8b54e33ed20cee64d444b0a86885c9dc8a2ffbed27ef2b6c153a"
+  },
   "romm": {
     "ROMM_IMAGE": "5.4.1",
     "ROMM_DB_IMAGE": "11"
