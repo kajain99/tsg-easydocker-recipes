@@ -15,6 +15,11 @@
   "gitea": "28.3.0",
   "gotify": "3.1.1",
   "grist": "1.7.22",
+  "home-assistant": "2026.11.1",
+  "homarr": "v2.13.1",
+  "jdownloader-2": "v26.09.1",
+  "memos": "26.11.0",
+  "metube": "2026.11.14",
   "romm": {
     "ROMM_IMAGE": "5.4.1",
     "ROMM_DB_IMAGE": "11"
